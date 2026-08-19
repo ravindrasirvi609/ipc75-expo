@@ -4,7 +4,13 @@ import { Suspense, useRef, type RefObject } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Sparkles } from "@react-three/drei";
 import type { Mesh } from "three";
-import { SculptureMaterial } from "./sculptureMaterial";
+// Side-effect import: this file's top-level `extend({ SculptureMaterial })`
+// call must actually execute so R3F's catalogue knows the `sculptureMaterial`
+// JSX tag below. A value import used only in a type position (`typeof ...`)
+// gets elided by SWC, so `SculptureMaterial` is imported separately as a
+// type only — never as the thing that triggers module execution.
+import "./sculptureMaterial";
+import type { SculptureMaterial } from "./sculptureMaterial";
 
 type PointerState = { x: number; y: number };
 type SculptureMaterialInstance = InstanceType<typeof SculptureMaterial>;
