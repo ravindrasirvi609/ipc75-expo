@@ -6,6 +6,7 @@
 
 .headline {
   margin-top: 0.25rem;
+  text-transform: uppercase;
 }
 
 .highlight {

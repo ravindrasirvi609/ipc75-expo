@@ -33,7 +33,7 @@ export function FinalCTA() {
               Join the 75th IPC
             </RoomLink>
           </MagneticButton>
-          <a href="#experience" className={styles.secondaryCta}>
+          <a href="#exhibition" className={styles.secondaryCta}>
             Explore the Exhibition
           </a>
         </div>

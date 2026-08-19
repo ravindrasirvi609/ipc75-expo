@@ -19,7 +19,7 @@ export function WomenInPharmacy({ className }: WomenInPharmacyProps) {
       <div className={styles.inner}>
         <p className={`${styles.eyebrow} ${styles.reveal}`}>Women in Pharmacy</p>
         <h2 className={`${styles.heading} ${styles.reveal}`}>
-          LEADERSHIP HAS NO SINGLE SHAPE.
+          Leadership has no single shape.
         </h2>
         <p
           className={`${styles.body} ${styles.reveal}`}

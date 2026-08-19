@@ -39,7 +39,7 @@ export function NextGeneration({ className }: NextGenerationProps) {
       <div className={styles.inner}>
         <p className={`${styles.eyebrow} ${styles.reveal}`}>Next Generation</p>
         <h2 className={`${styles.heading} ${styles.reveal}`}>
-          THE NEXT GENERATION IS ALREADY HERE.
+          The next generation is already here.
         </h2>
         <p className={`${styles.body} ${styles.reveal}`}>
           The future of pharmacy belongs to the students, researchers and young

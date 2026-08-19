@@ -111,7 +111,7 @@ export function InteractiveTimeline({ className }: InteractiveTimelineProps) {
         <div ref={headerRef}>
           <p className={`${sectionStyles.eyebrow} ${sectionStyles.reveal}`}>1947 — 2047</p>
           <h2 className={`${sectionStyles.heading} ${sectionStyles.reveal}`}>
-            75 YEARS OF MOVEMENT
+            75 years of movement
           </h2>
         </div>
         <div className={styles.track} ref={trackRef}>

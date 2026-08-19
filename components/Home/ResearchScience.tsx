@@ -28,7 +28,7 @@ export function ResearchScience({ className }: ResearchScienceProps) {
       <div className={styles.inner}>
         <p className={`${styles.eyebrow} ${styles.reveal}`}>Research &amp; Science</p>
         <h2 className={`${styles.heading} ${styles.reveal}`}>
-          WHERE QUESTIONS BECOME DISCOVERIES
+          Where questions become discoveries.
         </h2>
         <p className={`${styles.body} ${styles.reveal}`}>
           Research is the engine behind pharmaceutical progress. The exhibition
