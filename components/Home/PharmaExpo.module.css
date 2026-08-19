@@ -1,0 +1,39 @@
+/*
+ * PharmaExpo reuses sections.module.css for the eyebrow/heading/body
+ * treatment. This module covers the bespoke subtitle line and the CTA,
+ * styled to match Hero's pill / gold-fill-on-hover treatment (see
+ * Hero.module.css's .cta) without importing that module directly.
+ */
+
+.subtitle {
+  margin-top: 1rem;
+  max-width: 34rem;
+  font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: 0.01em;
+}
+
+.ctaWrap {
+  margin-top: 2.5rem;
+  display: inline-block;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  padding: 0.85rem 2.25rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.cta:hover {
+  background-color: var(--accent);
+  color: var(--surface);
+}
