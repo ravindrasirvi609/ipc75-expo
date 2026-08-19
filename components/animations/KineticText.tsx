@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ElementType } from "react";
+import { useEffect, useRef, type JSX } from "react";
 import SplitType from "split-type";
 import { gsap, registerGsap, ScrollTrigger } from "@/lib/animation/gsap";
 import { DURATION, EASE } from "@/lib/animation/tokens";
@@ -133,7 +133,13 @@ export function KineticText({
     };
   }, [text, splitBy, trigger, stagger, delay, reducedMotion]);
 
-  const Component = as as ElementType;
+  // `as` is a runtime-chosen tag name, so its element type can't be resolved
+  // statically. Any typed `ElementType` here forces TS to distribute props
+  // across every intrinsic element (collapsing to `never`, or blowing up
+  // into an unrepresentable union) — this cast is the deliberate escape
+  // hatch for that limitation.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const Component = as as any;
 
   return (
     <Component ref={containerRef} className={className}>
