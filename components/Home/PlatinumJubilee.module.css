@@ -1,0 +1,41 @@
+/*
+ * PlatinumJubilee reuses sections.module.css for the eyebrow/heading/body
+ * treatment. This module only covers the bespoke centerpiece: the
+ * 1948 -> 2026 -> 2047 milestone treatment and the line beneath it.
+ */
+
+.headline {
+  margin-top: 0.25rem;
+}
+
+.highlight {
+  margin-top: clamp(3rem, 6vw, 4.5rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem clamp(1rem, 3vw, 2.5rem);
+  text-align: center;
+}
+
+.year {
+  font-size: clamp(2.5rem, 8vw, 5.5rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--accent);
+}
+
+.arrow {
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  color: color-mix(in srgb, var(--foreground) 40%, transparent);
+}
+
+.supportLine {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+  font-weight: 600;
+  font-style: italic;
+  color: color-mix(in srgb, var(--foreground) 85%, transparent);
+}

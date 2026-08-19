@@ -4,12 +4,16 @@ import { useRef } from "react";
 import { useScrollReveal } from "@/lib/animation/useScrollReveal";
 import styles from "./sections.module.css";
 
-const CATEGORIES = [
-  "Pharmaceutical Manufacturers",
-  "Research Institutions",
-  "Regulatory Bodies",
-  "Academic Partners",
-  "Healthcare Technology",
+const DETAILS = [
+  { label: "Edition", value: "75th IPC" },
+  { label: "Dates", value: "18–20 December 2026" },
+  { label: "Venue", value: "Yashobhoomi, New Delhi" },
+];
+
+const CREDITS = [
+  { label: "Organized by", value: "Indian Pharmaceutical Congress Association (IPCA)" },
+  { label: "Hosted by", value: "Indian Pharmacy Graduates' Association (IPGA)" },
+  { label: "Academic Partner", value: "SGT University" },
 ];
 
 export function SponsorsTeaser() {
@@ -19,17 +23,27 @@ export function SponsorsTeaser() {
   return (
     <section ref={sectionRef} className={styles.section}>
       <div className={styles.inner}>
-        <p className={`${styles.eyebrow} ${styles.reveal}`}>Exhibitors &amp; Partners</p>
-        <h2 className={`${styles.heading} ${styles.reveal}`}>
-          Presented alongside the institutions shaping Indian pharma.
-        </h2>
-        <div className={`${styles.strip} ${styles.reveal}`}>
-          {CATEGORIES.map((category) => (
-            <span key={category} className={styles.stripItem}>
-              {category}
-            </span>
+        <p className={`${styles.eyebrow} ${styles.reveal}`}>Event Information</p>
+        <dl className={`${styles.strip} ${styles.reveal}`}>
+          {DETAILS.map((detail) => (
+            <div key={detail.label}>
+              <dt className={styles.cardLabel}>{detail.label}</dt>
+              <dd className={styles.stripItem} style={{ marginTop: "0.35rem" }}>
+                {detail.value}
+              </dd>
+            </div>
           ))}
-        </div>
+        </dl>
+        <dl className={`${styles.strip} ${styles.reveal}`} style={{ marginTop: "1.5rem" }}>
+          {CREDITS.map((credit) => (
+            <div key={credit.label}>
+              <dt className={styles.cardLabel}>{credit.label}</dt>
+              <dd className={styles.stripItem} style={{ marginTop: "0.35rem" }}>
+                {credit.value}
+              </dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </section>
   );

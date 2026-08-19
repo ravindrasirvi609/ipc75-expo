@@ -5,6 +5,7 @@ import { SmoothScrollProvider } from "@/providers/SmoothScrollProvider";
 import { CursorProvider } from "@/providers/CursorProvider";
 import { RoomTransitionProvider } from "@/providers/RoomTransitionProvider";
 import { Nav } from "@/components/Nav/Nav";
+import { Footer } from "@/components/Footer/Footer";
 import { Cursor } from "@/components/Cursor/Cursor";
 
 const geistSans = Geist({
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <RoomTransitionProvider>
               <Nav />
               {children}
+              <Footer />
               <Cursor />
             </RoomTransitionProvider>
           </CursorProvider>

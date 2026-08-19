@@ -1,0 +1,16 @@
+/*
+ * OpeningStatement reuses sections.module.css for the eyebrow/heading/body
+ * treatment. The only bespoke piece is the closing statement, which needs to
+ * read as a standalone, larger, bolder line rather than another paragraph.
+ */
+
+.statement {
+  margin-top: 2.75rem;
+  padding-top: 2rem;
+  max-width: 40rem;
+  border-top: 1px solid color-mix(in srgb, var(--foreground) 15%, transparent);
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--foreground);
+}

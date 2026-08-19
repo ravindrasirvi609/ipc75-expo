@@ -1,0 +1,223 @@
+.section {
+  position: relative;
+  padding: clamp(4rem, 10vw, 8rem) clamp(1.25rem, 4vw, 3rem);
+  overflow: hidden;
+}
+
+.inner {
+  position: relative;
+  max-width: 68rem;
+  margin: 0 auto;
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 4rem);
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+}
+
+@media (min-width: 64rem) {
+  .inner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.reveal {
+  will-change: opacity, transform;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+
+.heading {
+  font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.2;
+  max-width: 28rem;
+}
+
+.venueName {
+  margin-top: 1.75rem;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+}
+
+.venueCity {
+  margin-top: 0.35rem;
+  font-size: 1.05rem;
+  color: color-mix(in srgb, var(--foreground) 80%, transparent);
+}
+
+.dates {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--foreground) 65%, transparent);
+}
+
+.body {
+  margin-top: 1.5rem;
+  max-width: 32rem;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--foreground) 72%, transparent);
+}
+
+.cta {
+  margin-top: 2.25rem;
+  display: inline-block;
+}
+
+.ctaLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  padding: 0.85rem 2.25rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.ctaLink:hover {
+  background-color: var(--accent);
+  color: var(--surface);
+}
+
+/* Decorative location visual: concentric rings radiating from a central
+   marker, with the venue labels arranged around it. Pure CSS/SVG, no map
+   imagery or external network dependency. */
+.visual {
+  position: relative;
+  aspect-ratio: 1;
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ringsWrapper {
+  position: absolute;
+  inset: 0;
+}
+
+.ring {
+  position: absolute;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  border-radius: 50%;
+}
+
+.ring:nth-child(1) {
+  inset: 0;
+}
+
+.ring:nth-child(2) {
+  inset: 12%;
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.ring:nth-child(3) {
+  inset: 24%;
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
+.ring:nth-child(4) {
+  inset: 36%;
+  border-color: color-mix(in srgb, var(--accent) 80%, transparent);
+}
+
+.pulseWrapper {
+  position: absolute;
+  inset: 36%;
+}
+
+.pulseRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  opacity: 0;
+}
+
+.marker {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.pin {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.compass {
+  position: absolute;
+  inset: 0;
+}
+
+.compassLabel {
+  position: absolute;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--foreground) 55%, transparent);
+  white-space: nowrap;
+}
+
+.compassLabel:nth-child(1) {
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.compassLabel:nth-child(2) {
+  right: -0.5rem;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
+.compassLabel:nth-child(3) {
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.compassLabel:nth-child(4) {
+  left: -0.5rem;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pulseRing {
+    animation: ipc-pulse 3.2s ease-out infinite;
+  }
+}
+
+@keyframes ipc-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}

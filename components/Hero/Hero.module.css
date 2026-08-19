@@ -41,11 +41,26 @@
   color: color-mix(in srgb, var(--foreground) 70%, transparent);
 }
 
+.eventInfo {
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--foreground) 55%, transparent);
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem 2rem;
+  margin-top: 0.5rem;
+}
+
 .cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-top: 0.5rem;
   border-radius: 999px;
   border: 1px solid var(--accent);
   padding: 0.85rem 2.25rem;
@@ -59,4 +74,19 @@
 .cta:hover {
   background-color: var(--accent);
   color: var(--surface);
+}
+
+.ctaSecondary {
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--foreground) 70%, transparent);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--foreground) 30%, transparent);
+  text-underline-offset: 0.3em;
+  transition: color 0.25s ease;
+}
+
+.ctaSecondary:hover {
+  color: var(--accent);
 }
