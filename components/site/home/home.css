@@ -1,0 +1,487 @@
+/* Homepage sections. Bands alternate navy show floor and paper spec sheet. */
+
+/* -------------------------------------------------------------------- hero */
+
+.hero {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  padding: 120px var(--gutter) var(--band);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Faint stall grid across the hero ground — the module the show is sold in. */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(#ffffff0d 1px, transparent 1px),
+    linear-gradient(90deg, #ffffff0d 1px, transparent 1px);
+  background-size: var(--module) var(--module);
+  mask-image: radial-gradient(120% 90% at 30% 20%, #000 20%, transparent 78%);
+  pointer-events: none;
+}
+
+.hero-grid {
+  position: relative;
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.72fr);
+  gap: clamp(36px, 6vw, 96px);
+  align-items: center;
+}
+
+.hero-title {
+  color: #ffffff;
+  max-width: 15ch;
+}
+
+/* SplitText wraps each line; the clip is what makes them rise from nothing. */
+.hero-title .split-line,
+.why-title .split-line,
+.profile-head .split-line,
+.charges-head .split-line,
+.venue .split-line {
+  overflow: hidden;
+  padding-bottom: 0.06em;
+}
+
+.hero-body {
+  margin-top: 26px;
+}
+
+.hero-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 26px 0 30px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.hero-plan {
+  margin: 0;
+  display: grid;
+  gap: 18px;
+  justify-items: end;
+}
+
+.hall-signature {
+  display: block;
+  width: 100%;
+  max-height: 68svh;
+  height: auto;
+}
+
+.hs-wall,
+.hs-zone {
+  fill: none;
+  stroke: #ffffff2e;
+  stroke-width: 2;
+}
+
+.hs-aisle {
+  fill: none;
+  stroke: var(--saffron);
+  opacity: 0.5;
+}
+
+.hs-cell {
+  fill: #ffffff08;
+  stroke: var(--gold);
+  stroke-width: 1.6;
+  stroke-opacity: 0.62;
+}
+
+.hs-cell.is-taken {
+  fill: #ffffff03;
+  stroke: #ffffff;
+  stroke-opacity: 0.14;
+}
+
+.hs-cell.is-blocked {
+  fill: var(--saffron);
+  fill-opacity: 0.32;
+  stroke: none;
+}
+
+.hero-plan figcaption {
+  text-align: right;
+  max-width: 34ch;
+}
+
+.hero-plan figcaption p {
+  margin: 7px 0 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: #b9c9e1;
+}
+
+.hero-plan figcaption b {
+  color: var(--gold);
+  font-size: 15px;
+}
+
+@media (max-width: 1000px) {
+  .hero {
+    min-height: 0;
+    padding-top: 108px;
+  }
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero-title {
+    max-width: none;
+  }
+  .hero-plan {
+    justify-items: start;
+  }
+  .hall-signature {
+    max-height: 56svh;
+  }
+  .hero-plan figcaption {
+    text-align: left;
+  }
+}
+
+/* --------------------------------------------------------------- why exhibit */
+
+.why-title {
+  max-width: 22ch;
+  margin-bottom: 22px;
+}
+
+.why-lede {
+  margin-bottom: clamp(40px, 5vw, 68px);
+}
+
+.figure-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  border-top: 1px solid var(--hairline);
+}
+
+.figure-tile {
+  display: grid;
+  gap: 7px;
+  padding: 28px 26px 30px;
+  border-right: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.figure-tile:last-child {
+  border-right: 0;
+}
+
+.figure-value {
+  font-size: clamp(40px, 4.6vw, 62px);
+  line-height: 1;
+  letter-spacing: -0.05em;
+  font-weight: 700;
+  color: var(--navy);
+  font-variant-numeric: tabular-nums;
+}
+
+.figure-label {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.figure-note {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+
+/* ------------------------------------------------------------------ profiles */
+
+.profile-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+  gap: clamp(28px, 4vw, 72px);
+  align-items: end;
+  margin-bottom: clamp(38px, 4.5vw, 60px);
+}
+
+.profile-head .display-l {
+  max-width: 18ch;
+}
+
+.profile-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  column-gap: clamp(28px, 4vw, 72px);
+  border-top: 1px solid var(--hairline);
+}
+
+.profile-list li {
+  padding: 17px 0 16px 18px;
+  border-bottom: 1px solid var(--hairline);
+  font-size: clamp(15px, 1.15vw, 17px);
+  line-height: 1.4;
+  position: relative;
+}
+
+/* A short rule per row, in the tone that identifies the column. */
+.profile-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 25px;
+  width: 8px;
+  height: 1px;
+  background: var(--gold);
+}
+
+.profile-green .profile-list li::before {
+  background: var(--green);
+}
+
+@media (max-width: 860px) {
+  .profile-head {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+}
+
+/* ------------------------------------------------------------------- charges */
+
+.charges-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+  gap: clamp(28px, 4vw, 72px);
+  align-items: end;
+  margin-bottom: clamp(38px, 4.5vw, 58px);
+}
+
+.charges-head .display-l {
+  max-width: 16ch;
+  color: #fff;
+}
+
+.rate-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1px;
+  background: var(--hairline-dark);
+  border: 1px solid var(--hairline-dark);
+}
+
+.rate-card {
+  background: var(--navy);
+  padding: clamp(26px, 3vw, 40px);
+  display: grid;
+  align-content: start;
+  gap: 16px;
+}
+
+.rate-card header {
+  display: grid;
+  gap: 12px;
+}
+
+.rate-card h3 {
+  color: #fff;
+}
+
+.rate-figure {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: clamp(30px, 3.2vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}
+
+.rate-figure span {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #93a8c8;
+}
+
+.rate-summary {
+  margin: 0;
+  font-size: 16px;
+  color: #e3ebf8;
+}
+
+.rate-detail {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.62;
+  color: #a3b6d4;
+}
+
+.rate-module {
+  margin: 6px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--hairline-dark);
+  display: grid;
+  gap: 5px;
+  font-family: var(--mono);
+  font-size: 15px;
+  color: var(--gold);
+}
+
+.charges-foot {
+  margin-top: clamp(30px, 3.5vw, 46px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 26px;
+  flex-wrap: wrap;
+}
+
+.charges-note {
+  margin: 0;
+  max-width: 46ch;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.7;
+  color: #a3b6d4;
+}
+
+.charges-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 860px) {
+  .charges-head {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+}
+
+/* --------------------------------------------------------------------- venue */
+
+.venue-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: clamp(36px, 5vw, 88px);
+}
+
+.venue-grid .display-l {
+  max-width: 16ch;
+  margin-bottom: 20px;
+}
+
+.venue-lede {
+  margin-bottom: 34px;
+}
+
+.venue-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 22px;
+  margin: 0 0 30px;
+  padding-top: 24px;
+  border-top: 1px solid var(--hairline);
+}
+
+.venue-facts dd {
+  margin: 7px 0 0;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.venue-desk {
+  padding: clamp(26px, 3vw, 38px);
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+}
+
+.venue-desk-lede {
+  margin: 0 0 22px;
+  font-size: 15px;
+  color: var(--ink-soft);
+}
+
+.rep-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  border-top: 1px solid var(--hairline);
+}
+
+.rep-list li {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+/* Monogram stands in for a headshot. Swap for an <Image> when you have photos. */
+.rep-monogram {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  background: var(--navy);
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
+.rep-name {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.rep-phone {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--saffron);
+}
+
+.rep-phone:hover {
+  border-bottom: 1px solid currentColor;
+}
+
+.venue-emails {
+  display: grid;
+  gap: 6px;
+  margin: 22px 0 0;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.venue-emails a {
+  color: var(--navy);
+  border-bottom: 1px solid var(--hairline);
+  padding-bottom: 2px;
+  justify-self: start;
+}
+
+.venue-emails a:hover {
+  color: var(--saffron);
+  border-color: currentColor;
+}
+
+@media (max-width: 900px) {
+  .venue-grid {
+    grid-template-columns: 1fr;
+  }
+}

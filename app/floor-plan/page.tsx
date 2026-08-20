@@ -1,16 +1,22 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { headers } from "next/headers";
+import SiteHeader from "@/components/site/SiteHeader";
+import SiteFooter from "@/components/site/SiteFooter";
 import EmbedSnippet from "@/components/floor-plan/EmbedSnippet";
 import PlanWidget from "@/components/floor-plan/PlanWidget";
+import SplitLines from "@/components/motion/SplitLines";
+import { EVENT, SPACE_TYPES, STALL_MODULE, VENUE, rupees } from "@/lib/expo-content";
 import { SECTIONS, STALLS } from "@/lib/hall-1c-plan";
 import { getPublicStates } from "@/lib/stall-bookings";
 import { parseStallParam } from "@/lib/stall-params";
+import "@/components/site/site.css";
+import "@/components/site/home/home.css";
+import "../exhibit/exhibit.css";
+import "./floor-plan.css";
 
 export const metadata: Metadata = {
-  title: "Hall 1C floor plan — 75th IPC",
-  description:
-    "Explore the Hall 1C stall layout at the 75th Indian Pharmaceutical Congress and request your stand.",
+  title: `${VENUE.hall} floor plan — ${EVENT.name}`,
+  description: `Interactive stand plan for ${VENUE.hall} at ${VENUE.name}. Pick your stands and request them online.`,
 };
 
 /** Public origin of this request, so the embed snippet is copy-paste correct. */
@@ -35,61 +41,63 @@ export default async function FloorPlanPage({
     requestOrigin(),
   ]);
 
+  const available = STALLS.length - availability.stalls.length;
   const bySection = SECTIONS.map((section) => ({
     section,
     count: STALLS.filter((s) => s.section === section).length,
   }));
 
   return (
-    <main className="plan-page">
-      <header className="plan-nav">
-        <Link className="brand" href="/">
-          <span>IPC</span>
-          <i>75</i>
-        </Link>
-        <div>
-          75th Indian Pharmaceutical Congress <b>IICC · HALL 1C</b>
-        </div>
-        <a className="plan-book" href="mailto:exhibition@ipc75.com">
-          Talk to the team ↗
-        </a>
-      </header>
+    <>
+      <SiteHeader solid />
+      <main className="head-offset">
+        <section className="band band-deep page-lead plan-lead">
+          <div className="shell plan-lead-grid">
+            <div>
+              <p className="eyebrow">{VENUE.hall} · surveyed plan</p>
+              <SplitLines as="h1" className="display-xl page-title" onLoad delay={0.1}>
+                Pick your stands.
+              </SplitLines>
+              <p className="lede page-lede">
+                Every stand is {STALL_MODULE.size} — {STALL_MODULE.area} sqm. Click
+                the ones you want, send the request, and they go on hold while the
+                desk confirms. {available} of {STALLS.length} are open right now.
+              </p>
+            </div>
+            <dl className="plan-key">
+              {bySection.map(({ section, count }) => (
+                <div key={section}>
+                  <dt className="data-label">Block {section}</dt>
+                  <dd>{count} stands</dd>
+                </div>
+              ))}
+              <div>
+                <dt className="data-label">From</dt>
+                <dd>
+                  {rupees(SPACE_TYPES[1].rate * STALL_MODULE.area)}
+                  <span> / stand + taxes</span>
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </section>
 
-      <section className="plan-hero">
-        <div>
-          <p className="eyebrow coral">Interactive exhibition floor plan</p>
-          <h1>
-            FIND YOUR
-            <br />
-            <em>FOOTPRINT.</em>
-          </h1>
-          <p>
-            The Hall 1C layout, drawn to the surveyed grid. Pick the stalls you
-            want and request them — availability updates for everyone.
-          </p>
+        <div className="plan-stage">
+          <PlanWidget
+            variant="page"
+            theme="light"
+            availability={availability.stalls}
+            initialSelection={parseStallParam(stall, availability.stalls)}
+          />
         </div>
-        <div className="plan-meta">
-          <span>{STALLS.length} STALLS / 3M × 3M</span>
-          {bySection.map(({ section, count }) => (
-            <span key={section}>
-              {section} — {count}
-            </span>
-          ))}
-        </div>
-      </section>
 
-      <div className="plan-stage">
-        <PlanWidget
-          variant="page"
-          theme="light"
-          availability={availability.stalls}
-          initialSelection={parseStallParam(stall, availability.stalls)}
-        />
-      </div>
-
-      <div className="plan-stage">
-        <EmbedSnippet origin={origin} />
-      </div>
-    </main>
+        <section className="band band-sheet embed-band">
+          <div className="shell">
+            <EmbedSnippet origin={origin} />
+          </div>
+        </section>
+      </main>
+      <SiteFooter />
+    </>
   );
 }

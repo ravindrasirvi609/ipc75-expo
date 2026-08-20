@@ -1,0 +1,162 @@
+/* Floor-plan page: the lead band, the widget stage and the embed card. */
+
+.plan-lead-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.7fr);
+  gap: clamp(30px, 5vw, 80px);
+  align-items: end;
+}
+
+.plan-key {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 20px 26px;
+  margin: 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--hairline-dark);
+}
+
+.plan-key dd {
+  margin: 7px 0 0;
+  font-family: var(--mono);
+  font-size: 15px;
+  color: var(--gold);
+}
+
+.plan-key dd span {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8fa5c6;
+  margin-top: 3px;
+}
+
+@media (max-width: 900px) {
+  .plan-lead-grid {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+}
+
+/* The widget sits edge to edge in its own stage, clear of the band rhythm. */
+.plan-stage {
+  padding: 0 var(--gutter) clamp(56px, 6vw, 92px);
+  background: var(--navy-deep);
+}
+
+.embed-band {
+  padding-top: clamp(52px, 6vw, 88px);
+}
+
+/* ------------------------------------------------------------- embed card */
+
+.embed-card {
+  border: 1px solid var(--hairline);
+  background: var(--ice);
+  color: var(--ink);
+  padding: clamp(24px, 3vw, 38px);
+  display: grid;
+  gap: 22px;
+}
+
+.embed-card header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: clamp(22px, 3vw, 48px);
+  flex-wrap: wrap;
+}
+
+.embed-card h2 {
+  margin: 12px 0 12px;
+  font-size: clamp(25px, 3vw, 38px);
+  letter-spacing: -0.04em;
+  font-weight: 700;
+}
+
+.embed-copy {
+  margin: 0;
+  max-width: 52ch;
+  line-height: 1.62;
+  color: var(--ink-soft);
+  font-size: 15px;
+}
+
+.embed-actions {
+  display: grid;
+  gap: 12px;
+  justify-items: end;
+}
+
+.embed-theme {
+  display: flex;
+  border: 1px solid var(--hairline);
+}
+
+.embed-theme button {
+  border: 0;
+  background: var(--paper);
+  color: var(--ink-soft);
+  padding: 10px 15px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.embed-theme button.is-on {
+  background: var(--navy);
+  color: var(--gold);
+}
+
+.embed-open {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--saffron);
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 1px;
+}
+
+.embed-card pre {
+  margin: 0;
+  padding: 20px;
+  overflow-x: auto;
+  background: var(--navy-deep);
+  color: #d8e3f4;
+  border-radius: 2px;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.75;
+}
+
+.embed-foot {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.embed-foot p {
+  margin: 0;
+  max-width: 56ch;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--ink-soft);
+}
+
+.embed-foot code {
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  padding: 1px 5px;
+}
+
+@media (max-width: 760px) {
+  .embed-actions {
+    justify-items: start;
+  }
+}

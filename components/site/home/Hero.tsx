@@ -1,0 +1,58 @@
+"use client";
+
+import Link from "next/link";
+import SplitLines from "@/components/motion/SplitLines";
+import Reveal from "@/components/motion/Reveal";
+import HallSignature from "@/components/site/HallSignature";
+import { EVENT, STALL_MODULE, VENUE } from "@/lib/expo-content";
+import { STALLS } from "@/lib/hall-1c-plan";
+
+export default function Hero({ taken }: { taken: string[] }) {
+  const available = STALLS.length - taken.length;
+
+  return (
+    <section className="hero band-deep" id="top">
+      <div className="hero-grid shell">
+        <div className="hero-copy">
+          <p className="eyebrow">
+            {EVENT.parent} · {EVENT.milestone}
+          </p>
+
+          <SplitLines as="h1" className="display-xl hero-title" onLoad delay={0.15}>
+            {EVENT.name}
+          </SplitLines>
+
+          <Reveal className="hero-body" delay={0.5} distance={18}>
+            <p className="lede">{EVENT.subtitle}</p>
+            <div className="hero-chips">
+              <span className="chip">{EVENT.dates.label}</span>
+              <span className="chip">
+                {VENUE.name}, {VENUE.city}
+              </span>
+              <span className="chip">{VENUE.hall}</span>
+            </div>
+            <div className="hero-actions">
+              <Link className="btn btn-primary" href="/floor-plan">
+                Book a stand
+              </Link>
+              <Link className="btn btn-ghost" href="/exhibit">
+                See charges
+              </Link>
+            </div>
+          </Reveal>
+        </div>
+
+        <figure className="hero-plan">
+          <HallSignature taken={taken} />
+          <figcaption>
+            <span className="data-label">{VENUE.hall} · surveyed plan</span>
+            <p>
+              <b>{available}</b> of {STALLS.length} stands available ·{" "}
+              {STALL_MODULE.size} · {STALL_MODULE.area} sqm each
+            </p>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+  );
+}

@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "verify:plan": "node --no-warnings=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-layout.mjs",
-    "verify:render": "node --no-warnings=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-render.mjs"
+    "verify:render": "node --no-warnings=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-render.mjs",
+    "verify:content": "node --no-warnings=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-content.mjs",
+    "verify": "npm run verify:content && npm run verify:plan && npm run verify:render"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

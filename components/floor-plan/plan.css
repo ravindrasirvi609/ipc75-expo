@@ -5,32 +5,37 @@
  */
 
 .hp-shell {
-  --hp-ink: #101715;
-  --hp-muted: #66756e;
-  --hp-line: #c3ccc4;
-  --hp-panel: #f2f4ef;
-  --hp-raise: #ffffff;
-  --hp-accent: #ff735f;
+  /*
+   * Mirrors the Platinum Jubilee tokens in app/globals.css so the widget reads as
+   * part of the site, while staying self-contained enough to embed anywhere.
+   */
+  --hp-ink: #0e1b33;
+  --hp-muted: #4d5f7d;
+  --hp-line: #d3dcea;
+  --hp-panel: #eaf1f8;
+  --hp-raise: #fbfcfe;
+  --hp-accent: #e4761b;
   --hp-available: #ffffff;
-  --hp-hold: #ffc94a;
-  --hp-booked: #3f4a54;
+  --hp-hold: #c9a227;
+  --hp-booked: #10254f;
   --hp-blocked: #ed1c24;
 
   display: flex;
   flex-direction: column;
   background: var(--hp-panel);
   color: var(--hp-ink);
-  font-family: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  font-family: var(--display, "Space Grotesk"), "Segoe UI", system-ui, sans-serif;
   border: 1px solid var(--hp-line);
   overflow: hidden;
 }
 
 .hp-theme-dark {
-  --hp-ink: #e9efe8;
-  --hp-muted: #8b9a92;
-  --hp-line: #26302c;
-  --hp-panel: #0d1113;
-  --hp-raise: #141a1c;
+  --hp-ink: #eaf0fa;
+  --hp-muted: #8fa5c6;
+  --hp-line: #24365e;
+  --hp-panel: #0a1a3a;
+  --hp-raise: #10254f;
+  --hp-booked: #3d5891;
 }
 
 .hp-embed {
@@ -255,7 +260,7 @@
 }
 
 .hp-stall.is-available:hover > rect {
-  fill: #ffe9e4;
+  fill: #fdeada;
   stroke: var(--hp-accent);
   stroke-width: 4;
 }
@@ -336,13 +341,13 @@
   background: #fff;
 }
 .sw-selected {
-  background: #ff735f;
+  background: var(--hp-accent);
 }
 .sw-hold {
-  background: #ffc94a;
+  background: var(--hp-hold);
 }
 .sw-booked {
-  background: #3f4a54;
+  background: var(--hp-booked);
 }
 .sw-blocked {
   background: #ed1c24;
@@ -385,8 +390,8 @@
 
 .hp-tag {
   padding: 3px 7px;
-  color: #101715;
-  background: #dfe5df;
+  color: #0e1b33;
+  background: var(--hp-panel);
 }
 
 .hp-tag.is-selected {
@@ -460,7 +465,7 @@
 
 .hp-chip:hover {
   background: var(--hp-accent);
-  color: #14100f;
+  color: #150c04;
 }
 
 .hp-picked-actions {
@@ -494,7 +499,7 @@
 
 .hp-cta {
   background: var(--hp-accent);
-  color: #14100f;
+  color: #150c04;
 }
 
 .hp-cta:disabled {

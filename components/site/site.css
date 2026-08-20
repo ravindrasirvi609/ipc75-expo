@@ -1,0 +1,241 @@
+/* Header, footer and the furniture every page shares. */
+
+/* ------------------------------------------------------------------ header */
+
+.site-head {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 40;
+  height: 74px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 var(--gutter);
+  color: #eaf0fa;
+  transition:
+    background 0.28s ease,
+    border-color 0.28s ease,
+    color 0.28s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.site-head.is-solid {
+  background: color-mix(in srgb, var(--navy-deep) 94%, transparent);
+  border-bottom-color: var(--hairline-dark);
+  backdrop-filter: blur(10px);
+}
+
+.lockup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: none;
+}
+
+/* Stand-in for the IPC 75 emblem — replace this span with the real mark. */
+.lockup-mark {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 15px;
+  letter-spacing: -0.03em;
+}
+
+.lockup-text {
+  display: grid;
+  line-height: 1.15;
+}
+
+.lockup-text b {
+  font-size: 16px;
+  letter-spacing: -0.03em;
+}
+
+.lockup-text i {
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.site-nav {
+  display: flex;
+  gap: 26px;
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #b8c8e0;
+}
+
+.site-nav a:hover {
+  color: var(--gold);
+}
+
+.head-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: none;
+}
+
+.site-head .btn-primary {
+  padding: 12px 18px;
+}
+
+.nav-toggle {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--hairline-dark);
+  background: transparent;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+/* Pushes page content clear of the fixed header on non-hero pages. */
+.head-offset {
+  padding-top: 74px;
+}
+
+@media (max-width: 1080px) {
+  .site-nav {
+    position: absolute;
+    inset: 74px 0 auto;
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    background: var(--navy-deep);
+    border-bottom: 1px solid var(--hairline-dark);
+    transition: max-height 0.3s ease;
+  }
+  .site-nav.is-open {
+    max-height: 340px;
+  }
+  .site-nav a {
+    padding: 16px var(--gutter);
+    border-top: 1px solid var(--hairline-dark);
+  }
+  .nav-toggle {
+    display: grid;
+    place-items: center;
+  }
+  .head-actions {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 620px) {
+  .site-head .btn-primary {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------ footer */
+
+.site-foot {
+  padding: clamp(56px, 6vw, 92px) var(--gutter) 44px;
+}
+
+.foot-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: clamp(32px, 5vw, 88px);
+}
+
+.foot-title {
+  color: #f4f7fc;
+}
+
+.foot-lede {
+  margin-top: 14px;
+  max-width: 44ch;
+  font-size: 14px;
+}
+
+.foot-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 26px;
+  align-content: start;
+}
+
+.foot-meta p {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #d5e0f0;
+}
+
+.foot-meta a:hover {
+  color: var(--gold);
+}
+
+.foot-rule {
+  margin: clamp(36px, 4vw, 56px) 0 30px;
+}
+
+.foot-bottom {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto;
+  gap: clamp(28px, 4vw, 64px);
+  align-items: start;
+}
+
+.foot-org p {
+  margin: 6px 0 18px;
+  font-size: 13px;
+  color: #d5e0f0;
+}
+
+.foot-org p:last-child {
+  margin-bottom: 0;
+}
+
+.foot-ids {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+}
+
+.foot-ids dd {
+  margin: 5px 0 0;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: #eaf0fa;
+}
+
+.foot-links {
+  display: grid;
+  gap: 11px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #b8c8e0;
+  text-align: right;
+}
+
+.foot-links a:hover {
+  color: var(--gold);
+}
+
+@media (max-width: 900px) {
+  .foot-top,
+  .foot-bottom {
+    grid-template-columns: 1fr;
+  }
+  .foot-links {
+    text-align: left;
+  }
+}

@@ -1,0 +1,197 @@
+/* Contact page. */
+
+.rep-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1px;
+  background: var(--hairline);
+  border: 1px solid var(--hairline);
+}
+
+.rep-card {
+  background: var(--paper);
+  padding: clamp(26px, 3vw, 36px);
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.rep-card-monogram {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  background: var(--navy);
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 15px;
+}
+
+.rep-card h2 {
+  margin: 0;
+  font-size: 19px;
+  letter-spacing: -0.025em;
+}
+
+.rep-card-phone {
+  font-family: var(--mono);
+  font-size: 15px;
+  color: var(--saffron);
+  justify-self: start;
+  border-bottom: 1px solid transparent;
+}
+
+.rep-card-phone:hover {
+  border-bottom-color: currentColor;
+}
+
+.mail-row {
+  margin-top: clamp(30px, 3.5vw, 46px);
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.mail-row > div {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ------------------------------------------------------------------- venue */
+
+.venue-band-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: clamp(34px, 5vw, 84px);
+  align-items: start;
+}
+
+.venue-band-grid .display-l {
+  max-width: 18ch;
+  margin-bottom: 20px;
+}
+
+.venue-band-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.org-card {
+  padding: clamp(26px, 3vw, 38px);
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+}
+
+.org-card dl {
+  display: grid;
+  gap: 22px;
+  margin: 0 0 26px;
+}
+
+.org-card dd {
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.org-card dd span {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.org-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+  .venue-band-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ----------------------------------------------------------- payment reveal */
+
+.pay-ids-inline {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  margin-top: 30px;
+}
+
+.pay-form,
+.pay-reveal {
+  padding: clamp(26px, 3vw, 36px);
+  background: var(--navy-deep);
+  border: 1px solid var(--hairline-dark);
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+
+.pay-form-lede {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.62;
+  color: #a3b6d4;
+}
+
+.pay-form label {
+  display: grid;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8fa5c6;
+}
+
+.pay-form input {
+  border: 1px solid var(--hairline-dark);
+  background: #ffffff0a;
+  color: #eaf0fa;
+  padding: 12px 13px;
+  font: 15px var(--display);
+  border-radius: 2px;
+}
+
+.pay-form .btn {
+  justify-content: center;
+  margin-top: 6px;
+}
+
+.pay-error {
+  margin: 0;
+  padding: 10px 13px;
+  border-left: 2px solid var(--saffron);
+  background: #e4761b1f;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: #f4d9c2;
+}
+
+.pay-reveal dl {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+}
+
+.pay-reveal dd {
+  margin: 6px 0 0;
+  font-family: var(--mono);
+  font-size: 16px;
+  color: var(--gold);
+  word-break: break-all;
+}
+
+.pay-verify {
+  margin: 6px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--hairline-dark);
+  font-size: 13px;
+  line-height: 1.65;
+  color: #a3b6d4;
+}
