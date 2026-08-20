@@ -17,6 +17,13 @@ import { getPublicStates } from "@/lib/stall-bookings";
 import "@/components/site/site.css";
 import "@/components/site/home/home.css";
 
+/**
+ * Availability is read from disk, which Next cannot see as dynamic — without
+ * this the page would be prerendered once and show a frozen stand count. Sixty
+ * seconds is plenty: the interactive plan polls the API for live numbers itself.
+ */
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: `${EVENT.name} — ${EVENT.parent}`,
   description: `${EVENT.subtitle}. ${EVENT.dates.label}, ${VENUE.name}, ${VENUE.city}. Book exhibition space in ${VENUE.hall}.`,

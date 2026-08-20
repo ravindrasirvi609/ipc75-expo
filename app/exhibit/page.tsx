@@ -21,6 +21,13 @@ import "@/components/site/site.css";
 import "@/components/site/home/home.css";
 import "./exhibit.css";
 
+/**
+ * Availability is read from disk, which Next cannot see as dynamic — without
+ * this the page would be prerendered once and show a frozen stand count. Sixty
+ * seconds is plenty: the interactive plan polls the API for live numbers itself.
+ */
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: `Exhibition charges — ${EVENT.name}`,
   description: `Shell space at ${rupees(SPACE_TYPES[0].rate)} and bare space at ${rupees(SPACE_TYPES[1].rate)} per sq. m plus taxes in ${VENUE.hall}, ${VENUE.name}.`,
