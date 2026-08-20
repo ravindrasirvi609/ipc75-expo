@@ -1,7 +1,13 @@
 "use client";
 
 import { useRef, type ElementType, type ReactNode } from "react";
-import { SplitText, gsap, prefersReducedMotion, useGSAP } from "./gsap-init";
+import {
+  SplitText,
+  gsap,
+  prefersReducedMotion,
+  useGSAP,
+  whenFontsReady,
+} from "./gsap-init";
 
 type SplitLinesProps = {
   children: ReactNode;
@@ -39,27 +45,35 @@ export default function SplitLines({
 
       if (prefersReducedMotion()) return;
 
+      let cancelled = false;
+      let split: SplitText | undefined;
+      let tween: gsap.core.Tween | undefined;
+
+      // Hide immediately so there is no flash, then split once the font is in.
       gsap.set(target, { opacity: 0 });
-      const split = new SplitText(target, {
-        type: "lines",
-        linesClass: "split-line",
-      });
-      gsap.set(target, { opacity: 1 });
 
-      const tween = gsap.from(split.lines, {
-        yPercent: 118,
-        duration: 1.05,
-        ease: "power4.out",
-        stagger: 0.08,
-        delay,
-        ...(onLoad
-          ? {}
-          : { scrollTrigger: { trigger: target, start: "top 88%", once: true } }),
+      whenFontsReady(() => {
+        if (cancelled) return;
+        split = new SplitText(target, { type: "lines", linesClass: "split-line" });
+        gsap.set(target, { opacity: 1 });
+
+        tween = gsap.from(split.lines, {
+          yPercent: 118,
+          duration: 1.05,
+          ease: "power4.out",
+          stagger: 0.08,
+          delay,
+          ...(onLoad
+            ? {}
+            : { scrollTrigger: { trigger: target, start: "top 88%", once: true } }),
+        });
       });
 
+      // Created after the effect body, so these are killed by hand.
       return () => {
-        tween.kill();
-        split.revert();
+        cancelled = true;
+        tween?.kill();
+        split?.revert();
         gsap.set(target, { clearProps: "opacity" });
       };
     },

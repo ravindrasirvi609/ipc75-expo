@@ -23,7 +23,7 @@ import "./exhibit.css";
 
 /**
  * Availability is read from disk, which Next cannot see as dynamic — without
- * this the page would be prerendered once and show a frozen stand count. Sixty
+ * this the page would be prerendered once and show a frozen stall count. Sixty
  * seconds is plenty: the interactive plan polls the API for live numbers itself.
  */
 export const revalidate = 60;
@@ -36,12 +36,12 @@ export const metadata: Metadata = {
 /** A real sequence, so it is numbered. */
 const STEPS = [
   {
-    title: "Choose your stands on the plan",
-    body: `Hall 1C is drawn to the surveyed grid. Click the stands you want — up to 20 in one request — and the plan totals the area as you go.`,
+    title: "Choose your stalls on the plan",
+    body: `Hall 1C is drawn to the surveyed grid. Click the stalls you want — up to 20 in one request — and the plan totals the area as you go.`,
   },
   {
     title: "Send the request",
-    body: "Company, contact, email and phone. Your stands go on hold immediately and stop showing as available to anyone else.",
+    body: "Company, contact, email and phone. Your stalls go on hold immediately and stop showing as available to anyone else.",
   },
   {
     title: "The desk confirms and invoices",
@@ -64,7 +64,7 @@ export default async function ExhibitPage() {
               Take space in {VENUE.hall}.
             </SplitLines>
             <p className="lede page-lede">
-              {STALLS.length} stands of {STALL_MODULE.size}, laid out on the
+              {STALLS.length} stalls of {STALL_MODULE.size}, laid out on the
               surveyed grid. {available} are still open. Both space types are
               priced per square metre before tax.
             </p>
@@ -92,7 +92,7 @@ export default async function ExhibitPage() {
                   <p className="rate-line-detail">{space.detail}</p>
                   <p className="rate-line-module">
                     <span className="data-label">
-                      One stand · {STALL_MODULE.area} sqm
+                      One stall · {STALL_MODULE.area} sqm
                     </span>
                     {rupees(space.rate * STALL_MODULE.area)} + taxes
                   </p>

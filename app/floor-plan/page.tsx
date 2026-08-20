@@ -16,7 +16,7 @@ import "./floor-plan.css";
 
 export const metadata: Metadata = {
   title: `${VENUE.hall} floor plan — ${EVENT.name}`,
-  description: `Interactive stand plan for ${VENUE.hall} at ${VENUE.name}. Pick your stands and request them online.`,
+  description: `Interactive stall plan for ${VENUE.hall} at ${VENUE.name}. Pick your stalls and request them online.`,
 };
 
 /** Public origin of this request, so the embed snippet is copy-paste correct. */
@@ -56,10 +56,10 @@ export default async function FloorPlanPage({
             <div>
               <p className="eyebrow">{VENUE.hall} · surveyed plan</p>
               <SplitLines as="h1" className="display-xl page-title" onLoad delay={0.1}>
-                Pick your stands.
+                Pick your stalls.
               </SplitLines>
               <p className="lede page-lede">
-                Every stand is {STALL_MODULE.size} — {STALL_MODULE.area} sqm. Click
+                Every stall is {STALL_MODULE.size} — {STALL_MODULE.area} sqm. Click
                 the ones you want, send the request, and they go on hold while the
                 desk confirms. {available} of {STALLS.length} are open right now.
               </p>
@@ -68,14 +68,14 @@ export default async function FloorPlanPage({
               {bySection.map(({ section, count }) => (
                 <div key={section}>
                   <dt className="data-label">Block {section}</dt>
-                  <dd>{count} stands</dd>
+                  <dd>{count} stalls</dd>
                 </div>
               ))}
               <div>
                 <dt className="data-label">From</dt>
                 <dd>
                   {rupees(SPACE_TYPES[1].rate * STALL_MODULE.area)}
-                  <span> / stand + taxes</span>
+                  <span> / stall + taxes</span>
                 </dd>
               </div>
             </dl>

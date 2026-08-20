@@ -1,0 +1,94 @@
+/*
+ * Background media. Two stacked layers: the picture, then a scrim that keeps the
+ * copy legible no matter what the picture turns out to be.
+ *
+ * Sections that host a backdrop need `position: relative` and their content
+ * above it — the `.has-backdrop` helper does both.
+ */
+
+.has-backdrop {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.has-backdrop > .shell,
+.has-backdrop > .hero-grid {
+  position: relative;
+  z-index: 1;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.backdrop-layer {
+  position: absolute;
+  /* Overscan so parallax never exposes an edge. */
+  inset: -8% 0;
+  opacity: var(--backdrop-opacity, 0.16);
+}
+
+.backdrop-layer img,
+.backdrop-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The video sits over its own poster once it starts. */
+.backdrop-video {
+  z-index: 1;
+}
+
+.backdrop-scrim {
+  position: absolute;
+  inset: 0;
+}
+
+/*
+ * Navy bands: a directional scrim, heavier where the text sits, so the picture
+ * reads on the outer edge rather than behind the words.
+ */
+.tone-navy .backdrop-scrim {
+  background:
+    linear-gradient(
+      100deg,
+      var(--navy-deep) 0%,
+      color-mix(in srgb, var(--navy-deep) 82%, transparent) 46%,
+      color-mix(in srgb, var(--navy-deep) 46%, transparent) 100%
+    ),
+    color-mix(in srgb, var(--navy-deep) 30%, transparent);
+}
+
+/* Paper bands carry dense lists, so the scrim is close to opaque. */
+.tone-paper .backdrop-scrim {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--paper) 92%, transparent) 0%,
+    color-mix(in srgb, var(--paper) 86%, transparent) 50%,
+    color-mix(in srgb, var(--paper) 94%, transparent) 100%
+  );
+}
+
+/* Ice bands are a shade darker than paper, so match the ground they sit on. */
+.band-ice .tone-paper .backdrop-scrim {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ice) 91%, transparent) 0%,
+    color-mix(in srgb, var(--ice) 84%, transparent) 50%,
+    color-mix(in srgb, var(--ice) 93%, transparent) 100%
+  );
+}
+
+@media (max-width: 860px) {
+  /* Less picture on small screens — the copy has less room to breathe. */
+  .backdrop-layer {
+    opacity: calc(var(--backdrop-opacity, 0.16) * 0.62);
+  }
+}

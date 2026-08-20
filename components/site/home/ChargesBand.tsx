@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Reveal from "@/components/motion/Reveal";
 import SplitLines from "@/components/motion/SplitLines";
+import Backdrop from "@/components/media/Backdrop";
+import type { Backdrop as BackdropData } from "@/lib/media";
 import {
   RATE_UNIT,
   SPACE_TYPES,
@@ -9,9 +11,17 @@ import {
 } from "@/lib/expo-content";
 import { STALLS } from "@/lib/hall-1c-plan";
 
-export default function ChargesBand({ available }: { available: number }) {
+export default function ChargesBand({
+  available,
+  backdrop,
+}: {
+  available: number;
+  backdrop: BackdropData | null;
+}) {
   return (
-    <section className="band band-floor charges" id="charges">
+    <section className="band band-floor charges has-backdrop" id="charges">
+      {/* Restrained: the rates are the point of this band, not the picture. */}
+      <Backdrop media={backdrop} tone="navy" opacity={0.13} />
       <div className="shell">
         <div className="charges-head">
           <div>
@@ -21,8 +31,8 @@ export default function ChargesBand({ available }: { available: number }) {
             </SplitLines>
           </div>
           <p className="lede">
-            Both are priced per square metre before tax. A single stand is{" "}
-            {STALL_MODULE.size} — {STALL_MODULE.area} sqm — and stands can be
+            Both are priced per square metre before tax. A single stall is{" "}
+            {STALL_MODULE.size} — {STALL_MODULE.area} sqm — and stalls can be
             combined into blocks on the plan.
           </p>
         </div>
@@ -40,7 +50,7 @@ export default function ChargesBand({ available }: { available: number }) {
               <p className="rate-summary">{space.summary}</p>
               <p className="rate-detail">{space.detail}</p>
               <p className="rate-module">
-                <span className="data-label">One stand</span>
+                <span className="data-label">One stall</span>
                 {rupees(space.rate * STALL_MODULE.area)} + taxes
               </p>
             </article>
@@ -49,12 +59,12 @@ export default function ChargesBand({ available }: { available: number }) {
 
         <div className="charges-foot">
           <p className="charges-note">
-            {available} of {STALLS.length} stands in Hall 1C are still open. Pick
+            {available} of {STALLS.length} stalls in Hall 1C are still open. Pick
             yours on the plan and the exhibition desk will confirm and invoice.
           </p>
           <div className="charges-actions">
             <Link className="btn btn-primary" href="/floor-plan">
-              Choose stands
+              Choose stalls
             </Link>
             <Link className="btn btn-ghost" href="/exhibit">
               Work out the cost

@@ -113,7 +113,11 @@
 
 .hero-plan figcaption {
   text-align: right;
-  max-width: 34ch;
+  max-width: 40ch;
+}
+
+.hero-plan-module {
+  color: #8fa5c6;
 }
 
 .hero-plan figcaption p {
@@ -202,6 +206,11 @@
 }
 
 /* ------------------------------------------------------------------ profiles */
+
+/* Separates the exhibitor list from the paper band above it. */
+.profile.band-sheet {
+  border-top: 1px solid var(--hairline);
+}
 
 .profile-head {
   display: grid;

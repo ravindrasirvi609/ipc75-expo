@@ -58,13 +58,13 @@ export const SPACE_TYPES = [
     rate: 12000,
     summary: "Built shell — walls, fascia and floor in place when you arrive.",
     detail:
-      "The stand structure is supplied and erected for you. You bring your machinery, graphics and people.",
+      "The stall structure is supplied and erected for you. You bring your machinery, graphics and people.",
   },
   {
     id: "bare",
     name: "Bare space",
     rate: 11000,
-    summary: "Raw floor area — you build the stand yourself.",
+    summary: "Raw floor area — you build the stall yourself.",
     detail:
       "Marked-out floor only. Suits heavy equipment, custom double-decker builds and exhibitors bringing their own contractor.",
   },

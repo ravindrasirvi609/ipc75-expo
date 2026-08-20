@@ -11,21 +11,21 @@ import {
 import { MAX_STALLS_PER_REQUEST } from "@/lib/booking-limits";
 
 /**
- * Works out what a block of stands costs.
+ * Works out what a block of stalls costs.
  *
- * Stands are the unit exhibitors actually buy, so that is the input. Ex-tax
+ * Stalls are the unit exhibitors actually buy, so that is the input. Ex-tax
  * totals are the headline figure because that is what the brochure quotes; the
  * GST line is labelled indicative because the brochure says only "plus Taxes".
  */
 export default function SpaceCalculator() {
-  const [stands, setStands] = useState(2);
-  const area = stands * STALL_MODULE.area;
+  const [stalls, setStands] = useState(2);
+  const area = stalls * STALL_MODULE.area;
 
   return (
     <div className="calc">
       <div className="calc-input">
-        <label htmlFor="stands">
-          <span className="data-label">How many stands</span>
+        <label htmlFor="stalls">
+          <span className="data-label">How many stalls</span>
           <span className="calc-hint">
             {STALL_MODULE.size} each · up to {MAX_STALLS_PER_REQUEST} per request
           </span>
@@ -34,17 +34,17 @@ export default function SpaceCalculator() {
           <button
             type="button"
             onClick={() => setStands((n) => Math.max(1, n - 1))}
-            disabled={stands <= 1}
-            aria-label="One stand fewer"
+            disabled={stalls <= 1}
+            aria-label="One stall fewer"
           >
             −
           </button>
           <input
-            id="stands"
+            id="stalls"
             type="number"
             min={1}
             max={MAX_STALLS_PER_REQUEST}
-            value={stands}
+            value={stalls}
             onChange={(event) => {
               const next = Number(event.target.value);
               if (Number.isNaN(next)) return;
@@ -56,8 +56,8 @@ export default function SpaceCalculator() {
             onClick={() =>
               setStands((n) => Math.min(MAX_STALLS_PER_REQUEST, n + 1))
             }
-            disabled={stands >= MAX_STALLS_PER_REQUEST}
-            aria-label="One stand more"
+            disabled={stalls >= MAX_STALLS_PER_REQUEST}
+            aria-label="One stall more"
           >
             +
           </button>
@@ -102,7 +102,7 @@ export default function SpaceCalculator() {
       </p>
 
       <Link className="btn btn-primary" href="/floor-plan">
-        Pick {stands === 1 ? "a stand" : `${stands} stands`} on the plan
+        Pick {stalls === 1 ? "a stall" : `${stalls} stalls`} on the plan
       </Link>
     </div>
   );

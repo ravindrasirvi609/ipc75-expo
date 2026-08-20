@@ -15,7 +15,7 @@ import { gsap, prefersReducedMotion, useGSAP } from "@/components/motion/gsap-in
  * The hero's signature: Hall 1C drawing itself in gold hairline.
  *
  * Not decoration — this is the surveyed plan at true proportions, the same
- * verified geometry the bookable plan uses, with the stands that are actually
+ * verified geometry the bookable plan uses, with the stalls that are actually
  * gone rendered as gone. The first thing a visitor sees is the floor they are
  * being asked to buy into, and how much of it is left.
  */
@@ -55,7 +55,7 @@ export default function HallSignature({ taken = [] }: { taken?: string[] }) {
       className="hall-signature"
       viewBox={`${VIEW_BOX.x} ${VIEW_BOX.y} ${VIEW_BOX.width} ${VIEW_BOX.height}`}
       role="img"
-      aria-label={`Surveyed plan of ${STALLS.length} stands in Hall 1C, of which ${sold.size} are taken`}
+      aria-label={`Surveyed plan of ${STALLS.length} stalls in Hall 1C, of which ${sold.size} are taken`}
     >
       <rect
         data-frame=""

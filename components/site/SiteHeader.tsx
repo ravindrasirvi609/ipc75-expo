@@ -53,7 +53,7 @@ export default function SiteHeader({ solid = false }: { solid?: boolean }) {
 
       <div className="head-actions">
         <Link className="btn btn-primary" href="/floor-plan">
-          Book a stand
+          Book a stall
         </Link>
         <button
           type="button"

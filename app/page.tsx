@@ -14,12 +14,13 @@ import {
 } from "@/lib/expo-content";
 import { STALLS } from "@/lib/hall-1c-plan";
 import { getPublicStates } from "@/lib/stall-bookings";
+import { resolveBackdrop } from "@/lib/media";
 import "@/components/site/site.css";
 import "@/components/site/home/home.css";
 
 /**
  * Availability is read from disk, which Next cannot see as dynamic — without
- * this the page would be prerendered once and show a frozen stand count. Sixty
+ * this the page would be prerendered once and show a frozen stall count. Sixty
  * seconds is plenty: the interactive plan polls the API for live numbers itself.
  */
 export const revalidate = 60;
@@ -37,7 +38,7 @@ export default async function Home() {
     <>
       <SiteHeader />
       <main>
-        <Hero taken={taken} />
+        <Hero taken={taken} backdrop={resolveBackdrop("hero")} />
         <WhyExhibit />
 
         <ProfileList
@@ -48,6 +49,7 @@ export default async function Home() {
           items={EXHIBITOR_PROFILE}
           tone="gold"
           ground="sheet"
+          backdrop={resolveBackdrop("exhibitors")}
         />
 
         <ProfileList
@@ -58,10 +60,14 @@ export default async function Home() {
           items={VISITOR_PROFILE}
           tone="green"
           ground="ice"
+          backdrop={resolveBackdrop("visitors")}
         />
 
-        <ChargesBand available={STALLS.length - taken.length} />
-        <VenueBand />
+        <ChargesBand
+          available={STALLS.length - taken.length}
+          backdrop={resolveBackdrop("charges")}
+        />
+        <VenueBand backdrop={resolveBackdrop("venue")} />
       </main>
       <SiteFooter />
     </>

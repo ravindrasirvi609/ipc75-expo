@@ -1,14 +1,22 @@
 import Reveal from "@/components/motion/Reveal";
 import SplitLines from "@/components/motion/SplitLines";
+import Backdrop from "@/components/media/Backdrop";
+import type { Backdrop as BackdropData } from "@/lib/media";
 import { CONTACTS, EMAILS, EVENT, VENUE, telHref, telLabel } from "@/lib/expo-content";
 
 const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
   VENUE.mapQuery,
 )}`;
 
-export default function VenueBand() {
+export default function VenueBand({
+  backdrop,
+}: {
+  backdrop: BackdropData | null;
+}) {
   return (
-    <section className="band band-ice venue" id="venue">
+    <section className="band band-ice venue has-backdrop" id="venue">
+      {/* The venue photo is the one people actually want to see, so it drifts. */}
+      <Backdrop media={backdrop} tone="paper" opacity={0.22} parallax />
       <div className="shell">
         <div className="venue-grid">
           <div>
@@ -44,7 +52,7 @@ export default function VenueBand() {
           <div className="venue-desk">
             <p className="eyebrow">Exhibition desk</p>
             <p className="venue-desk-lede">
-              Four people handle stand bookings. Call whoever picks up.
+              Four people handle stall bookings. Call whoever picks up.
             </p>
             <Reveal as="ul" className="rep-list" stagger={0.06} distance={14}>
               {CONTACTS.map((contact) => (

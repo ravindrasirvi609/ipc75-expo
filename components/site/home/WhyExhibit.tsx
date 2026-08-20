@@ -16,7 +16,7 @@ import { STALLS } from "@/lib/hall-1c-plan";
 const FIGURES = [
   { value: 75, suffix: "th", label: "Congress edition", note: EVENT.milestone },
   { value: EVENT.dates.dayCount, suffix: "", label: "Days on the floor", note: EVENT.dates.days },
-  { value: STALLS.length, suffix: "", label: "Stands in Hall 1C", note: `${STALL_MODULE.size} module` },
+  { value: STALLS.length, suffix: "", label: "Stalls in Hall 1C", note: `${STALL_MODULE.size} module` },
   {
     value: EXHIBITOR_PROFILE.length + VISITOR_PROFILE.length,
     suffix: "",

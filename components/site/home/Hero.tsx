@@ -4,14 +4,24 @@ import Link from "next/link";
 import SplitLines from "@/components/motion/SplitLines";
 import Reveal from "@/components/motion/Reveal";
 import HallSignature from "@/components/site/HallSignature";
+import Backdrop from "@/components/media/Backdrop";
+import type { Backdrop as BackdropData } from "@/lib/media";
 import { EVENT, STALL_MODULE, VENUE } from "@/lib/expo-content";
 import { STALLS } from "@/lib/hall-1c-plan";
 
-export default function Hero({ taken }: { taken: string[] }) {
+export default function Hero({
+  taken,
+  backdrop,
+}: {
+  taken: string[];
+  backdrop: BackdropData | null;
+}) {
   const available = STALLS.length - taken.length;
 
   return (
-    <section className="hero band-deep" id="top">
+    <section className="hero band-deep has-backdrop" id="top">
+      {/* Atmosphere only — the hall plan stays the focal point of this section. */}
+      <Backdrop media={backdrop} tone="navy" opacity={0.2} priority parallax={false} />
       <div className="hero-grid shell">
         <div className="hero-copy">
           <p className="eyebrow">
@@ -33,7 +43,7 @@ export default function Hero({ taken }: { taken: string[] }) {
             </div>
             <div className="hero-actions">
               <Link className="btn btn-primary" href="/floor-plan">
-                Book a stand
+                Book a stall
               </Link>
               <Link className="btn btn-ghost" href="/exhibit">
                 See charges
@@ -47,7 +57,9 @@ export default function Hero({ taken }: { taken: string[] }) {
           <figcaption>
             <span className="data-label">{VENUE.hall} · surveyed plan</span>
             <p>
-              <b>{available}</b> of {STALLS.length} stands available ·{" "}
+              <b>{available}</b> of {STALLS.length} stalls available
+            </p>
+            <p className="hero-plan-module">
               {STALL_MODULE.size} · {STALL_MODULE.area} sqm each
             </p>
           </figcaption>

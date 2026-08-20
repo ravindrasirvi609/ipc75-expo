@@ -270,7 +270,7 @@ export default function PlanWidget({
             <input
               type="search"
               value={query}
-              placeholder="Find stall or exhibitor"
+              placeholder="Find stall or company"
               aria-label="Find a stall number or exhibitor"
               onChange={(event) => setQuery(event.target.value)}
             />

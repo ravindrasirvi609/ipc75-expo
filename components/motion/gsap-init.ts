@@ -24,3 +24,27 @@ export { gsap, ScrollTrigger, SplitText, useGSAP };
 export const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/**
+ * Resolves once the web fonts are in.
+ *
+ * Anything that measures text has to wait for this. SplitText decides where the
+ * lines break by reading the rendered layout — run it in the fallback font and
+ * it splits at the wrong words, then the reveal masks the wrong words too.
+ */
+export function whenFontsReady(run: () => void) {
+  const fonts = typeof document !== "undefined" ? document.fonts : undefined;
+  if (!fonts || fonts.status === "loaded") {
+    run();
+    return;
+  }
+  fonts.ready.then(run).catch(run);
+}
+
+/**
+ * A font swap changes every element's position, which leaves ScrollTrigger
+ * holding stale measurements. Re-measure once, after the swap.
+ */
+if (typeof document !== "undefined") {
+  whenFontsReady(() => ScrollTrigger.refresh());
+}

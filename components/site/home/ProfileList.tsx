@@ -1,5 +1,7 @@
 import Reveal from "@/components/motion/Reveal";
 import SplitLines from "@/components/motion/SplitLines";
+import Backdrop from "@/components/media/Backdrop";
+import type { Backdrop as BackdropData } from "@/lib/media";
 
 type ProfileListProps = {
   id: string;
@@ -11,6 +13,7 @@ type ProfileListProps = {
   tone: "gold" | "green";
   /** Paper or ice ground, so the two lists don't read as one long block. */
   ground: "sheet" | "ice";
+  backdrop: BackdropData | null;
 };
 
 /**
@@ -28,9 +31,15 @@ export default function ProfileList({
   items,
   tone,
   ground,
+  backdrop,
 }: ProfileListProps) {
   return (
-    <section className={`band band-${ground} profile profile-${tone}`} id={id}>
+    <section
+      className={`band band-${ground} profile profile-${tone} has-backdrop`}
+      id={id}
+    >
+      {/* Faint by design: 16 and 17 rows of text have to stay easy to read. */}
+      <Backdrop media={backdrop} tone="paper" opacity={0.14} />
       <div className="shell">
         <div className="profile-head">
           <div>

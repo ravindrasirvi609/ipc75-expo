@@ -24,6 +24,7 @@ import {
   VISITOR_PROFILE,
 } from "../lib/expo-content.ts";
 import { PUBLIC_FINANCE } from "../lib/finance.ts";
+import { mediaReport } from "../lib/media.ts";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -121,9 +122,27 @@ for (const dir of SOURCE_DIRS) {
 }
 checks.push(`scanned ${scanned} files in ${SOURCE_DIRS.join(", ")}`);
 
+/* -- 3. Background media: informational, never a failure ------------- */
+
+const media = mediaReport();
+const filled = media.filter((slot) => slot.filled);
+
 /* -- Report ---------------------------------------------------------- */
 
 for (const message of checks) console.log(`  ok   ${message}`);
+
+console.log(`
+Background media — ${filled.length} of ${media.length} slots filled:`);
+for (const slot of media) {
+  const supplied = [slot.image, ...slot.videos].filter(Boolean);
+  const state = supplied.length
+    ? supplied.map((file) => file.split("/").pop()).join(", ")
+    : `empty — expects ${slot.spec.base}.jpg${slot.spec.video ? " (+ .mp4)" : ""}, ${slot.spec.size}`;
+  console.log(`  ${slot.filled ? "set " : "--- "} ${slot.slot.padEnd(11)} ${state}`);
+}
+if (filled.length < media.length) {
+  console.log("  (empty slots render with no backdrop — see public/assets/media/README.md)");
+}
 if (failures.length) {
   console.error(`\n${failures.length} problem(s):`);
   for (const message of failures) console.error(`  FAIL ${message}`);

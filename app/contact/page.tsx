@@ -15,6 +15,8 @@ import {
   telLabel,
 } from "@/lib/expo-content";
 import { PUBLIC_FINANCE } from "@/lib/finance";
+import { resolveBackdrop } from "@/lib/media";
+import Backdrop from "@/components/media/Backdrop";
 import "@/components/site/site.css";
 import "@/components/site/home/home.css";
 import "../exhibit/exhibit.css";
@@ -22,7 +24,7 @@ import "./contact.css";
 
 export const metadata: Metadata = {
   title: `Contact the exhibition desk — ${EVENT.name}`,
-  description: `Stand bookings for ${EVENT.name} at ${VENUE.name}, ${VENUE.city}. Call the exhibition team or email ${EMAILS[0]}.`,
+  description: `Stall bookings for ${EVENT.name} at ${VENUE.name}, ${VENUE.city}. Call the exhibition team or email ${EMAILS[0]}.`,
 };
 
 const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
@@ -41,7 +43,7 @@ export default function ContactPage() {
               Talk to someone who can hold the space.
             </SplitLines>
             <p className="lede page-lede">
-              Four people handle stand bookings for {EVENT.shortName}. Call any of
+              Four people handle stall bookings for {EVENT.shortName}. Call any of
               them, or email the desk and they will come back with availability.
             </p>
           </div>
@@ -80,7 +82,8 @@ export default function ContactPage() {
           </div>
         </section>
 
-        <section className="band band-ice venue-band">
+        <section className="band band-ice venue-band has-backdrop">
+          <Backdrop media={resolveBackdrop("venue")} tone="paper" opacity={0.2} parallax />
           <div className="shell venue-band-grid">
             <div>
               <p className="eyebrow">Getting there</p>
