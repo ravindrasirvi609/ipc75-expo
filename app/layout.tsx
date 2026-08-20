@@ -1,46 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { SmoothScrollProvider } from "@/providers/SmoothScrollProvider";
-import { CursorProvider } from "@/providers/CursorProvider";
-import { RoomTransitionProvider } from "@/providers/RoomTransitionProvider";
-import { Nav } from "@/components/Nav/Nav";
-import { Footer } from "@/components/Footer/Footer";
-import { Cursor } from "@/components/Cursor/Cursor";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
-  title: "75th Indian Pharmaceutical Congress",
-  description: "The 75th Indian Pharmaceutical Congress — a digital exhibition experience.",
+  title: "Next.js App",
+  description: "A blank Next.js project.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">
-        <SmoothScrollProvider>
-          <CursorProvider>
-            <RoomTransitionProvider>
-              <Nav />
-              {children}
-              <Footer />
-              <Cursor />
-            </RoomTransitionProvider>
-          </CursorProvider>
-        </SmoothScrollProvider>
-      </body>
+    <html lang="en">
+      <body>{children}</body>
     </html>
   );
 }

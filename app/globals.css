@@ -1,81 +1,11 @@
-@import "tailwindcss";
-
-:root {
-  --background: #0b0b0c;
-  --foreground: #f2efe9;
-  --surface: #0b0b0c;
-  --accent: #caa15d;
+* {
+  box-sizing: border-box;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-surface: var(--surface);
-  --color-accent: var(--accent);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
+html,
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
-}
-
-@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  body {
-    cursor: none;
-  }
-
-  a,
-  button {
-    cursor: none;
-  }
-}
-
-::view-transition {
-  pointer-events: none;
-}
-
-::view-transition-old(.nav-forward) {
-  animation: 150ms ease-in both ipc-fade reverse, 400ms ease-in-out both ipc-slide-forward reverse;
-}
-::view-transition-new(.nav-forward) {
-  animation: 210ms ease-out 150ms both ipc-fade, 400ms ease-in-out both ipc-slide-forward;
-}
-
-::view-transition-old(.nav-back) {
-  animation: 150ms ease-in both ipc-fade reverse, 400ms ease-in-out both ipc-slide-back reverse;
-}
-::view-transition-new(.nav-back) {
-  animation: 210ms ease-out 150ms both ipc-fade, 400ms ease-in-out both ipc-slide-back;
-}
-
-@keyframes ipc-fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes ipc-slide-forward {
-  from {
-    translate: -48px;
-  }
-  to {
-    translate: 0;
-  }
-}
-
-@keyframes ipc-slide-back {
-  from {
-    translate: 48px;
-  }
-  to {
-    translate: 0;
-  }
+  margin: 0;
+  min-height: 100%;
 }
 
 @media (prefers-reduced-motion: reduce) {
