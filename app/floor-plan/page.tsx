@@ -1,23 +1,95 @@
-"use client";
-import { useMemo, useState } from "react";
-type Status = "available" | "reserved" | "booked";
-type Stall = { id: string; x: number; y: number; w: number; h: number; status: Status };
-const status = (i: number): Status => i % 13 === 0 ? "booked" : i % 7 === 0 ? "reserved" : "available";
-function buildStalls() {
-  const result: Stall[] = []; let n = 0; const cell = 58; const add = (id:string,x:number,y:number) => result.push({id,x,y,w:cell,h:cell,status:status(n++)});
-  const grid=(prefix:string, ids:number[], x:number,y:number,cols:number, rowGap=8)=>ids.forEach((id,i)=>add(`${prefix}-${String(id).padStart(2,"0")}`,x+(i%cols)*66,y+Math.floor(i/cols)*(cell+rowGap)));
-  grid("1E",[10,9,8,7,6,5,4,3,2,1],430,42,5,0);
-  grid("1D",[24,23,25,22,26,21,27,20,28,19,29,18,30,17],430,135,2); grid("1D",[31,16,32,15,33,14],430,620,2); grid("1D",[34,13,35,12,36,11,37,10,38,9],430,800,2); grid("1D",[39,8,40,7,41,6],430,1010,2); grid("1D",[42,5,43,4,44,3,45,2,46,1],430,1130,2);
-  grid("1C",[58,57,56,53,54,55,52,51,50,47,48,49,46,45,44,41,42,43,40,39,38,33,37,36,35,34,32,31,30,27,28,29,26,25,24,21,22,23,20,19,18,13,17,14,15,16,12,11,10,7,8,9,6,5,4,1,2,3],600,135,3,8);
-  grid("1B",[23,22,24,21,25,20,26,19,27,18,28,17,29,16,30,15,31,14,32,13,33,12,34,11,35,10,36,9,37,8,38,7,39,6,40,5,41,4,42,3,43,2,44,1],790,135,2,8);
-  grid("1A",Array.from({length:22},(_,i)=>22-i),960,135,1,8);
-  return result;
+import type { Metadata } from "next";
+import Link from "next/link";
+import { headers } from "next/headers";
+import EmbedSnippet from "@/components/floor-plan/EmbedSnippet";
+import PlanWidget from "@/components/floor-plan/PlanWidget";
+import { SECTIONS, STALLS } from "@/lib/hall-1c-plan";
+import { getPublicStates } from "@/lib/stall-bookings";
+import { parseStallParam } from "@/lib/stall-params";
+
+export const metadata: Metadata = {
+  title: "Hall 1C floor plan — 75th IPC",
+  description:
+    "Explore the Hall 1C stall layout at the 75th Indian Pharmaceutical Congress and request your stand.",
+};
+
+/** Public origin of this request, so the embed snippet is copy-paste correct. */
+async function requestOrigin() {
+  const headerList = await headers();
+  const host = headerList.get("x-forwarded-host") ?? headerList.get("host");
+  if (!host) return "https://your-domain.example";
+  const proto =
+    headerList.get("x-forwarded-proto") ??
+    (host.startsWith("localhost") ? "http" : "https");
+  return `${proto}://${host}`;
 }
-export default function FloorPlanPage() {
-  const stalls = useMemo(buildStalls, []); const [selected, setSelected] = useState<Stall | null>(null); const [zoom, setZoom] = useState(1);
-  return <main className="plan-page"><header className="plan-nav"><a className="brand" href="/"><span>IPC</span><i>75</i></a><div>75th Indian Pharmaceutical Congress <b>IICC · HALL 1C</b></div><a className="plan-book" href="mailto:exhibition@ipc75.com">Enquire to book ↗</a></header>
-    <section className="plan-hero"><div><p className="eyebrow coral">Interactive exhibition floor plan</p><h1>FIND YOUR<br/><em>FOOTPRINT.</em></h1><p>Explore Hall 1C. Click any stall to view its size, section and booking status.</p></div><div className="plan-meta"><span>75TH IPC / IICC</span><span>HALL 1C</span><span>3M × 3M / 9 SQM</span></div></section>
-    <section className="map-shell"><div className="map-toolbar"><div><b>75th IPC · HALL 1C</b><span>Vector floor plan / interactive stalls</span></div><div className="map-controls"><button onClick={() => setZoom(z => Math.min(1.7, z + .1))}>+</button><button onClick={() => setZoom(z => Math.max(.7, z - .1))}>−</button><button onClick={() => setZoom(1)}>Reset</button></div></div><div className="map-viewport"><svg className="interactive-floor" viewBox="0 0 1100 1200" style={{ transform: `scale(${zoom})` }} aria-label="Interactive Hall 1C floor plan"><rect className="hall-outline" x="24" y="24" width="1038" height="1085"/><rect className="luncheon-vector" x="40" y="42" width="310" height="1000"/><text className="big-zone" x="195" y="545">DELEGATE LUNCHEON</text><text className="big-zone" x="195" y="575">ZONE</text><path className="aisle" d="M350 190 L430 270 H990 M350 840 L430 760 H990"/><line className="aisle" x1="500" y1="24" x2="500" y2="1109"/><text className="hall-label" x="685" y="93">NORTH EXHIBITION HALL · LEVEL 01</text><text className="entry-label" x="357" y="570">↔ ENTRY / EXIT</text><text className="entry-label" x="195" y="1080">↑ ENTRY / EXIT</text><rect className="yellow-gate" x="928" y="1110" width="134" height="90"/><text className="entry-label dark" x="995" y="1150">↑  ↓</text><text className="entry-label dark" x="995" y="1174">ENTRY / EXIT</text>{stalls.map(stall => <g key={stall.id} className={`vector-stall ${stall.status} ${selected?.id === stall.id ? "selected" : ""}`} onClick={() => setSelected(stall)}><rect x={stall.x} y={stall.y} width={stall.w} height={stall.h}/><text x={stall.x + 5} y={stall.y + 16}>{stall.id}</text><text x={stall.x + 5} y={stall.y + 34}>3m x 3m</text><text x={stall.x + 5} y={stall.y + 49}>9sqm</text></g>)}</svg></div></section>
-    <section className="plan-bottom"><div className="plan-legend"><span><i className="dot available"/>Available</span><span><i className="dot reserved"/>Reserved</span><span><i className="dot booked"/>Booked</span></div>{selected ? <div className="selected-card"><i className={`dot ${selected.status}`}/><div><small>Selected stall</small><h2>{selected.id}</h2></div><div><small>Area</small><b>3m × 3m · 9 sqm</b></div><div><small>Status</small><b className="capitalize">{selected.status}</b></div><a href="mailto:exhibition@ipc75.com">Enquire now ↗</a></div> : <p className="select-prompt">Select any stall on the vector floor plan.</p>}</section>
-  </main>;
+
+export default async function FloorPlanPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ stall?: string }>;
+}) {
+  const [{ stall }, availability, origin] = await Promise.all([
+    searchParams,
+    getPublicStates(),
+    requestOrigin(),
+  ]);
+
+  const bySection = SECTIONS.map((section) => ({
+    section,
+    count: STALLS.filter((s) => s.section === section).length,
+  }));
+
+  return (
+    <main className="plan-page">
+      <header className="plan-nav">
+        <Link className="brand" href="/">
+          <span>IPC</span>
+          <i>75</i>
+        </Link>
+        <div>
+          75th Indian Pharmaceutical Congress <b>IICC · HALL 1C</b>
+        </div>
+        <a className="plan-book" href="mailto:exhibition@ipc75.com">
+          Talk to the team ↗
+        </a>
+      </header>
+
+      <section className="plan-hero">
+        <div>
+          <p className="eyebrow coral">Interactive exhibition floor plan</p>
+          <h1>
+            FIND YOUR
+            <br />
+            <em>FOOTPRINT.</em>
+          </h1>
+          <p>
+            The Hall 1C layout, drawn to the surveyed grid. Pick the stalls you
+            want and request them — availability updates for everyone.
+          </p>
+        </div>
+        <div className="plan-meta">
+          <span>{STALLS.length} STALLS / 3M × 3M</span>
+          {bySection.map(({ section, count }) => (
+            <span key={section}>
+              {section} — {count}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <div className="plan-stage">
+        <PlanWidget
+          variant="page"
+          theme="light"
+          availability={availability.stalls}
+          initialSelection={parseStallParam(stall, availability.stalls)}
+        />
+      </div>
+
+      <div className="plan-stage">
+        <EmbedSnippet origin={origin} />
+      </div>
+    </main>
+  );
 }

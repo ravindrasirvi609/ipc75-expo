@@ -1,0 +1,619 @@
+/*
+ * Styles for the embeddable Hall 1C plan. Everything is namespaced `hp-` so the
+ * widget can be dropped into any page (or iframe) without colliding with the
+ * host stylesheet.
+ */
+
+.hp-shell {
+  --hp-ink: #101715;
+  --hp-muted: #66756e;
+  --hp-line: #c3ccc4;
+  --hp-panel: #f2f4ef;
+  --hp-raise: #ffffff;
+  --hp-accent: #ff735f;
+  --hp-available: #ffffff;
+  --hp-hold: #ffc94a;
+  --hp-booked: #3f4a54;
+  --hp-blocked: #ed1c24;
+
+  display: flex;
+  flex-direction: column;
+  background: var(--hp-panel);
+  color: var(--hp-ink);
+  font-family: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  border: 1px solid var(--hp-line);
+  overflow: hidden;
+}
+
+.hp-theme-dark {
+  --hp-ink: #e9efe8;
+  --hp-muted: #8b9a92;
+  --hp-line: #26302c;
+  --hp-panel: #0d1113;
+  --hp-raise: #141a1c;
+}
+
+.hp-embed {
+  height: 100dvh;
+  border: 0;
+}
+
+/* ---------------------------------------------------------------- bar */
+
+.hp-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--hp-line);
+  background: var(--hp-raise);
+}
+
+.hp-title {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.hp-title strong {
+  font-size: 13px;
+  letter-spacing: -0.01em;
+}
+
+.hp-title span {
+  font:
+    10px/1.4 "DM Mono",
+    ui-monospace,
+    monospace;
+  color: var(--hp-muted);
+  text-transform: uppercase;
+}
+
+.hp-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hp-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.hp-search input {
+  width: 190px;
+  max-width: 44vw;
+  padding: 8px 34px 8px 11px;
+  border: 1px solid var(--hp-line);
+  background: var(--hp-panel);
+  color: inherit;
+  font:
+    11px/1 "DM Mono",
+    ui-monospace,
+    monospace;
+}
+
+.hp-search input:focus-visible {
+  outline: 2px solid var(--hp-accent);
+  outline-offset: -1px;
+}
+
+.hp-search em {
+  position: absolute;
+  right: 9px;
+  font:
+    9px/1 "DM Mono",
+    ui-monospace,
+    monospace;
+  font-style: normal;
+  color: var(--hp-accent);
+}
+
+.hp-zoom {
+  display: flex;
+  gap: 4px;
+}
+
+.hp-zoom button {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--hp-line);
+  background: var(--hp-panel);
+  color: inherit;
+  font:
+    11px "DM Mono",
+    ui-monospace,
+    monospace;
+  cursor: pointer;
+}
+
+.hp-zoom button:hover:not(:disabled) {
+  border-color: var(--hp-accent);
+  color: var(--hp-accent);
+}
+
+.hp-zoom button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ----------------------------------------------------------- viewport */
+
+.hp-viewport {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  background:
+    linear-gradient(#0000000a 1px, transparent 1px),
+    linear-gradient(90deg, #0000000a 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.hp-page .hp-viewport {
+  height: min(80vh, 940px);
+}
+
+.hp-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+  font-family:
+    Arial, "Helvetica Neue", Helvetica, "Liberation Sans", sans-serif;
+}
+
+.hp-svg:active {
+  cursor: grabbing;
+}
+
+.hp-svg text {
+  fill: #000;
+  user-select: none;
+}
+
+.hp-heavy {
+  font-weight: 700;
+}
+
+/* --- printed architecture, reproduced from the source drawing --- */
+
+.hp-red-fill {
+  fill: #ed1c24;
+}
+
+.hp-yellow {
+  fill: #fff200;
+}
+
+.hp-wall {
+  fill: #fff;
+  stroke: #000;
+  stroke-width: 2;
+}
+
+.hp-zone {
+  fill: #fff;
+  stroke: #000;
+  stroke-width: 2;
+}
+
+.hp-aisle {
+  fill: none;
+  stroke: #ed1c24;
+  stroke-width: 3;
+}
+
+.hp-blocked {
+  fill: var(--hp-blocked);
+  stroke: #000;
+  stroke-width: 2;
+}
+
+.hp-ruler text {
+  fill: #000;
+}
+
+/* --------------------------------------------------------- stalls */
+
+.hp-stall {
+  cursor: pointer;
+}
+
+.hp-stall > rect {
+  fill: var(--hp-available);
+  stroke: #000;
+  stroke-width: 2;
+  transition:
+    fill 0.12s ease,
+    stroke 0.12s ease;
+}
+
+.hp-stall:focus {
+  outline: none;
+}
+
+.hp-stall.is-hold > rect {
+  fill: var(--hp-hold);
+}
+
+.hp-stall.is-booked > rect {
+  fill: var(--hp-booked);
+}
+
+.hp-stall.is-booked text {
+  fill: #f4f7f4;
+}
+
+.hp-stall.is-selected > rect {
+  fill: var(--hp-accent);
+  stroke-width: 4;
+}
+
+.hp-stall.is-available:hover > rect {
+  fill: #ffe9e4;
+  stroke: var(--hp-accent);
+  stroke-width: 4;
+}
+
+.hp-stall.is-booked,
+.hp-stall.is-hold {
+  cursor: not-allowed;
+}
+
+.hp-stall.is-booked:hover > rect,
+.hp-stall.is-hold:hover > rect {
+  stroke: var(--hp-accent);
+  stroke-width: 4;
+}
+
+.hp-stall:focus-visible > rect {
+  stroke: #0b7fd8;
+  stroke-width: 5;
+}
+
+.hp-stall.is-found > rect {
+  stroke: #0b7fd8;
+  stroke-width: 5;
+  animation: hp-pulse 1.1s ease-in-out infinite;
+}
+
+@keyframes hp-pulse {
+  50% {
+    stroke-opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hp-stall.is-found > rect {
+    animation: none;
+  }
+  .hp-stall > rect {
+    transition: none;
+  }
+}
+
+/* -------------------------------------------------- legend + readout */
+
+.hp-legend {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  margin: 0;
+  padding: 9px 11px;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+  background: color-mix(in srgb, var(--hp-raise) 92%, transparent);
+  border: 1px solid var(--hp-line);
+  font:
+    10px/1 "DM Mono",
+    ui-monospace,
+    monospace;
+  text-transform: uppercase;
+  color: var(--hp-ink);
+  backdrop-filter: blur(6px);
+}
+
+.hp-legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hp-legend i {
+  width: 12px;
+  height: 12px;
+  border: 1px solid #000;
+  flex: none;
+}
+
+.sw-available {
+  background: #fff;
+}
+.sw-selected {
+  background: #ff735f;
+}
+.sw-hold {
+  background: #ffc94a;
+}
+.sw-booked {
+  background: #3f4a54;
+}
+.sw-blocked {
+  background: #ed1c24;
+}
+
+.hp-readout {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 13px;
+  background: color-mix(in srgb, var(--hp-raise) 94%, transparent);
+  border: 1px solid var(--hp-line);
+  font:
+    10px/1 "DM Mono",
+    ui-monospace,
+    monospace;
+  text-transform: uppercase;
+  backdrop-filter: blur(6px);
+  max-width: min(340px, 70%);
+}
+
+.hp-readout b {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+}
+
+.hp-readout span {
+  color: var(--hp-muted);
+}
+
+.hp-who {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hp-tag {
+  padding: 3px 7px;
+  color: #101715;
+  background: #dfe5df;
+}
+
+.hp-tag.is-selected {
+  background: var(--hp-accent);
+}
+.hp-tag.is-hold {
+  background: var(--hp-hold);
+}
+.hp-tag.is-booked {
+  background: var(--hp-booked);
+  color: #fff;
+}
+
+/* ---------------------------------------------------------- tray */
+
+.hp-tray {
+  border-top: 1px solid var(--hp-line);
+  background: var(--hp-raise);
+  padding: 12px 16px;
+  display: grid;
+  gap: 12px;
+}
+
+.hp-hint,
+.hp-feedback {
+  margin: 0;
+  font:
+    11px/1.5 "DM Mono",
+    ui-monospace,
+    monospace;
+  color: var(--hp-muted);
+}
+
+.hp-feedback {
+  padding: 9px 12px;
+  border-left: 3px solid var(--hp-accent);
+  background: color-mix(in srgb, var(--hp-accent) 10%, transparent);
+  color: var(--hp-ink);
+}
+
+.hp-feedback.is-success {
+  border-color: #2f9e6b;
+  background: color-mix(in srgb, #2f9e6b 12%, transparent);
+}
+
+.hp-picked {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.hp-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.hp-chip {
+  border: 1px solid var(--hp-accent);
+  background: color-mix(in srgb, var(--hp-accent) 14%, transparent);
+  color: inherit;
+  padding: 6px 9px;
+  font:
+    11px "DM Mono",
+    ui-monospace,
+    monospace;
+  cursor: pointer;
+}
+
+.hp-chip:hover {
+  background: var(--hp-accent);
+  color: #14100f;
+}
+
+.hp-picked-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.hp-total {
+  font:
+    10px "DM Mono",
+    ui-monospace,
+    monospace;
+  text-transform: uppercase;
+  color: var(--hp-muted);
+}
+
+.hp-cta,
+.hp-ghost {
+  border: 1px solid var(--hp-accent);
+  padding: 10px 15px;
+  font:
+    10px "DM Mono",
+    ui-monospace,
+    monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.hp-cta {
+  background: var(--hp-accent);
+  color: #14100f;
+}
+
+.hp-cta:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.hp-ghost {
+  background: transparent;
+  border-color: var(--hp-line);
+  color: var(--hp-muted);
+}
+
+.hp-ghost:hover {
+  border-color: var(--hp-accent);
+  color: var(--hp-accent);
+}
+
+/* ---------------------------------------------------------- form */
+
+.hp-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--hp-line);
+}
+
+.hp-form label {
+  display: grid;
+  gap: 6px;
+  font:
+    10px "DM Mono",
+    ui-monospace,
+    monospace;
+  text-transform: uppercase;
+  color: var(--hp-muted);
+}
+
+.hp-form small {
+  text-transform: none;
+  opacity: 0.7;
+}
+
+.hp-form input,
+.hp-form textarea {
+  border: 1px solid var(--hp-line);
+  background: var(--hp-panel);
+  color: var(--hp-ink);
+  padding: 9px 10px;
+  font:
+    12px "Space Grotesk",
+    sans-serif;
+  resize: vertical;
+}
+
+.hp-form input:focus-visible,
+.hp-form textarea:focus-visible {
+  outline: 2px solid var(--hp-accent);
+  outline-offset: -1px;
+}
+
+.hp-wide {
+  grid-column: 1 / -1;
+}
+
+.hp-submit {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.hp-submit p {
+  margin: 0;
+  max-width: 52ch;
+  font:
+    10px/1.6 "DM Mono",
+    ui-monospace,
+    monospace;
+  color: var(--hp-muted);
+}
+
+@media (max-width: 640px) {
+  .hp-bar {
+    padding: 10px 12px;
+  }
+  .hp-tools {
+    width: 100%;
+  }
+  .hp-search {
+    flex: 1;
+  }
+  .hp-search input {
+    width: 100%;
+    max-width: none;
+  }
+  .hp-legend {
+    grid-template-columns: 1fr 1fr;
+    left: 8px;
+    bottom: 8px;
+    font-size: 9px;
+  }
+  .hp-readout {
+    right: 8px;
+    top: 8px;
+    gap: 8px;
+    font-size: 9px;
+  }
+  .hp-readout b {
+    font-size: 13px;
+  }
+  .hp-picked-actions {
+    margin-left: 0;
+    width: 100%;
+  }
+  .hp-cta {
+    flex: 1;
+  }
+}

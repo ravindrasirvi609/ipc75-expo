@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "verify:plan": "node --no-warnings=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-layout.mjs",
+    "verify:render": "node --no-warnings=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-render.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

@@ -1,0 +1,201 @@
+{
+  "hall": "1C",
+  "updatedAt": "2026-08-20T09:07:42.852Z",
+  "stalls": {
+    "1A-01": {
+      "status": "booked",
+      "company": "Ardent Biosciences"
+    },
+    "1A-02": {
+      "status": "booked",
+      "company": "Ardent Biosciences"
+    },
+    "1A-08": {
+      "status": "booked",
+      "company": "Kaveri Formulations"
+    },
+    "1A-15": {
+      "status": "booked",
+      "company": "Northstar Diagnostics"
+    },
+    "1A-19": {
+      "status": "hold",
+      "company": "Trimurti Excipients"
+    },
+    "1B-01": {
+      "status": "booked",
+      "company": "Vedanta Life Care"
+    },
+    "1B-02": {
+      "status": "booked",
+      "company": "Vedanta Life Care"
+    },
+    "1B-03": {
+      "status": "booked",
+      "company": "Vedanta Life Care"
+    },
+    "1B-11": {
+      "status": "booked",
+      "company": "Orbit Packaging"
+    },
+    "1B-12": {
+      "status": "hold",
+      "company": "Orbit Packaging"
+    },
+    "1B-22": {
+      "status": "booked",
+      "company": "Sahyadri Herbals"
+    },
+    "1B-23": {
+      "status": "booked",
+      "company": "Sahyadri Herbals"
+    },
+    "1B-30": {
+      "status": "booked",
+      "company": "Lumen Analytical"
+    },
+    "1B-44": {
+      "status": "booked",
+      "company": "Pratham Capsules"
+    },
+    "1C-01": {
+      "status": "booked",
+      "company": "Helix Remedies"
+    },
+    "1C-02": {
+      "status": "booked",
+      "company": "Helix Remedies"
+    },
+    "1C-03": {
+      "status": "booked",
+      "company": "Helix Remedies"
+    },
+    "1C-08": {
+      "status": "booked",
+      "company": "Zenith Clinical"
+    },
+    "1C-11": {
+      "status": "hold",
+      "company": "Anvaya Nutraceuticals"
+    },
+    "1C-12": {
+      "status": "hold",
+      "company": "Anvaya Nutraceuticals"
+    },
+    "1C-15": {
+      "status": "booked",
+      "company": "Rasayan Intermediates"
+    },
+    "1C-19": {
+      "status": "booked",
+      "company": "Meridian Cold Chain"
+    },
+    "1C-25": {
+      "status": "booked",
+      "company": "Sparsh Medical Devices"
+    },
+    "1C-33": {
+      "status": "booked",
+      "company": "Prayag Sterile Labs"
+    },
+    "1C-40": {
+      "status": "booked",
+      "company": "Auric Pharma Machinery"
+    },
+    "1C-45": {
+      "status": "booked",
+      "company": "Tejas Softgel"
+    },
+    "1C-51": {
+      "status": "booked",
+      "company": "Chandra API Works"
+    },
+    "1C-58": {
+      "status": "booked",
+      "company": "Nirvana Wellness"
+    },
+    "1D-01": {
+      "status": "booked",
+      "company": "Suryodaya Labs"
+    },
+    "1D-05": {
+      "status": "booked",
+      "company": "Indus Regulatory"
+    },
+    "1D-07": {
+      "status": "hold",
+      "company": "Aarogya Publishing"
+    },
+    "1D-13": {
+      "status": "booked",
+      "company": "Vayu Cleanrooms"
+    },
+    "1D-24": {
+      "status": "booked",
+      "company": "Samvit Consulting"
+    },
+    "1D-31": {
+      "status": "booked",
+      "company": "Bharat Glassware"
+    },
+    "1D-46": {
+      "status": "booked",
+      "company": "Ojas Contract Research"
+    },
+    "1E-01": {
+      "status": "booked",
+      "company": "Ganga Biotech"
+    },
+    "1E-02": {
+      "status": "booked",
+      "company": "Ganga Biotech"
+    },
+    "1E-05": {
+      "status": "booked",
+      "company": "Shakti Instruments"
+    },
+    "1E-06": {
+      "status": "hold",
+      "company": "Shakti Instruments"
+    },
+    "1E-10": {
+      "status": "booked",
+      "company": "Pallav Healthcare"
+    },
+    "1D-21": {
+      "status": "hold",
+      "company": "Spam Co",
+      "contact": "S",
+      "email": "s@x.example",
+      "requestedAt": "2026-08-20T09:07:18.250Z"
+    },
+    "1D-22": {
+      "status": "hold",
+      "company": "Spam Co",
+      "contact": "S",
+      "email": "s@x.example",
+      "requestedAt": "2026-08-20T09:07:21.117Z"
+    },
+    "1D-23": {
+      "status": "hold",
+      "company": "Spam Co",
+      "contact": "S",
+      "email": "s@x.example",
+      "requestedAt": "2026-08-20T09:07:24.831Z"
+    },
+    "1D-25": {
+      "status": "hold",
+      "company": "Spam Co",
+      "contact": "S",
+      "email": "s@x.example",
+      "requestedAt": "2026-08-20T09:07:29.951Z"
+    },
+    "1D-33": {
+      "status": "hold",
+      "company": "Real Co",
+      "contact": "R",
+      "email": "r@x.example",
+      "requestedAt": "2026-08-20T09:07:42.852Z"
+    }
+  }
+}
