@@ -1,8 +1,6 @@
 import { isStallId } from "./hall-1c-plan";
-import {
-  MAX_STALLS_PER_REQUEST,
-  type PublicStallState,
-} from "./stall-bookings";
+import { MAX_STALLS_PER_REQUEST } from "./booking-limits";
+import type { PublicStallState } from "./stall-bookings";
 
 /**
  * Reads a `?stall=1C-12,1C-11` deep link into a preselection.

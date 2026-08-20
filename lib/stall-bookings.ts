@@ -12,6 +12,7 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { isStallId } from "./hall-1c-plan";
+import { MAX_STALLS_PER_REQUEST } from "./booking-limits";
 
 export type StallStatus = "available" | "hold" | "booked";
 
@@ -48,7 +49,7 @@ export type HoldRequest = {
   note?: string;
 };
 
-export const MAX_STALLS_PER_REQUEST = 20;
+export { MAX_STALLS_PER_REQUEST };
 
 const STORE_PATH = path.join(process.cwd(), "data", "stall-bookings.json");
 

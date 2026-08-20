@@ -3,11 +3,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { STALLS, VIEW_BOX, getStall, type Stall } from "@/lib/hall-1c-plan";
 import type { PublicStallState, StallStatus } from "@/lib/stall-bookings";
+import { MAX_STALLS_PER_REQUEST } from "@/lib/booking-limits";
 import HallPlanSvg from "./HallPlanSvg";
 import { usePanZoom } from "./usePanZoom";
 import "./plan.css";
 
-const MAX_SELECTION = 20;
+/** Same cap the API enforces, so the UI never offers what the server refuses. */
+const MAX_SELECTION = MAX_STALLS_PER_REQUEST;
 const REFRESH_MS = 45_000;
 
 type Form = {

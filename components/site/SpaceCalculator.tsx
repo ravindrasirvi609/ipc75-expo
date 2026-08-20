@@ -8,7 +8,7 @@ import {
   STALL_MODULE,
   rupees,
 } from "@/lib/expo-content";
-import { MAX_STALLS_PER_REQUEST } from "@/lib/stall-bookings";
+import { MAX_STALLS_PER_REQUEST } from "@/lib/booking-limits";
 
 /**
  * Works out what a block of stands costs.
