@@ -1,6 +1,6 @@
 {
   "hall": "1C",
-  "updatedAt": "2026-08-20T09:07:42.852Z",
+  "updatedAt": "2026-08-20T06:00:00.000Z",
   "stalls": {
     "1A-01": {
       "status": "booked",
@@ -161,41 +161,6 @@
     "1E-10": {
       "status": "booked",
       "company": "Pallav Healthcare"
-    },
-    "1D-21": {
-      "status": "hold",
-      "company": "Spam Co",
-      "contact": "S",
-      "email": "s@x.example",
-      "requestedAt": "2026-08-20T09:07:18.250Z"
-    },
-    "1D-22": {
-      "status": "hold",
-      "company": "Spam Co",
-      "contact": "S",
-      "email": "s@x.example",
-      "requestedAt": "2026-08-20T09:07:21.117Z"
-    },
-    "1D-23": {
-      "status": "hold",
-      "company": "Spam Co",
-      "contact": "S",
-      "email": "s@x.example",
-      "requestedAt": "2026-08-20T09:07:24.831Z"
-    },
-    "1D-25": {
-      "status": "hold",
-      "company": "Spam Co",
-      "contact": "S",
-      "email": "s@x.example",
-      "requestedAt": "2026-08-20T09:07:29.951Z"
-    },
-    "1D-33": {
-      "status": "hold",
-      "company": "Real Co",
-      "contact": "R",
-      "email": "r@x.example",
-      "requestedAt": "2026-08-20T09:07:42.852Z"
     }
   }
 }
