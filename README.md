@@ -98,6 +98,19 @@ Three quirks of the source artwork are reproduced deliberately:
 - One stall is printed `1A-019`; it is `1A-19` everywhere in the data.
 - One is printed just `39`; it is `1C-39` by position.
 
+## Supabase setup
+
+Bookings are stored in Supabase Postgres. Copy `.env.example` to `.env.local`, apply the migration in `supabase/migrations`, then seed the existing bookings:
+
+```bash
+npx supabase login
+npx supabase link --project-ref bypwalsygpwiycfnkbzd
+npx supabase db push
+npm run db:seed
+```
+
+Keep `SUPABASE_SECRET_KEY` server-only and never commit it.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

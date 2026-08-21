@@ -26,7 +26,7 @@ import "./exhibit.css";
  * this the page would be prerendered once and show a frozen stall count. Sixty
  * seconds is plenty: the interactive plan polls the API for live numbers itself.
  */
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: `Exhibition charges — ${EVENT.name}`,
@@ -60,7 +60,12 @@ export default async function ExhibitPage() {
         <section className="band band-deep page-lead">
           <div className="shell">
             <p className="eyebrow">Participation</p>
-            <SplitLines as="h1" className="display-xl page-title" onLoad delay={0.1}>
+            <SplitLines
+              as="h1"
+              className="display-xl page-title"
+              onLoad
+              delay={0.1}
+            >
               Take space in {VENUE.hall}.
             </SplitLines>
             <p className="lede page-lede">
@@ -104,15 +109,19 @@ export default async function ExhibitPage() {
               <div>
                 <h3 className="display-m">What each includes</h3>
                 <p className="lede">
-                  The brochure sets the rates but not the fit-out schedule, so we
-                  are not going to guess at it here. Ask the desk for the current
-                  inclusions sheet — fascia, power load, furniture and rigging
-                  rules all live on it.
+                  The brochure sets the rates but not the fit-out schedule, so
+                  we are not going to guess at it here. Ask the desk for the
+                  current inclusions sheet — fascia, power load, furniture and
+                  rigging rules all live on it.
                 </p>
               </div>
               <div className="inclusions-actions">
                 {EMAILS.map((email) => (
-                  <a className="btn btn-ghost" key={email} href={`mailto:${email}?subject=Inclusions sheet — ${EVENT.name}`}>
+                  <a
+                    className="btn btn-ghost"
+                    key={email}
+                    href={`mailto:${email}?subject=Inclusions sheet — ${EVENT.name}`}
+                  >
                     Ask {email}
                   </a>
                 ))}

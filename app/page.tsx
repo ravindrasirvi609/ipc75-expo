@@ -23,7 +23,7 @@ import "@/components/site/home/home.css";
  * this the page would be prerendered once and show a frozen stall count. Sixty
  * seconds is plenty: the interactive plan polls the API for live numbers itself.
  */
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: `${EVENT.name} — ${EVENT.parent}`,

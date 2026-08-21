@@ -10,13 +10,16 @@
     "verify:plan": "node --no-warnings=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-layout.mjs",
     "verify:render": "node --no-warnings=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-render.mjs",
     "verify:content": "node --no-warnings=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-content.mjs",
-    "verify": "npm run verify:content && npm run verify:plan && npm run verify:render"
+    "verify": "npm run verify:content && npm run verify:plan && npm run verify:render",
+    "db:seed": "node scripts/seed-supabase.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
     "@react-spring/web": "^10.1.2",
     "@react-three/drei": "^10.7.8",
     "@react-three/fiber": "^9.7.0",
+    "@supabase/ssr": "^0.12.4",
+    "@supabase/supabase-js": "^2.112.3",
     "gsap": "^3.15.0",
     "lenis": "^1.3.26",
     "motion": "^13.1.0",

@@ -5,7 +5,13 @@ import SiteFooter from "@/components/site/SiteFooter";
 import EmbedSnippet from "@/components/floor-plan/EmbedSnippet";
 import PlanWidget from "@/components/floor-plan/PlanWidget";
 import SplitLines from "@/components/motion/SplitLines";
-import { EVENT, SPACE_TYPES, STALL_MODULE, VENUE, rupees } from "@/lib/expo-content";
+import {
+  EVENT,
+  SPACE_TYPES,
+  STALL_MODULE,
+  VENUE,
+  rupees,
+} from "@/lib/expo-content";
 import { SECTIONS, STALLS } from "@/lib/hall-1c-plan";
 import { getPublicStates } from "@/lib/stall-bookings";
 import { parseStallParam } from "@/lib/stall-params";
@@ -18,6 +24,8 @@ export const metadata: Metadata = {
   title: `${VENUE.hall} floor plan — ${EVENT.name}`,
   description: `Interactive stall plan for ${VENUE.hall} at ${VENUE.name}. Pick your stalls and request them online.`,
 };
+
+export const dynamic = "force-dynamic";
 
 /** Public origin of this request, so the embed snippet is copy-paste correct. */
 async function requestOrigin() {
@@ -55,13 +63,19 @@ export default async function FloorPlanPage({
           <div className="shell plan-lead-grid">
             <div>
               <p className="eyebrow">{VENUE.hall} · surveyed plan</p>
-              <SplitLines as="h1" className="display-xl page-title" onLoad delay={0.1}>
+              <SplitLines
+                as="h1"
+                className="display-xl page-title"
+                onLoad
+                delay={0.1}
+              >
                 Pick your stalls.
               </SplitLines>
               <p className="lede page-lede">
-                Every stall is {STALL_MODULE.size} — {STALL_MODULE.area} sqm. Click
-                the ones you want, send the request, and they go on hold while the
-                desk confirms. {available} of {STALLS.length} are open right now.
+                Every stall is {STALL_MODULE.size} — {STALL_MODULE.area} sqm.
+                Click the ones you want, send the request, and they go on hold
+                while the desk confirms. {available} of {STALLS.length} are open
+                right now.
               </p>
             </div>
             <dl className="plan-key">
