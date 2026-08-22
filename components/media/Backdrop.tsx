@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import type { Backdrop as BackdropData } from "@/lib/media";
 import { gsap, prefersReducedMotion, useGSAP } from "@/components/motion/gsap-init";
 import { useVideoAllowed } from "./useVideoAllowed";
@@ -43,8 +43,13 @@ export default function Backdrop({
   focus = "50% 50%",
 }: BackdropProps) {
   const scope = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const videoAllowed = useVideoAllowed();
   const playVideo = videoAllowed && Boolean(media?.videos.length);
+
+  useEffect(() => {
+    if (playVideo && videoRef.current) videoRef.current.playbackRate = 0.7;
+  }, [playVideo]);
 
   useGSAP(
     () => {
@@ -93,6 +98,7 @@ export default function Backdrop({
 
         {playVideo ? (
           <video
+            ref={videoRef}
             className="backdrop-video"
             autoPlay
             muted

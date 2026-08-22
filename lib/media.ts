@@ -13,6 +13,7 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 
 const MEDIA_DIR = path.join(process.cwd(), "public", "assets", "media");
+const PUBLIC_DIR = path.join(process.cwd(), "public");
 const PUBLIC_PREFIX = "/assets/media";
 
 export type BackdropSlot =
@@ -97,6 +98,12 @@ export function resolveBackdrop(slot: BackdropSlot): Backdrop | null {
         (value): value is string => Boolean(value),
       )
     : [];
+
+  // The supplied hero clip lives at the public root rather than in the
+  // optional media directory used by the other backdrop slots.
+  if (slot === "hero" && existsSync(path.join(PUBLIC_DIR, "expo-clip.mp4"))) {
+    videos.push("/expo-clip.mp4");
+  }
 
   if (!image && !videos.length) return null;
   return { image, videos };
