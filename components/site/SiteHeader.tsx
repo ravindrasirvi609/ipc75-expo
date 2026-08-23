@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Menu, X } from "lucide-react";
 import { EVENT } from "@/lib/expo-content";
 import "./site.css";
 
@@ -29,6 +30,21 @@ export default function SiteHeader({ solid = false }: { solid?: boolean }) {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, [solid]);
+
+  /**
+   * The open panel is only as tall as its own links, so without a scrim the
+   * hero content directly beneath stays visible right up against the last
+   * row — reads as a rendering glitch rather than a menu. This dims the rest
+   * of the page and stops it scrolling while the menu is open.
+   */
+  useEffect(() => {
+    if (!open) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open]);
 
   return (
     <header className={`site-head${scrolled ? " is-solid" : ""}`}>
@@ -62,9 +78,18 @@ export default function SiteHeader({ solid = false }: { solid?: boolean }) {
           aria-label={open ? "Close menu" : "Open menu"}
           onClick={() => setOpen((value) => !value)}
         >
-          <span aria-hidden="true">{open ? "✕" : "☰"}</span>
+          {open ? <X size={18} strokeWidth={1.75} aria-hidden="true" /> : <Menu size={18} strokeWidth={1.75} aria-hidden="true" />}
         </button>
       </div>
+
+      {open ? (
+        <button
+          type="button"
+          className="nav-scrim"
+          aria-label="Close menu"
+          onClick={() => setOpen(false)}
+        />
+      ) : null}
     </header>
   );
 }

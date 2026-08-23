@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { ArrowUpRight, Check, Copy, Moon, Share2, Sun } from "lucide-react";
 
 const EMBED_PATH = "/embed/hall-1c";
+const THEME_ICON = { light: Sun, dark: Moon } as const;
 
 /**
  * Shows the ready-to-paste iframe for the floor plan. `origin` comes from the
@@ -37,7 +39,10 @@ export default function EmbedSnippet({ origin }: { origin: string }) {
     <section className="embed-card">
       <header>
         <div>
-          <p className="eyebrow coral">Share it anywhere</p>
+          <p className="eyebrow coral">
+            <Share2 size={13} strokeWidth={1.75} aria-hidden="true" />
+            Share it anywhere
+          </p>
           <h2>Embed this plan</h2>
           <p className="embed-copy">
             Paste this into any site — sponsor microsite, association page, an
@@ -47,16 +52,20 @@ export default function EmbedSnippet({ origin }: { origin: string }) {
         </div>
         <div className="embed-actions">
           <div className="embed-theme" role="group" aria-label="Embed theme">
-            {(["light", "dark"] as const).map((option) => (
-              <button
-                key={option}
-                type="button"
-                className={theme === option ? "is-on" : ""}
-                onClick={() => setTheme(option)}
-              >
-                {option}
-              </button>
-            ))}
+            {(["light", "dark"] as const).map((option) => {
+              const ThemeIcon = THEME_ICON[option];
+              return (
+                <button
+                  key={option}
+                  type="button"
+                  className={theme === option ? "is-on" : ""}
+                  onClick={() => setTheme(option)}
+                >
+                  <ThemeIcon size={12} strokeWidth={1.75} aria-hidden="true" />
+                  {option}
+                </button>
+              );
+            })}
           </div>
           <a
             className="embed-open"
@@ -64,7 +73,8 @@ export default function EmbedSnippet({ origin }: { origin: string }) {
             target="_blank"
             rel="noreferrer"
           >
-            Open standalone ↗
+            Open standalone
+            <ArrowUpRight size={12} strokeWidth={2} aria-hidden="true" />
           </a>
         </div>
       </header>
@@ -75,7 +85,17 @@ export default function EmbedSnippet({ origin }: { origin: string }) {
 
       <div className="embed-foot">
         <button type="button" className="hp-cta" onClick={copy}>
-          {copied ? "Copied ✓" : "Copy embed code"}
+          {copied ? (
+            <>
+              <Check size={13} strokeWidth={2} aria-hidden="true" />
+              Copied
+            </>
+          ) : (
+            <>
+              <Copy size={13} strokeWidth={1.75} aria-hidden="true" />
+              Copy embed code
+            </>
+          )}
         </button>
         <p>
           Deep-link a stall with <code>?stall=1C-12</code>. The frame posts{" "}

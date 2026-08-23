@@ -109,6 +109,7 @@
   .site-nav {
     position: absolute;
     inset: 74px 0 auto;
+    z-index: 2;
     display: grid;
     gap: 0;
     margin: 0;
@@ -132,6 +133,23 @@
   }
   .head-actions {
     margin-left: auto;
+  }
+
+  /*
+   * Without this, the open panel is only as tall as its own links and the
+   * hero content directly behind stays fully visible right up against the
+   * last row — looks like a rendering glitch, not a menu. This dims and
+   * blocks the rest of the page for as long as the panel is open.
+   */
+  .nav-scrim {
+    position: fixed;
+    inset: 74px 0 0 0;
+    z-index: 1;
+    border: 0;
+    padding: 0;
+    background: color-mix(in srgb, var(--navy-deep) 70%, transparent);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
@@ -226,8 +244,27 @@
   text-align: right;
 }
 
+.foot-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
 .foot-links a:hover {
   color: var(--gold);
+}
+
+.foot-email-list {
+  display: grid;
+  gap: 4px;
+}
+
+.foot-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  justify-self: start;
 }
 
 @media (max-width: 900px) {

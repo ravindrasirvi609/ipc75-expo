@@ -1,3 +1,4 @@
+import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
 import Reveal from "@/components/motion/Reveal";
 import SplitLines from "@/components/motion/SplitLines";
 import Backdrop from "@/components/media/Backdrop";
@@ -20,7 +21,10 @@ export default function VenueBand({
       <div className="shell">
         <div className="venue-grid">
           <div>
-            <p className="eyebrow">Venue</p>
+            <p className="eyebrow">
+              <MapPin size={13} strokeWidth={1.75} aria-hidden="true" />
+              Venue
+            </p>
             <SplitLines as="h2" className="display-l">
               {VENUE.name}
             </SplitLines>
@@ -45,12 +49,16 @@ export default function VenueBand({
             </dl>
 
             <a className="text-link" href={mapHref} target="_blank" rel="noreferrer">
-              Open in maps ↗
+              Open in maps
+              <ArrowUpRight size={12} strokeWidth={2} aria-hidden="true" />
             </a>
           </div>
 
           <div className="venue-desk">
-            <p className="eyebrow">Exhibition desk</p>
+            <p className="eyebrow">
+              <Phone size={13} strokeWidth={1.75} aria-hidden="true" />
+              Exhibition desk
+            </p>
             <p className="venue-desk-lede">
               Four people handle stall bookings. Call whoever picks up.
             </p>
@@ -65,6 +73,7 @@ export default function VenueBand({
                   </span>
                   <span className="rep-name">{contact.name}</span>
                   <a className="rep-phone" href={telHref(contact.phone)}>
+                    <Phone size={12} strokeWidth={1.75} aria-hidden="true" />
                     {telLabel(contact.phone)}
                   </a>
                 </li>
@@ -73,6 +82,7 @@ export default function VenueBand({
             <p className="venue-emails">
               {EMAILS.map((email) => (
                 <a key={email} href={`mailto:${email}`}>
+                  <Mail size={12} strokeWidth={1.75} aria-hidden="true" />
                   {email}
                 </a>
               ))}

@@ -279,17 +279,19 @@
   color: #fff;
 }
 
+/* Borders, not a background-filled gap: see the comment on .rep-grid in contact.css. */
 .rate-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1px;
-  background: var(--hairline-dark);
-  border: 1px solid var(--hairline-dark);
+  border-top: 1px solid var(--hairline-dark);
+  border-left: 1px solid var(--hairline-dark);
 }
 
 .rate-card {
   background: var(--navy);
   padding: clamp(26px, 3vw, 40px);
+  border-right: 1px solid var(--hairline-dark);
+  border-bottom: 1px solid var(--hairline-dark);
   display: grid;
   align-content: start;
   gap: 16px;
@@ -301,7 +303,15 @@
 }
 
 .rate-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   color: #fff;
+}
+
+.rate-card h3 svg {
+  color: var(--gold);
+  flex: none;
 }
 
 .rate-figure {
@@ -460,9 +470,16 @@
 }
 
 .rep-phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-family: var(--mono);
   font-size: 13px;
   color: var(--saffron);
+}
+
+.rep-phone svg {
+  flex: none;
 }
 
 .rep-phone:hover {
@@ -478,6 +495,9 @@
 }
 
 .venue-emails a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   color: var(--navy);
   border-bottom: 1px solid var(--hairline);
   padding-bottom: 2px;

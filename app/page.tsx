@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Factory, Users } from "lucide-react";
 import SiteHeader from "@/components/site/SiteHeader";
 import SiteFooter from "@/components/site/SiteFooter";
 import Hero from "@/components/site/home/Hero";
@@ -13,7 +14,7 @@ import {
   VISITOR_PROFILE,
 } from "@/lib/expo-content";
 import { STALLS } from "@/lib/hall-1c-plan";
-import { getPublicStates } from "@/lib/stall-bookings";
+import { getPublicStatesSafely } from "@/lib/stall-bookings";
 import { resolveBackdrop } from "@/lib/media";
 import "@/components/site/site.css";
 import "@/components/site/home/home.css";
@@ -31,19 +32,27 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const availability = await getPublicStates();
+  const availability = await getPublicStatesSafely();
   const taken = availability.stalls.map((entry) => entry.id);
+  const available = availability.unavailable
+    ? null
+    : STALLS.length - taken.length;
 
   return (
     <>
       <SiteHeader />
       <main>
-        <Hero taken={taken} backdrop={resolveBackdrop("hero")} />
+        <Hero
+          taken={taken}
+          unavailable={availability.unavailable}
+          backdrop={resolveBackdrop("hero")}
+        />
         <WhyExhibit />
 
         <ProfileList
           id="exhibitors"
           eyebrow="Exhibitor profile"
+          icon={Factory}
           title="What belongs on this floor."
           lede="If you build, supply or service any part of the powder-to-tablet chain, this is your hall."
           items={EXHIBITOR_PROFILE}
@@ -55,6 +64,7 @@ export default async function Home() {
         <ProfileList
           id="visitors"
           eyebrow="Visitor profile"
+          icon={Users}
           title="Who walks it."
           lede="The people who specify, approve and buy process equipment — across formulations, APIs, nutraceuticals, AYUSH, veterinary, cosmetics and food."
           items={VISITOR_PROFILE}
@@ -63,10 +73,7 @@ export default async function Home() {
           backdrop={resolveBackdrop("visitors")}
         />
 
-        <ChargesBand
-          available={STALLS.length - taken.length}
-          backdrop={resolveBackdrop("charges")}
-        />
+        <ChargesBand available={available} backdrop={resolveBackdrop("charges")} />
         <VenueBand backdrop={resolveBackdrop("venue")} />
       </main>
       <SiteFooter />

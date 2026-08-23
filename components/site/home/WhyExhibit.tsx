@@ -1,3 +1,4 @@
+import { Lightbulb } from "lucide-react";
 import Counter from "@/components/motion/Counter";
 import Reveal from "@/components/motion/Reveal";
 import SplitLines from "@/components/motion/SplitLines";
@@ -29,7 +30,10 @@ export default function WhyExhibit() {
   return (
     <section className="band band-sheet why" id="why">
       <div className="shell">
-        <p className="eyebrow">Why exhibit</p>
+        <p className="eyebrow">
+          <Lightbulb size={13} strokeWidth={1.75} aria-hidden="true" />
+          Why exhibit
+        </p>
         <SplitLines as="h2" className="display-l why-title">
           Your buyers are already coming for the congress.
         </SplitLines>

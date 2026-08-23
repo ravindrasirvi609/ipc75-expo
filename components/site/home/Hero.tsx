@@ -11,12 +11,15 @@ import { STALLS } from "@/lib/hall-1c-plan";
 
 export default function Hero({
   taken,
+  unavailable = false,
   backdrop,
 }: {
   taken: string[];
+  /** True when live availability couldn't be read — never show it as zero taken. */
+  unavailable?: boolean;
   backdrop: BackdropData | null;
 }) {
-  const available = STALLS.length - taken.length;
+  const available = unavailable ? null : STALLS.length - taken.length;
 
   return (
     <section className="hero band-deep has-backdrop" id="top">
@@ -56,9 +59,13 @@ export default function Hero({
           <HallSignature taken={taken} />
           <figcaption>
             <span className="data-label">{VENUE.hall} · surveyed plan</span>
-            <p>
-              <b>{available}</b> of {STALLS.length} stalls available
-            </p>
+            {available === null ? (
+              <p>Live availability is temporarily unavailable.</p>
+            ) : (
+              <p>
+                <b>{available}</b> of {STALLS.length} stalls available
+              </p>
+            )}
             <p className="hero-plan-module">
               {STALL_MODULE.size} · {STALL_MODULE.area} sqm each
             </p>

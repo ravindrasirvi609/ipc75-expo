@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
+import { Map } from "lucide-react";
 import SiteHeader from "@/components/site/SiteHeader";
 import SiteFooter from "@/components/site/SiteFooter";
 import EmbedSnippet from "@/components/floor-plan/EmbedSnippet";
@@ -13,7 +14,7 @@ import {
   rupees,
 } from "@/lib/expo-content";
 import { SECTIONS, STALLS } from "@/lib/hall-1c-plan";
-import { getPublicStates } from "@/lib/stall-bookings";
+import { getPublicStatesSafely } from "@/lib/stall-bookings";
 import { parseStallParam } from "@/lib/stall-params";
 import "@/components/site/site.css";
 import "@/components/site/home/home.css";
@@ -45,11 +46,13 @@ export default async function FloorPlanPage({
 }) {
   const [{ stall }, availability, origin] = await Promise.all([
     searchParams,
-    getPublicStates(),
+    getPublicStatesSafely(),
     requestOrigin(),
   ]);
 
-  const available = STALLS.length - availability.stalls.length;
+  const available = availability.unavailable
+    ? null
+    : STALLS.length - availability.stalls.length;
   const bySection = SECTIONS.map((section) => ({
     section,
     count: STALLS.filter((s) => s.section === section).length,
@@ -62,7 +65,10 @@ export default async function FloorPlanPage({
         <section className="band band-deep page-lead plan-lead">
           <div className="shell plan-lead-grid">
             <div>
-              <p className="eyebrow">{VENUE.hall} · surveyed plan</p>
+              <p className="eyebrow">
+                <Map size={13} strokeWidth={1.75} aria-hidden="true" />
+                {VENUE.hall} · surveyed plan
+              </p>
               <SplitLines
                 as="h1"
                 className="display-xl page-title"
@@ -74,8 +80,10 @@ export default async function FloorPlanPage({
               <p className="lede page-lede">
                 Every stall is {STALL_MODULE.size} — {STALL_MODULE.area} sqm.
                 Click the ones you want, send the request, and they go on hold
-                while the desk confirms. {available} of {STALLS.length} are open
-                right now.
+                while the desk confirms.{" "}
+                {available === null
+                  ? "Live availability is temporarily unavailable, so double-check with the desk before assuming a stall is free."
+                  : `${available} of ${STALLS.length} are open right now.`}
               </p>
             </div>
             <dl className="plan-key">
@@ -101,6 +109,7 @@ export default async function FloorPlanPage({
             variant="page"
             theme="light"
             availability={availability.stalls}
+            availabilityUnknown={availability.unavailable}
             initialSelection={parseStallParam(stall, availability.stalls)}
           />
         </div>

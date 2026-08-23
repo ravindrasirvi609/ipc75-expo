@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import PlanWidget from "@/components/floor-plan/PlanWidget";
 import { parseStallParam } from "@/lib/stall-params";
-import { getPublicStates } from "@/lib/stall-bookings";
+import { getPublicStatesSafely } from "@/lib/stall-bookings";
 
 export const metadata: Metadata = {
   title: "Hall 1C floor plan — 75th IPC",
@@ -26,7 +26,7 @@ export default async function EmbedHall1CPage({
 }) {
   const [{ theme, stall }, availability] = await Promise.all([
     searchParams,
-    getPublicStates(),
+    getPublicStatesSafely(),
   ]);
 
   return (
@@ -34,6 +34,7 @@ export default async function EmbedHall1CPage({
       variant="embed"
       theme={theme === "dark" ? "dark" : "light"}
       availability={availability.stalls}
+      availabilityUnknown={availability.unavailable}
       initialSelection={parseStallParam(stall, availability.stalls)}
     />
   );

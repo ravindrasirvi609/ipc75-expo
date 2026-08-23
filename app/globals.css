@@ -272,6 +272,9 @@ svg {
 }
 
 .text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   border-bottom: 1px solid currentColor;
   padding-bottom: 1px;
   color: var(--saffron);

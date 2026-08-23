@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { ArrowRight, Minus, Plus } from "lucide-react";
 import {
   INDICATIVE_GST,
   SPACE_TYPES,
@@ -37,7 +38,7 @@ export default function SpaceCalculator() {
             disabled={stalls <= 1}
             aria-label="One stall fewer"
           >
-            −
+            <Minus size={16} strokeWidth={2} aria-hidden="true" />
           </button>
           <input
             id="stalls"
@@ -59,7 +60,7 @@ export default function SpaceCalculator() {
             disabled={stalls >= MAX_STALLS_PER_REQUEST}
             aria-label="One stall more"
           >
-            +
+            <Plus size={16} strokeWidth={2} aria-hidden="true" />
           </button>
         </div>
         <p className="calc-area">
@@ -103,6 +104,7 @@ export default function SpaceCalculator() {
 
       <Link className="btn btn-primary" href="/floor-plan">
         Pick {stalls === 1 ? "a stall" : `${stalls} stalls`} on the plan
+        <ArrowRight size={14} strokeWidth={2} aria-hidden="true" />
       </Link>
     </div>
   );

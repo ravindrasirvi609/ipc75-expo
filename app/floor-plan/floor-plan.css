@@ -95,6 +95,9 @@
 }
 
 .embed-theme button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   border: 0;
   background: var(--paper);
   color: var(--ink-soft);
@@ -112,6 +115,9 @@
 }
 
 .embed-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.08em;

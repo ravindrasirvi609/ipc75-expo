@@ -1,7 +1,11 @@
-# Stall availability store
+# Stall availability seed
 
-`stall-bookings.json` is the source of truth for which Hall 1C stalls are taken.
-Anything **not** listed in it is available.
+Hall 1C availability lives in Supabase Postgres (table `stall_bookings`), not
+here. `stall-bookings.json` is the one-time seed fixture `npm run db:seed`
+loads into that table — useful as a readable snapshot of where bookings
+stood at some point, but editing it after the initial seed changes nothing
+that visitors or the admin desk see. Anything **not** listed in it was
+available as of `updatedAt`.
 
 ```jsonc
 {
@@ -23,26 +27,34 @@ Anything **not** listed in it is available.
 
 ## Day-to-day edits
 
-- **Confirm a hold** — change its `status` from `hold` to `booked`.
-- **Release a stall** — delete its entry.
-- **Add a booking made offline** — add an entry with `status: "booked"` and the
-  exhibitor's `company`.
+Bookings are managed live, at `/admin` (organiser sign-in required):
 
-`company` is the only field shown publicly. Run `npm run verify:plan` after
-editing: it fails if a stall id in this file does not exist in Hall 1C.
+- **Confirm a hold** — open the request and choose "Confirm booking"; sets
+  `status` to `booked`.
+- **Return to hold** — the same screen, in reverse.
+- **Add a booking made offline** — run the exhibitor's request through the
+  normal `/floor-plan` flow yourself, then confirm it from `/admin`.
 
-## Privacy
+There's no "release a stall" action yet — deleting a mistaken hold means
+removing its row directly in the Supabase table editor.
 
-When someone submits a request through the site, their `contact`, `email`,
-`phone` and `note` are written into this file alongside the hold. The API never
-serves those fields — but they are personal data sitting in your working tree,
-so **review before committing** and consider keeping the live file out of git
-once real requests start arriving.
+`company` is the only field the public API (`/api/stalls`) ever serves.
+`contact`, `email`, `phone` and `note` are readable only by an authorised
+organiser, through `/api/admin/bookings`.
 
-## Deployment
+## Updating this seed file
 
-The file is read and written with `node:fs`, which assumes one long-lived server
-process (`next start`, a container, a VM). On serverless or multi-instance
-hosting, two requests can hold the same stall. Swap `readStore`/`writeStore` in
-`lib/stall-bookings.ts` for a real database before that matters — nothing else
-in the app touches the storage layer.
+If you want `stall-bookings.json` to reflect current reality (for a fresh
+`db:seed` into a new environment, say), export the current state from
+Supabase and overwrite it. It only ever holds `status` and `company` — never
+`contact`/`email`/`phone`/`note` — so it's safe to keep in git. Run
+`npm run verify:plan` after editing: it fails if a stall id in the file
+doesn't exist in Hall 1C.
+
+## Concurrency
+
+Availability reads and the hold-request RPC both run against Postgres, which
+serialises the conflict check, so two simultaneous requests can't both win
+the same stall — this holds regardless of how many server instances are
+running. See `supabase/migrations/` for the `request_stall_hold` function
+that enforces it.

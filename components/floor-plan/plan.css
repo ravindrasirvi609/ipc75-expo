@@ -88,10 +88,17 @@
   align-items: center;
 }
 
+.hp-search-icon {
+  position: absolute;
+  left: 10px;
+  color: var(--hp-muted);
+  pointer-events: none;
+}
+
 .hp-search input {
   width: 214px;
   max-width: 44vw;
-  padding: 8px 34px 8px 11px;
+  padding: 8px 34px 8px 30px;
   border: 1px solid var(--hp-line);
   background: var(--hp-panel);
   color: inherit;
@@ -123,6 +130,10 @@
 }
 
 .hp-zoom button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
   min-width: 32px;
   height: 32px;
   padding: 0 8px;
@@ -144,6 +155,26 @@
 .hp-zoom button:disabled {
   opacity: 0.4;
   cursor: default;
+}
+
+.hp-unavailable {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--hp-line);
+  background: color-mix(in srgb, var(--hp-hold) 16%, transparent);
+  color: var(--hp-ink);
+  font:
+    11px/1.5 "DM Mono",
+    ui-monospace,
+    monospace;
+}
+
+.hp-unavailable svg {
+  flex: none;
+  color: var(--hp-hold);
 }
 
 /* ----------------------------------------------------------- viewport */
@@ -452,6 +483,9 @@
 }
 
 .hp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   border: 1px solid var(--hp-accent);
   background: color-mix(in srgb, var(--hp-accent) 14%, transparent);
   color: inherit;
@@ -486,6 +520,9 @@
 
 .hp-cta,
 .hp-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   border: 1px solid var(--hp-accent);
   padding: 10px 15px;
   font:

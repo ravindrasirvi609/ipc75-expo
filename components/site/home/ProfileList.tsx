@@ -1,3 +1,4 @@
+import type { LucideIcon } from "lucide-react";
 import Reveal from "@/components/motion/Reveal";
 import SplitLines from "@/components/motion/SplitLines";
 import Backdrop from "@/components/media/Backdrop";
@@ -6,6 +7,7 @@ import type { Backdrop as BackdropData } from "@/lib/media";
 type ProfileListProps = {
   id: string;
   eyebrow: string;
+  icon: LucideIcon;
   title: string;
   lede: string;
   items: readonly string[];
@@ -26,6 +28,7 @@ type ProfileListProps = {
 export default function ProfileList({
   id,
   eyebrow,
+  icon: Icon,
   title,
   lede,
   items,
@@ -44,6 +47,7 @@ export default function ProfileList({
         <div className="profile-head">
           <div>
             <p className="eyebrow">
+              <Icon size={13} strokeWidth={1.75} aria-hidden="true" />
               {eyebrow} · {items.length} categories
             </p>
             <SplitLines as="h2" className="display-l">

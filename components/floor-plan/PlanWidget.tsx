@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Minus, Plus, Scan, Search, TriangleAlert, X } from "lucide-react";
 import { STALLS, VIEW_BOX, getStall, type Stall } from "@/lib/hall-1c-plan";
 import type { PublicStallState, StallStatus } from "@/lib/stall-bookings";
 import { MAX_STALLS_PER_REQUEST } from "@/lib/booking-limits";
@@ -32,6 +33,8 @@ type Feedback = { kind: "error" | "success"; message: string } | null;
 export type PlanWidgetProps = {
   /** Availability read on the server, so the first paint is already correct. */
   availability: PublicStallState[];
+  /** True when the server couldn't read live availability — `availability` is `[]`, not "all free." */
+  availabilityUnknown?: boolean;
   /** Stalls to preselect and zoom to, from a `?stall=` deep link. */
   initialSelection?: string[];
   /** `embed` fills its frame; `page` sits inside the site layout. */
@@ -47,6 +50,7 @@ function postToHost(payload: Record<string, unknown>) {
 
 export default function PlanWidget({
   availability,
+  availabilityUnknown = false,
   initialSelection = [],
   variant = "page",
   theme = "light",
@@ -267,6 +271,7 @@ export default function PlanWidget({
               jumpToFirstMatch();
             }}
           >
+            <Search className="hp-search-icon" size={13} strokeWidth={1.75} aria-hidden="true" />
             <input
               type="search"
               value={query}
@@ -283,7 +288,7 @@ export default function PlanWidget({
               disabled={!pz.canZoomIn}
               aria-label="Zoom in"
             >
-              +
+              <Plus size={14} strokeWidth={1.75} />
             </button>
             <button
               type="button"
@@ -291,14 +296,24 @@ export default function PlanWidget({
               disabled={!pz.canZoomOut}
               aria-label="Zoom out"
             >
-              −
+              <Minus size={14} strokeWidth={1.75} />
             </button>
             <button type="button" onClick={pz.reset} disabled={pz.isDefault}>
+              <Scan size={13} strokeWidth={1.75} />
               Fit
             </button>
           </div>
         </div>
       </header>
+
+      {availabilityUnknown ? (
+        <p className="hp-unavailable" role="status">
+          <TriangleAlert size={14} strokeWidth={1.75} aria-hidden="true" />
+          Live availability could not be loaded — colours below may be out of
+          date. Refresh, or confirm with the desk before assuming a stall is
+          free.
+        </p>
+      ) : null}
 
       <div className="hp-viewport">
         <HallPlanSvg
@@ -377,7 +392,7 @@ export default function PlanWidget({
                   }
                   aria-label={`Remove ${id} from your selection`}
                 >
-                  {id} <span aria-hidden="true">×</span>
+                  {id} <X size={12} strokeWidth={2} aria-hidden="true" />
                 </button>
               ))}
             </div>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowUpRight, Mail } from "lucide-react";
 import {
   EMAILS,
   EVENT,
@@ -36,11 +37,11 @@ export default function SiteFooter() {
             </div>
             <div>
               <span className="data-label">Exhibition desk</span>
-              <p>
+              <p className="foot-email-list">
                 {EMAILS.map((email) => (
-                  <a key={email} href={`mailto:${email}`}>
+                  <a key={email} className="foot-email" href={`mailto:${email}`}>
+                    <Mail size={12} strokeWidth={1.75} aria-hidden="true" />
                     {email}
-                    <br />
                   </a>
                 ))}
               </p>
@@ -80,7 +81,8 @@ export default function SiteFooter() {
           <nav className="foot-links" aria-label="Related sites">
             {ORGANISERS.sites.map((site) => (
               <a key={site.href} href={site.href} target="_blank" rel="noreferrer">
-                {site.label} ↗
+                {site.label}
+                <ArrowUpRight size={11} strokeWidth={2} aria-hidden="true" />
               </a>
             ))}
             <Link href="/floor-plan">Floor plan</Link>

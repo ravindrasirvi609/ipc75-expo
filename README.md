@@ -68,9 +68,11 @@ hosts you actually want before going live.
 ### Booking
 
 Selecting stalls and submitting the form places a **hold** on them - visible to
-everyone immediately, but provisional. An organiser promotes a hold to `booked`
-by editing `data/stall-bookings.json`; see [data/README.md](data/README.md) for
-the statuses, day-to-day edits and the deployment caveat.
+everyone immediately, but provisional. Bookings live in Supabase Postgres (see
+"Supabase setup" below), not in a file - an organiser signs in at `/admin` and
+promotes a hold to `booked` (or returns it to `hold`) from there. See
+[data/README.md](data/README.md) for the status meanings; `data/stall-bookings.json`
+is only the one-time seed fixture used by `npm run db:seed`, not the live store.
 
 Requests are all-or-nothing: if any stall in a selection was taken while the
 visitor was choosing, the whole request is rejected with `409` and nothing is

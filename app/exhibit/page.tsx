@@ -1,5 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import {
+  Banknote,
+  Building2,
+  Calculator,
+  FileCheck,
+  ListChecks,
+  MousePointerClick,
+  Package,
+  Send,
+  Wallet,
+  Warehouse,
+} from "lucide-react";
 import SiteHeader from "@/components/site/SiteHeader";
 import SiteFooter from "@/components/site/SiteFooter";
 import SpaceCalculator from "@/components/site/SpaceCalculator";
@@ -16,7 +28,7 @@ import {
 } from "@/lib/expo-content";
 import { PUBLIC_FINANCE } from "@/lib/finance";
 import { STALLS } from "@/lib/hall-1c-plan";
-import { getPublicStates } from "@/lib/stall-bookings";
+import { getPublicStatesSafely } from "@/lib/stall-bookings";
 import "@/components/site/site.css";
 import "@/components/site/home/home.css";
 import "./exhibit.css";
@@ -38,20 +50,25 @@ const STEPS = [
   {
     title: "Choose your stalls on the plan",
     body: `Hall 1C is drawn to the surveyed grid. Click the stalls you want — up to 20 in one request — and the plan totals the area as you go.`,
+    icon: MousePointerClick,
   },
   {
     title: "Send the request",
     body: "Company, contact, email and phone. Your stalls go on hold immediately and stop showing as available to anyone else.",
+    icon: Send,
   },
   {
     title: "The desk confirms and invoices",
     body: "The exhibition team checks the request, confirms the hold as a booking and issues the invoice with payment instructions.",
+    icon: FileCheck,
   },
 ];
 
 export default async function ExhibitPage() {
-  const availability = await getPublicStates();
-  const available = STALLS.length - availability.stalls.length;
+  const availability = await getPublicStatesSafely();
+  const available = availability.unavailable
+    ? null
+    : STALLS.length - availability.stalls.length;
 
   return (
     <>
@@ -59,7 +76,10 @@ export default async function ExhibitPage() {
       <main className="head-offset">
         <section className="band band-deep page-lead">
           <div className="shell">
-            <p className="eyebrow">Participation</p>
+            <p className="eyebrow">
+              <Building2 size={13} strokeWidth={1.75} aria-hidden="true" />
+              Participation
+            </p>
             <SplitLines
               as="h1"
               className="display-xl page-title"
@@ -70,24 +90,40 @@ export default async function ExhibitPage() {
             </SplitLines>
             <p className="lede page-lede">
               {STALLS.length} stalls of {STALL_MODULE.size}, laid out on the
-              surveyed grid. {available} are still open. Both space types are
-              priced per square metre before tax.
+              surveyed grid.{" "}
+              {available === null
+                ? "Live availability is temporarily unavailable — the desk can confirm what's open."
+                : `${available} are still open.`}{" "}
+              Both space types are priced per square metre before tax.
             </p>
           </div>
         </section>
 
         <section className="band band-sheet rates">
           <div className="shell">
-            <p className="eyebrow">Charges</p>
+            <p className="eyebrow">
+              <Banknote size={13} strokeWidth={1.75} aria-hidden="true" />
+              Charges
+            </p>
             <SplitLines as="h2" className="display-l rates-title">
               Shell or bare.
             </SplitLines>
 
             <Reveal className="rate-table" stagger={0.1}>
-              {SPACE_TYPES.map((space) => (
+              {SPACE_TYPES.map((space) => {
+                const SpaceIcon = space.id === "shell" ? Package : Warehouse;
+                return (
                 <article className="rate-line" key={space.id}>
                   <div className="rate-line-name">
-                    <h3 className="display-m">{space.name}</h3>
+                    <h3 className="display-m">
+                      <SpaceIcon
+                        size={17}
+                        strokeWidth={1.75}
+                        aria-hidden="true"
+                        className="rate-line-icon"
+                      />
+                      {space.name}
+                    </h3>
                     <p>{space.summary}</p>
                   </div>
                   <p className="rate-line-figure">
@@ -102,7 +138,8 @@ export default async function ExhibitPage() {
                     {rupees(space.rate * STALL_MODULE.area)} + taxes
                   </p>
                 </article>
-              ))}
+                );
+              })}
             </Reveal>
 
             <div className="inclusions">
@@ -132,7 +169,10 @@ export default async function ExhibitPage() {
 
         <section className="band band-ice calc-band" id="calculator">
           <div className="shell">
-            <p className="eyebrow">Work out the cost</p>
+            <p className="eyebrow">
+              <Calculator size={13} strokeWidth={1.75} aria-hidden="true" />
+              Work out the cost
+            </p>
             <SplitLines as="h2" className="display-l calc-title">
               Cost of a block.
             </SplitLines>
@@ -142,14 +182,20 @@ export default async function ExhibitPage() {
 
         <section className="band band-sheet steps">
           <div className="shell">
-            <p className="eyebrow">How booking works</p>
+            <p className="eyebrow">
+              <ListChecks size={13} strokeWidth={1.75} aria-hidden="true" />
+              How booking works
+            </p>
             <SplitLines as="h2" className="display-l steps-title">
               Three steps, in order.
             </SplitLines>
             <Reveal as="ol" className="step-list" stagger={0.1}>
               {STEPS.map((step, index) => (
                 <li key={step.title}>
-                  <span className="step-number">{index + 1}</span>
+                  <div className="step-marker">
+                    <span className="step-number">{index + 1}</span>
+                    <step.icon size={16} strokeWidth={1.75} aria-hidden="true" />
+                  </div>
                   <h3>{step.title}</h3>
                   <p>{step.body}</p>
                 </li>
@@ -161,7 +207,10 @@ export default async function ExhibitPage() {
         <section className="band band-floor pay-band">
           <div className="shell pay-grid">
             <div>
-              <p className="eyebrow">Payment</p>
+              <p className="eyebrow">
+                <Wallet size={13} strokeWidth={1.75} aria-hidden="true" />
+                Payment
+              </p>
               <SplitLines as="h2" className="display-l">
                 Payable to {PUBLIC_FINANCE.payee}.
               </SplitLines>

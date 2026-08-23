@@ -25,8 +25,18 @@ const json = (body: unknown, status = 200) =>
   });
 
 export async function GET() {
-  const states = await getPublicStates();
-  return json(states);
+  try {
+    const states = await getPublicStates();
+    return json(states);
+  } catch {
+    return json(
+      {
+        message:
+          "Availability is temporarily unavailable. Please try again shortly.",
+      },
+      503,
+    );
+  }
 }
 
 export function OPTIONS() {
@@ -120,14 +130,26 @@ export async function POST(request: Request) {
     );
   }
 
-  const result = await requestHold({
-    stalls,
-    company,
-    contact,
-    email,
-    phone,
-    note,
-  });
-  if (result.ok) return json(result, 201);
-  return json(result, result.reason === "conflict" ? 409 : 400);
+  try {
+    const result = await requestHold({
+      stalls,
+      company,
+      contact,
+      email,
+      phone,
+      note,
+    });
+    if (result.ok) return json(result, 201);
+    return json(result, result.reason === "conflict" ? 409 : 400);
+  } catch {
+    return json(
+      {
+        ok: false,
+        reason: "unavailable",
+        message:
+          "Could not reach the booking system — try again shortly, or email exhibition@ipc75.com.",
+      },
+      503,
+    );
+  }
 }

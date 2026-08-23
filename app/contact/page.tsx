@@ -1,5 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import {
+  ArrowUpRight,
+  Landmark,
+  Mail,
+  MapPin,
+  Phone,
+  Wallet,
+} from "lucide-react";
 import SiteHeader from "@/components/site/SiteHeader";
 import SiteFooter from "@/components/site/SiteFooter";
 import PaymentRequest from "@/components/site/PaymentRequest";
@@ -38,7 +46,10 @@ export default function ContactPage() {
       <main className="head-offset">
         <section className="band band-deep page-lead">
           <div className="shell">
-            <p className="eyebrow">Exhibition desk</p>
+            <p className="eyebrow">
+              <Phone size={13} strokeWidth={1.75} aria-hidden="true" />
+              Exhibition desk
+            </p>
             <SplitLines as="h1" className="display-xl page-title" onLoad delay={0.1}>
               Talk to someone who can hold the space.
             </SplitLines>
@@ -63,6 +74,7 @@ export default function ContactPage() {
                   </span>
                   <h2>{contact.name}</h2>
                   <a className="rep-card-phone" href={telHref(contact.phone)}>
+                    <Phone size={13} strokeWidth={1.75} aria-hidden="true" />
                     {telLabel(contact.phone)}
                   </a>
                 </article>
@@ -74,6 +86,7 @@ export default function ContactPage() {
               <div>
                 {EMAILS.map((email) => (
                   <a className="btn btn-ghost" key={email} href={`mailto:${email}`}>
+                    <Mail size={14} strokeWidth={1.75} aria-hidden="true" />
                     {email}
                   </a>
                 ))}
@@ -86,7 +99,10 @@ export default function ContactPage() {
           <Backdrop media={resolveBackdrop("venue")} tone="paper" opacity={0.2} parallax />
           <div className="shell venue-band-grid">
             <div>
-              <p className="eyebrow">Getting there</p>
+              <p className="eyebrow">
+                <MapPin size={13} strokeWidth={1.75} aria-hidden="true" />
+                Getting there
+              </p>
               <SplitLines as="h2" className="display-l">
                 {VENUE.name}
               </SplitLines>
@@ -111,7 +127,8 @@ export default function ContactPage() {
               </dl>
               <div className="venue-band-actions">
                 <a className="btn btn-ghost" href={mapHref} target="_blank" rel="noreferrer">
-                  Open in maps ↗
+                  Open in maps
+                  <ArrowUpRight size={14} strokeWidth={2} aria-hidden="true" />
                 </a>
                 <Link className="btn btn-primary" href="/floor-plan">
                   See the floor plan
@@ -120,7 +137,10 @@ export default function ContactPage() {
             </div>
 
             <aside className="org-card">
-              <p className="eyebrow">Who runs it</p>
+              <p className="eyebrow">
+                <Landmark size={13} strokeWidth={1.75} aria-hidden="true" />
+                Who runs it
+              </p>
               <dl>
                 <div>
                   <dt className="data-label">Hosted by</dt>
@@ -146,7 +166,8 @@ export default function ContactPage() {
               <div className="org-links">
                 {ORGANISERS.sites.map((site) => (
                   <a key={site.href} className="text-link" href={site.href} target="_blank" rel="noreferrer">
-                    {site.label} ↗
+                    {site.label}
+                    <ArrowUpRight size={11} strokeWidth={2} aria-hidden="true" />
                   </a>
                 ))}
               </div>
@@ -157,7 +178,10 @@ export default function ContactPage() {
         <section className="band band-floor pay-band" id="payment">
           <div className="shell pay-grid">
             <div>
-              <p className="eyebrow">Payment</p>
+              <p className="eyebrow">
+                <Wallet size={13} strokeWidth={1.75} aria-hidden="true" />
+                Payment
+              </p>
               <SplitLines as="h2" className="display-l">
                 Payable to {PUBLIC_FINANCE.payee}.
               </SplitLines>

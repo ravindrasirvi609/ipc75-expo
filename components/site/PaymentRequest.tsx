@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ShieldAlert, Wallet } from "lucide-react";
 import type { BankDetails } from "@/lib/finance";
 
 type State =
@@ -47,7 +48,10 @@ export default function PaymentRequest() {
     const { bank } = state;
     return (
       <div className="pay-reveal" role="status">
-        <p className="eyebrow">Bank details</p>
+        <p className="eyebrow">
+          <Wallet size={13} strokeWidth={1.75} aria-hidden="true" />
+          Bank details
+        </p>
         <dl>
           <div>
             <dt className="data-label">Bank</dt>
@@ -71,6 +75,7 @@ export default function PaymentRequest() {
           </div>
         </dl>
         <p className="pay-verify">
+          <ShieldAlert size={14} strokeWidth={1.75} aria-hidden="true" />
           Verify these against the invoice the exhibition desk sends you before
           you transfer. If a figure differs anywhere, call the desk — do not pay.
         </p>
@@ -80,7 +85,10 @@ export default function PaymentRequest() {
 
   return (
     <form className="pay-form" onSubmit={submit}>
-      <p className="eyebrow">Bank details</p>
+      <p className="eyebrow">
+        <Wallet size={13} strokeWidth={1.75} aria-hidden="true" />
+        Bank details
+      </p>
       <p className="pay-form-lede">
         Account number and IFSC are sent on request rather than published, so
         nobody can clone this page with their own account on it.
