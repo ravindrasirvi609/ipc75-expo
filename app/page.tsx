@@ -1,18 +1,13 @@
 import type { Metadata } from "next";
-import { Factory, Users } from "lucide-react";
 import SiteHeader from "@/components/site/SiteHeader";
 import SiteFooter from "@/components/site/SiteFooter";
 import Hero from "@/components/site/home/Hero";
 import WhyExhibit from "@/components/site/home/WhyExhibit";
-import ProfileList from "@/components/site/home/ProfileList";
+import ProfileGrid from "@/components/site/home/ProfileGrid";
+import Gallery from "@/components/site/home/Gallery";
 import ChargesBand from "@/components/site/home/ChargesBand";
 import VenueBand from "@/components/site/home/VenueBand";
-import {
-  EVENT,
-  EXHIBITOR_PROFILE,
-  VENUE,
-  VISITOR_PROFILE,
-} from "@/lib/expo-content";
+import { EVENT, VENUE } from "@/lib/expo-content";
 import { STALLS } from "@/lib/hall-1c-plan";
 import { getPublicStatesSafely } from "@/lib/stall-bookings";
 import { resolveBackdrop } from "@/lib/media";
@@ -49,29 +44,12 @@ export default async function Home() {
         />
         <WhyExhibit />
 
-        <ProfileList
-          id="exhibitors"
-          eyebrow="Exhibitor profile"
-          icon={Factory}
-          title="What belongs on this floor."
-          lede="If you build, supply or service any part of the powder-to-tablet chain, this is your hall."
-          items={EXHIBITOR_PROFILE}
-          tone="gold"
-          ground="sheet"
-          backdrop={resolveBackdrop("exhibitors")}
+        <ProfileGrid
+          exhibitorBackdrop={resolveBackdrop("exhibitors")}
+          visitorBackdrop={resolveBackdrop("visitors")}
         />
 
-        <ProfileList
-          id="visitors"
-          eyebrow="Visitor profile"
-          icon={Users}
-          title="Who walks it."
-          lede="The people who specify, approve and buy process equipment — across formulations, APIs, nutraceuticals, AYUSH, veterinary, cosmetics and food."
-          items={VISITOR_PROFILE}
-          tone="green"
-          ground="ice"
-          backdrop={resolveBackdrop("visitors")}
-        />
+        <Gallery />
 
         <ChargesBand available={available} backdrop={resolveBackdrop("charges")} />
         <VenueBand backdrop={resolveBackdrop("venue")} />

@@ -41,7 +41,9 @@
 /* SplitText wraps each line; the clip is what makes them rise from nothing. */
 .hero-title .split-line,
 .why-title .split-line,
-.profile-head .split-line,
+.profiles-title .split-line,
+.profile-card-title .split-line,
+.gallery-title .split-line,
 .charges-head .split-line,
 .venue .split-line {
   overflow: hidden;
@@ -205,49 +207,100 @@
   color: var(--ink-soft);
 }
 
+/* Icon-bullet row: the benefits CPHI states as a plain list, stated as tiles. */
+.benefit-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: clamp(16px, 2.2vw, 26px);
+  margin-top: clamp(32px, 4vw, 52px);
+}
+
+.benefit-tile {
+  display: grid;
+  gap: 10px;
+  padding: 22px 20px;
+  background: var(--ice);
+}
+
+.benefit-tile svg {
+  color: var(--saffron);
+}
+
+.benefit-label {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.benefit-note {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
 /* ------------------------------------------------------------------ profiles */
 
-/* Separates the exhibitor list from the paper band above it. */
-.profile.band-sheet {
-  border-top: 1px solid var(--hairline);
+.profiles-head {
+  max-width: 64ch;
 }
 
-.profile-head {
+.profiles-title {
+  max-width: 20ch;
+  margin: 10px 0 16px;
+}
+
+.profile-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
-  gap: clamp(28px, 4vw, 72px);
-  align-items: end;
-  margin-bottom: clamp(38px, 4.5vw, 60px);
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: clamp(24px, 3vw, 40px);
+  margin-top: clamp(36px, 4.5vw, 56px);
 }
 
-.profile-head .display-l {
-  max-width: 18ch;
+.profile-card {
+  display: grid;
+  align-content: start;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+}
+
+.profile-card-media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.profile-card-body {
+  padding: clamp(24px, 3vw, 32px);
+}
+
+.profile-card-title {
+  margin: 10px 0 12px;
+}
+
+.profile-card-lede {
+  margin-bottom: 22px;
 }
 
 .profile-list {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  column-gap: clamp(28px, 4vw, 72px);
   border-top: 1px solid var(--hairline);
 }
 
 .profile-list li {
-  padding: 17px 0 16px 18px;
+  padding: 13px 0 12px 18px;
   border-bottom: 1px solid var(--hairline);
-  font-size: clamp(15px, 1.15vw, 17px);
+  font-size: 14px;
   line-height: 1.4;
   position: relative;
 }
 
-/* A short rule per row, in the tone that identifies the column. */
+/* A short rule per row, in the tone that identifies the card. */
 .profile-list li::before {
   content: "";
   position: absolute;
   left: 0;
-  top: 25px;
+  top: 20px;
   width: 8px;
   height: 1px;
   background: var(--gold);
@@ -258,9 +311,40 @@
 }
 
 @media (max-width: 860px) {
-  .profile-head {
+  .profile-grid {
     grid-template-columns: 1fr;
-    align-items: start;
+  }
+}
+
+/* ------------------------------------------------------------------- gallery */
+
+.gallery-title {
+  max-width: 20ch;
+  margin: 10px 0 clamp(28px, 3.5vw, 44px);
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.gallery-tile {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  margin: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 1080px) {
+  .gallery-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -420,6 +504,19 @@
   margin: 7px 0 0;
   font-size: 15px;
   font-weight: 500;
+}
+
+.venue-map {
+  margin-bottom: 18px;
+  border: 1px solid var(--hairline);
+  overflow: hidden;
+}
+
+.venue-map iframe {
+  display: block;
+  width: 100%;
+  height: 220px;
+  border: 0;
 }
 
 .venue-desk {

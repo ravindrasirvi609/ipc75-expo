@@ -1,10 +1,14 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { EVENT } from "@/lib/expo-content";
 import "./site.css";
+
+/** Where the real emblem goes. Falls back to the typographic mark until it exists. */
+const LOGO_SRC = "/assets/logo.png";
 
 const NAV = [
   { label: "Why exhibit", href: "/#why" },
@@ -22,6 +26,7 @@ const NAV = [
 export default function SiteHeader({ solid = false }: { solid?: boolean }) {
   const [scrolled, setScrolled] = useState(solid);
   const [open, setOpen] = useState(false);
+  const [logoFailed, setLogoFailed] = useState(false);
 
   useEffect(() => {
     if (solid) return;
@@ -49,14 +54,29 @@ export default function SiteHeader({ solid = false }: { solid?: boolean }) {
   return (
     <header className={`site-head${scrolled ? " is-solid" : ""}`}>
       <Link className="lockup" href="/" aria-label={`${EVENT.name} home`}>
-        {/* Typographic stand-in. Drop the real emblem in here. */}
-        <span className="lockup-mark" aria-hidden="true">
-          75
-        </span>
-        <span className="lockup-text">
-          <b>PharmaExpo</b>
-          <i>{EVENT.milestone}</i>
-        </span>
+        {logoFailed ? (
+          <>
+            {/* Typographic stand-in, shown until /assets/logo.png exists. */}
+            <span className="lockup-mark" aria-hidden="true">
+              75
+            </span>
+            <span className="lockup-text">
+              <b>PharmaExpo</b>
+              <i>{EVENT.milestone}</i>
+            </span>
+          </>
+        ) : (
+          <Image
+            className="lockup-logo"
+            src={LOGO_SRC}
+            alt={`${EVENT.parent} — ${EVENT.milestone}`}
+            width={220}
+            height={56}
+            priority
+            unoptimized
+            onError={() => setLogoFailed(true)}
+          />
+        )}
       </Link>
 
       <nav className={`site-nav${open ? " is-open" : ""}`} aria-label="Main">

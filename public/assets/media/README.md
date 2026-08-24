@@ -1,8 +1,9 @@
 # Background media
 
-Drop files in this folder. Nothing here is required — any slot you leave empty
-renders exactly as the site does today, with no gap and no broken image. Add a
-file and that section picks it up.
+Drop files in this folder to replace the stand-in. Every slot below already
+shows a free Unsplash photo by default (wired in `lib/media.ts`) — nothing here
+is required for the site to look finished. Add a licensed file with the
+filename below and it takes over from the Unsplash fallback immediately.
 
 ## Files the site looks for
 

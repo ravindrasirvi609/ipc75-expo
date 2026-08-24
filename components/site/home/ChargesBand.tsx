@@ -22,8 +22,8 @@ export default function ChargesBand({
 }) {
   return (
     <section className="band band-floor charges has-backdrop" id="charges">
-      {/* Restrained: the rates are the point of this band, not the picture. */}
-      <Backdrop media={backdrop} tone="navy" opacity={0.13} />
+      {/* The rate cards still carry the numbers; the picture now reads clearly behind them. */}
+      <Backdrop media={backdrop} tone="navy" opacity={0.42} />
       <div className="shell">
         <div className="charges-head">
           <div>

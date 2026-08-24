@@ -64,6 +64,17 @@
   color: var(--gold);
 }
 
+.lockup-logo {
+  height: 42px;
+  width: auto;
+}
+
+@media (max-width: 620px) {
+  .lockup-logo {
+    height: 34px;
+  }
+}
+
 .site-nav {
   display: flex;
   gap: 26px;

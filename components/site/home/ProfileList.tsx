@@ -1,7 +1,7 @@
+import Image from "next/image";
 import type { LucideIcon } from "lucide-react";
 import Reveal from "@/components/motion/Reveal";
 import SplitLines from "@/components/motion/SplitLines";
-import Backdrop from "@/components/media/Backdrop";
 import type { Backdrop as BackdropData } from "@/lib/media";
 
 type ProfileListProps = {
@@ -13,13 +13,11 @@ type ProfileListProps = {
   items: readonly string[];
   /** `gold` for exhibitors, `green` for visitors. */
   tone: "gold" | "green";
-  /** Paper or ice ground, so the two lists don't read as one long block. */
-  ground: "sheet" | "ice";
   backdrop: BackdropData | null;
 };
 
 /**
- * One of the brochure's two profile columns.
+ * One of the brochure's two profile cards — exhibitor or visitor.
  *
  * The items are a set, not a sequence, so they carry no 01/02/03 markers — the
  * total is stated once in the eyebrow, where the count is actually useful, and
@@ -33,36 +31,38 @@ export default function ProfileList({
   lede,
   items,
   tone,
-  ground,
   backdrop,
 }: ProfileListProps) {
   return (
-    <section
-      className={`band band-${ground} profile profile-${tone} has-backdrop`}
-      id={id}
-    >
-      {/* Faint by design: 16 and 17 rows of text have to stay easy to read. */}
-      <Backdrop media={backdrop} tone="paper" opacity={0.14} />
-      <div className="shell">
-        <div className="profile-head">
-          <div>
-            <p className="eyebrow">
-              <Icon size={13} strokeWidth={1.75} aria-hidden="true" />
-              {eyebrow} · {items.length} categories
-            </p>
-            <SplitLines as="h2" className="display-l">
-              {title}
-            </SplitLines>
-          </div>
-          <p className="lede">{lede}</p>
+    <article className={`profile-card profile-${tone}`} id={id}>
+      {backdrop?.image ? (
+        <div className="profile-card-media">
+          <Image
+            src={backdrop.image}
+            alt=""
+            fill
+            sizes="(max-width: 860px) 100vw, 50vw"
+            style={{ objectFit: "cover" }}
+          />
         </div>
+      ) : null}
 
-        <Reveal as="ul" className="profile-list" stagger={0.035} distance={16}>
+      <div className="profile-card-body">
+        <p className="eyebrow">
+          <Icon size={13} strokeWidth={1.75} aria-hidden="true" />
+          {eyebrow} · {items.length} categories
+        </p>
+        <SplitLines as="h3" className="display-m profile-card-title">
+          {title}
+        </SplitLines>
+        <p className="lede profile-card-lede">{lede}</p>
+
+        <Reveal as="ul" className="profile-list" stagger={0.02} distance={10}>
           {items.map((item) => (
             <li key={item}>{item}</li>
           ))}
         </Reveal>
       </div>
-    </section>
+    </article>
   );
 }

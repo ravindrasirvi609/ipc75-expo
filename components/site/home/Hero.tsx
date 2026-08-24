@@ -23,8 +23,8 @@ export default function Hero({
 
   return (
     <section className="hero band-deep has-backdrop" id="top">
-      {/* Atmosphere only — the hall plan stays the focal point of this section. */}
-      <Backdrop media={backdrop} tone="navy" opacity={0.2} priority parallax={false} />
+      {/* A real photo now, not texture — the hall plan on the right stays the focal point. */}
+      <Backdrop media={backdrop} tone="navy" opacity={0.6} priority parallax={false} />
       <div className="hero-grid shell">
         <div className="hero-copy">
           <p className="eyebrow">

@@ -8,6 +8,9 @@ import { CONTACTS, EMAILS, EVENT, VENUE, telHref, telLabel } from "@/lib/expo-co
 const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
   VENUE.mapQuery,
 )}`;
+const mapEmbedSrc = `https://www.google.com/maps?q=${encodeURIComponent(
+  VENUE.mapQuery,
+)}&output=embed`;
 
 export default function VenueBand({
   backdrop,
@@ -17,7 +20,7 @@ export default function VenueBand({
   return (
     <section className="band band-ice venue has-backdrop" id="venue">
       {/* The venue photo is the one people actually want to see, so it drifts. */}
-      <Backdrop media={backdrop} tone="paper" opacity={0.22} parallax />
+      <Backdrop media={backdrop} tone="paper" opacity={0.5} parallax />
       <div className="shell">
         <div className="venue-grid">
           <div>
@@ -48,8 +51,17 @@ export default function VenueBand({
               </div>
             </dl>
 
+            <div className="venue-map">
+              <iframe
+                src={mapEmbedSrc}
+                title={`Map of ${VENUE.name}`}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+
             <a className="text-link" href={mapHref} target="_blank" rel="noreferrer">
-              Open in maps
+              Open in Google Maps
               <ArrowUpRight size={12} strokeWidth={2} aria-hidden="true" />
             </a>
           </div>

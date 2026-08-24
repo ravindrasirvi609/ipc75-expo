@@ -1,4 +1,10 @@
-import { Lightbulb } from "lucide-react";
+import {
+  Building2,
+  CalendarDays,
+  Layers,
+  Lightbulb,
+  MapPinned,
+} from "lucide-react";
 import Counter from "@/components/motion/Counter";
 import Reveal from "@/components/motion/Reveal";
 import SplitLines from "@/components/motion/SplitLines";
@@ -23,6 +29,29 @@ const FIGURES = [
     suffix: "",
     label: "Industry categories",
     note: `${EXHIBITOR_PROFILE.length} exhibiting · ${VISITOR_PROFILE.length} visiting`,
+  },
+];
+
+const BENEFITS = [
+  {
+    icon: Building2,
+    label: "Inside the Congress",
+    note: "Runs alongside the 75th IPC, so your buyers are already on site.",
+  },
+  {
+    icon: CalendarDays,
+    label: EVENT.dates.label,
+    note: EVENT.dates.days,
+  },
+  {
+    icon: MapPinned,
+    label: "Live floor plan",
+    note: "Pick a stall on the surveyed plan and see what's actually left.",
+  },
+  {
+    icon: Layers,
+    label: "Two space formats",
+    note: "Shell or bare space, priced per square metre.",
   },
 ];
 
@@ -52,6 +81,16 @@ export default function WhyExhibit() {
               </span>
               <span className="figure-label">{figure.label}</span>
               <span className="figure-note">{figure.note}</span>
+            </div>
+          ))}
+        </Reveal>
+
+        <Reveal className="benefit-row" stagger={0.07} distance={16}>
+          {BENEFITS.map((benefit) => (
+            <div className="benefit-tile" key={benefit.label}>
+              <benefit.icon size={20} strokeWidth={1.5} aria-hidden="true" />
+              <span className="benefit-label">{benefit.label}</span>
+              <span className="benefit-note">{benefit.note}</span>
             </div>
           ))}
         </Reveal>

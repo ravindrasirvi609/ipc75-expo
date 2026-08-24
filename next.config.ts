@@ -1,6 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  images: {
+    // Unsplash stand-in photography for backdrop slots that have no local
+    // file yet. See lib/media.ts.
+    remotePatterns: [
+      { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
+    ],
+    // 68 is Backdrop's texture quality; 75 is next/image's own default.
+    qualities: [68, 75],
+  },
   async headers() {
     return [
       {
