@@ -10,36 +10,36 @@ import SplitLines from "@/components/motion/SplitLines";
  */
 const PHOTOS = [
   {
-    src: "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?q=80&w=1200&auto=format&fit=crop",
-    alt: "Pharmaceutical tablets and capsules",
+    src: "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=1200&auto=format&fit=crop",
+    alt: "Visitors attending a business exhibition",
   },
   {
-    src: "https://images.unsplash.com/photo-1748349221526-33b51820b21e?q=80&w=1200&auto=format&fit=crop",
-    alt: "Technicians working in a pharmaceutical cleanroom",
+    src: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1200&auto=format&fit=crop",
+    alt: "Conference and exhibition presentation hall",
   },
   {
-    src: "https://images.unsplash.com/photo-1719900010796-fb804dd54954?q=80&w=1200&auto=format&fit=crop",
-    alt: "Visitors walking a trade-show aisle",
+    src: "https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1200&auto=format&fit=crop",
+    alt: "People networking at an industry event",
   },
   {
-    src: "https://images.unsplash.com/photo-1705517243962-230c07db6b23?q=80&w=1200&auto=format&fit=crop",
-    alt: "Pharmaceutical tablets in a blister pack",
+    src: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1200&auto=format&fit=crop",
+    alt: "Crowd visiting a large exhibition event",
   },
   {
-    src: "https://images.unsplash.com/photo-1586183189334-1ad3cd238e21?q=80&w=1200&auto=format&fit=crop",
-    alt: "Modern convention centre building in Delhi",
+    src: "https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=1200&auto=format&fit=crop",
+    alt: "Business professionals meeting at an expo",
   },
   {
-    src: "https://images.unsplash.com/photo-1607398027609-fbd1a06fb5d4?q=80&w=1200&auto=format&fit=crop",
-    alt: "Plant operator on a pharmaceutical manufacturing floor",
+    src: "https://images.unsplash.com/photo-1505236858219-8359eb29e329?q=80&w=1200&auto=format&fit=crop",
+    alt: "Branded event space with visitors",
   },
   {
     src: "https://images.unsplash.com/photo-1698581075105-924b6c70b5d6?q=80&w=1200&auto=format&fit=crop",
-    alt: "Exhibitors and visitors at an exhibition stall",
+    alt: "Exhibitors and visitors at a trade-show stall",
   },
   {
     src: "https://images.unsplash.com/photo-1757578097654-fdae0f7cf008?q=80&w=1200&auto=format&fit=crop",
-    alt: "Tablets moving through processing machinery",
+    alt: "Visitors moving through a convention hall",
   },
 ] as const;
 
