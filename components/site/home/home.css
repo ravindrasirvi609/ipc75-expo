@@ -1,5 +1,20 @@
 /* Homepage sections. Bands alternate navy show floor and paper spec sheet. */
 
+/* -------------------------------------------------------------- booking */
+
+.booking-band {
+  background: #ffffff;
+  padding-top: clamp(42px, 6vw, 80px);
+  padding-bottom: clamp(42px, 6vw, 80px);
+}
+
+.booking-embed {
+  display: block;
+  width: 100%;
+  min-height: 480px;
+  border: 0;
+}
+
 /* -------------------------------------------------------------------- hero */
 
 .hero {
