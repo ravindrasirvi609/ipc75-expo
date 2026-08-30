@@ -122,12 +122,12 @@ export const VISITOR_PROFILE = [
   "Investors, Innovators and Start-ups",
 ] as const;
 
-/** Exhibition sales team, as listed on the brochure. */
+/** Exhibition sales team, as listed on the brochure. Primary contacts first. */
 export const CONTACTS = [
-  { name: "Kamal Bhardwaj", phone: "9899392930" },
-  { name: "Chetan Salvi", phone: "9773124383" },
   { name: "Vikram Chaudhary", phone: "9460959052" },
   { name: "Kishan Seervi", phone: "8290122535" },
+  { name: "Kamal Bhardwaj", phone: "9899392930" },
+  { name: "Chetan Salvi", phone: "9773124383" },
 ] as const;
 
 export const EMAILS = ["expo@75thipc.com", "exhibition.75ipc@gmail.com"] as const;

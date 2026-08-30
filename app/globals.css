@@ -159,11 +159,11 @@ svg {
   color: #a9bcd8;
 }
 
-/* Eyebrow: the instrument-panel label. */
+/* Eyebrow: a plain small-caps label, no rule, no box. */
 .eyebrow {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   margin: 0 0 18px;
   font-family: var(--mono);
   font-size: 11px;
@@ -177,34 +177,15 @@ svg {
   color: var(--gold);
 }
 
-.eyebrow::before {
-  content: "";
-  width: 22px;
-  height: 1px;
-  background: currentColor;
-  flex: none;
-}
-
-/* Ruled divider, ticked like the hall plan's metre scale. */
+/* A single quiet line, used sparingly as a section break. */
 .measure-rule {
-  height: 9px;
-  border-top: 1px solid var(--hairline);
-  background-image: linear-gradient(
-    90deg,
-    var(--hairline) 0 1px,
-    transparent 1px 100%
-  );
-  background-size: var(--module) 100%;
+  height: 1px;
+  background: var(--hairline);
 }
 
 .band-floor .measure-rule,
 .band-deep .measure-rule {
-  border-color: var(--hairline-dark);
-  background-image: linear-gradient(
-    90deg,
-    var(--hairline-dark) 0 1px,
-    transparent 1px 100%
-  );
+  background: var(--hairline-dark);
 }
 
 /* ------------------------------------------------------------------ *
@@ -217,7 +198,7 @@ svg {
   gap: 12px;
   padding: 15px 22px;
   border: 1px solid transparent;
-  border-radius: 2px;
+  border-radius: 6px;
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.1em;
@@ -303,8 +284,9 @@ svg {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px;
-  border: 1px solid var(--hairline);
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.06em;
@@ -314,7 +296,7 @@ svg {
 
 .band-floor .chip,
 .band-deep .chip {
-  border-color: var(--hairline-dark);
+  background: #ffffff14;
   color: #bccbe2;
 }
 

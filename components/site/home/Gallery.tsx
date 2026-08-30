@@ -41,6 +41,38 @@ const PHOTOS = [
     src: "https://images.unsplash.com/photo-1757578097654-fdae0f7cf008?q=80&w=1200&auto=format&fit=crop",
     alt: "Visitors moving through a convention hall",
   },
+  {
+    src: "https://images.unsplash.com/photo-1513828646384-e4d8ec30d2bb?q=80&w=1200&auto=format&fit=crop",
+    alt: "Industrial machinery on a production line",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1732690233982-1d4567384ea1?q=80&w=1200&auto=format&fit=crop",
+    alt: "Lab technician operating manufacturing equipment",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1513828742140-ccaa28f3eda0?q=80&w=1200&auto=format&fit=crop",
+    alt: "Industrial processing equipment on the plant floor",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1558008258-3256797b43f3?q=80&w=1200&auto=format&fit=crop",
+    alt: "Audience seated at a congress session",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1531058020387-3be344556be6?q=80&w=1200&auto=format&fit=crop",
+    alt: "Delegates inside a conference hall",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1544531586-fde5298cdd40?q=80&w=1200&auto=format&fit=crop",
+    alt: "Speaker addressing a congress audience",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1560439514-4e9645039924?q=80&w=1200&auto=format&fit=crop",
+    alt: "Crowd of delegates in a convention lobby",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1561489413-985b06da5bee?q=80&w=1200&auto=format&fit=crop",
+    alt: "Delegates meeting at a table on the show floor",
+  },
 ] as const;
 
 export default function Gallery() {

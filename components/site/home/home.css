@@ -1,20 +1,5 @@
 /* Homepage sections. Bands alternate navy show floor and paper spec sheet. */
 
-/* -------------------------------------------------------------- booking */
-
-.booking-band {
-  background: #ffffff;
-  padding-top: clamp(42px, 6vw, 80px);
-  padding-bottom: clamp(42px, 6vw, 80px);
-}
-
-.booking-embed {
-  display: block;
-  width: 100%;
-  min-height: 480px;
-  border: 0;
-}
-
 /* -------------------------------------------------------------------- hero */
 
 .hero {
@@ -186,19 +171,12 @@
 .figure-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  border-top: 1px solid var(--hairline);
+  gap: clamp(28px, 4vw, 48px);
 }
 
 .figure-tile {
   display: grid;
   gap: 7px;
-  padding: 28px 26px 30px;
-  border-right: 1px solid var(--hairline);
-  border-bottom: 1px solid var(--hairline);
-}
-
-.figure-tile:last-child {
-  border-right: 0;
 }
 
 .figure-value {
@@ -274,13 +252,16 @@
   display: grid;
   align-content: start;
   background: var(--paper);
-  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow:
+    0 1px 2px #10254f0d,
+    0 16px 36px #10254f12;
 }
 
 .profile-card-media {
   position: relative;
   aspect-ratio: 16 / 10;
-  border-bottom: 1px solid var(--hairline);
 }
 
 .profile-card-body {
@@ -299,25 +280,26 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  border-top: 1px solid var(--hairline);
+  display: grid;
+  gap: 12px;
 }
 
 .profile-list li {
-  padding: 13px 0 12px 18px;
-  border-bottom: 1px solid var(--hairline);
+  padding-left: 16px;
   font-size: 14px;
   line-height: 1.4;
   position: relative;
 }
 
-/* A short rule per row, in the tone that identifies the card. */
+/* A small dot per row, in the tone that identifies the card. */
 .profile-list li::before {
   content: "";
   position: absolute;
   left: 0;
-  top: 20px;
-  width: 8px;
-  height: 1px;
+  top: 8px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
   background: var(--gold);
 }
 
@@ -341,7 +323,7 @@
 .gallery-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 4px;
+  gap: 10px;
 }
 
 .gallery-tile {
@@ -349,6 +331,7 @@
   aspect-ratio: 4 / 3;
   margin: 0;
   overflow: hidden;
+  border-radius: 10px;
 }
 
 @media (max-width: 1080px) {
@@ -378,19 +361,16 @@
   color: #fff;
 }
 
-/* Borders, not a background-filled gap: see the comment on .rep-grid in contact.css. */
 .rate-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  border-top: 1px solid var(--hairline-dark);
-  border-left: 1px solid var(--hairline-dark);
+  gap: clamp(16px, 2vw, 24px);
 }
 
 .rate-card {
-  background: var(--navy);
+  background: var(--navy-soft);
+  border-radius: 12px;
   padding: clamp(26px, 3vw, 40px);
-  border-right: 1px solid var(--hairline-dark);
-  border-bottom: 1px solid var(--hairline-dark);
   display: grid;
   align-content: start;
   gap: 16px;
@@ -448,9 +428,7 @@
 }
 
 .rate-module {
-  margin: 6px 0 0;
-  padding-top: 16px;
-  border-top: 1px solid var(--hairline-dark);
+  margin: 10px 0 0;
   display: grid;
   gap: 5px;
   font-family: var(--mono);
@@ -510,9 +488,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 22px;
-  margin: 0 0 30px;
-  padding-top: 24px;
-  border-top: 1px solid var(--hairline);
+  margin: 30px 0;
 }
 
 .venue-facts dd {
@@ -523,8 +499,11 @@
 
 .venue-map {
   margin-bottom: 18px;
-  border: 1px solid var(--hairline);
+  border-radius: 12px;
   overflow: hidden;
+  box-shadow:
+    0 1px 2px #10254f0d,
+    0 16px 36px #10254f12;
 }
 
 .venue-map iframe {
@@ -537,7 +516,10 @@
 .venue-desk {
   padding: clamp(26px, 3vw, 38px);
   background: var(--paper);
-  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  box-shadow:
+    0 1px 2px #10254f0d,
+    0 16px 36px #10254f12;
 }
 
 .venue-desk-lede {
@@ -551,7 +533,7 @@
   margin: 0;
   padding: 0;
   display: grid;
-  border-top: 1px solid var(--hairline);
+  gap: 4px;
 }
 
 .rep-list li {
@@ -559,14 +541,14 @@
   grid-template-columns: 34px minmax(0, 1fr) auto;
   align-items: center;
   gap: 14px;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--hairline);
+  padding: 10px 0;
 }
 
 /* Monogram stands in for a headshot. Swap for an <Image> when you have photos. */
 .rep-monogram {
   width: 34px;
   height: 34px;
+  border-radius: 8px;
   display: grid;
   place-items: center;
   background: var(--navy);

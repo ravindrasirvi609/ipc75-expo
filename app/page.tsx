@@ -7,7 +7,6 @@ import ProfileGrid from "@/components/site/home/ProfileGrid";
 import Gallery from "@/components/site/home/Gallery";
 import ChargesBand from "@/components/site/home/ChargesBand";
 import VenueBand from "@/components/site/home/VenueBand";
-import BookingEmbed from "@/components/site/home/BookingEmbed";
 import { EVENT, VENUE } from "@/lib/expo-content";
 import { STALLS } from "@/lib/hall-1c-plan";
 import { getPublicStatesSafely } from "@/lib/stall-bookings";
@@ -54,11 +53,6 @@ export default async function Home() {
 
         <ChargesBand available={available} backdrop={resolveBackdrop("charges")} />
         <VenueBand backdrop={resolveBackdrop("venue")} />
-        <section className="band booking-band" id="book">
-          <div className="shell">
-            <BookingEmbed />
-          </div>
-        </section>
       </main>
       <SiteFooter />
     </>

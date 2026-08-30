@@ -1,31 +1,27 @@
 /* Contact page. */
 
-/*
- * Deliberately not the "background peeks through a 1px gap" hairline trick:
- * with auto-fit columns the item count rarely divides evenly, and the
- * leftover cell in a short last row would show as a solid empty block
- * instead of a thin line. Borders on each card can't leave a gap empty.
- */
 .rep-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  border-top: 1px solid var(--hairline);
-  border-left: 1px solid var(--hairline);
+  gap: 18px;
 }
 
 .rep-card {
   background: var(--paper);
+  border-radius: 12px;
   padding: clamp(26px, 3vw, 36px);
-  border-right: 1px solid var(--hairline);
-  border-bottom: 1px solid var(--hairline);
   display: grid;
   gap: 14px;
   align-content: start;
+  box-shadow:
+    0 1px 2px #10254f0d,
+    0 16px 36px #10254f12;
 }
 
 .rep-card-monogram {
   width: 46px;
   height: 46px;
+  border-radius: 10px;
   display: grid;
   place-items: center;
   background: var(--navy);
@@ -96,7 +92,10 @@
 .org-card {
   padding: clamp(26px, 3vw, 38px);
   background: var(--paper);
-  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  box-shadow:
+    0 1px 2px #10254f0d,
+    0 16px 36px #10254f12;
 }
 
 .org-card dl {
@@ -140,7 +139,7 @@
 .pay-reveal {
   padding: clamp(26px, 3vw, 36px);
   background: var(--navy-deep);
-  border: 1px solid var(--hairline-dark);
+  border-radius: 12px;
   display: grid;
   gap: 16px;
   align-content: start;
@@ -205,9 +204,7 @@
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  margin: 6px 0 0;
-  padding-top: 16px;
-  border-top: 1px solid var(--hairline-dark);
+  margin: 10px 0 0;
   font-size: 13px;
   line-height: 1.65;
   color: #a3b6d4;
