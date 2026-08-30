@@ -35,7 +35,7 @@ export default function GlobalError({
           background: "#0a1a3a",
           color: "#eaf0fa",
           fontFamily:
-            '"Space Grotesk", "Segoe UI", system-ui, sans-serif',
+            '"Inter", "Segoe UI", system-ui, sans-serif',
         }}
       >
         <div style={{ maxWidth: 560, margin: "0 auto", textAlign: "center", padding: "0 24px" }}>
@@ -46,7 +46,7 @@ export default function GlobalError({
           />
           <p
             style={{
-              fontFamily: '"DM Mono", ui-monospace, monospace',
+              fontFamily: '"IBM Plex Mono", ui-monospace, monospace',
               fontSize: 11,
               letterSpacing: "0.16em",
               textTransform: "uppercase",
@@ -74,7 +74,7 @@ export default function GlobalError({
                 borderRadius: 2,
                 background: "#e4761b",
                 color: "#150c04",
-                fontFamily: '"DM Mono", ui-monospace, monospace',
+                fontFamily: '"IBM Plex Mono", ui-monospace, monospace',
                 fontSize: 11,
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
@@ -90,7 +90,7 @@ export default function GlobalError({
                 border: "1px solid #ffffff3d",
                 borderRadius: 2,
                 color: "#eaf0fa",
-                fontFamily: '"DM Mono", ui-monospace, monospace',
+                fontFamily: '"IBM Plex Mono", ui-monospace, monospace',
                 fontSize: 11,
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",

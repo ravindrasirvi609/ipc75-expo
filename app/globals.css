@@ -1,11 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap");
 
 /*
  * Platinum Jubilee token system for the 75th IPC PharmaExpo.
  *
  * The palette is the brochure's: IPC navy as the ground, gold as the jubilee
  * signal, saffron for action, IPGA green for anything confirmed. Two faces only
- * — Space Grotesk carries display and body, DM Mono carries every label, figure
+ * — Inter carries display and body, IBM Plex Mono carries every label, figure
  * and measurement, which is the register the audience reads on a machine panel.
  *
  * Layout sits on the 3m x 3m stall module: the unit this show is actually sold
@@ -29,8 +29,8 @@
   --hairline-dark: #ffffff26;
 
   /* Type */
-  --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
-  --mono: "DM Mono", ui-monospace, "Cascadia Mono", monospace;
+  --display: "Inter", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", monospace;
 
   /* The 3m module, and the page rhythm derived from it */
   --module: clamp(58px, 6.2vw, 96px);

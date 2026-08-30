@@ -24,7 +24,7 @@
   flex-direction: column;
   background: var(--hp-panel);
   color: var(--hp-ink);
-  font-family: var(--display, "Space Grotesk"), "Segoe UI", system-ui, sans-serif;
+  font-family: var(--display, "Inter"), "Segoe UI", system-ui, sans-serif;
   border: 1px solid var(--hp-line);
   overflow: hidden;
 }
@@ -69,7 +69,7 @@
 
 .hp-title span {
   font:
-    10px/1.4 "DM Mono",
+    10px/1.4 "IBM Plex Mono",
     ui-monospace,
     monospace;
   color: var(--hp-muted);
@@ -103,7 +103,7 @@
   background: var(--hp-panel);
   color: inherit;
   font:
-    11px/1 "DM Mono",
+    11px/1 "IBM Plex Mono",
     ui-monospace,
     monospace;
 }
@@ -117,7 +117,7 @@
   position: absolute;
   right: 9px;
   font:
-    9px/1 "DM Mono",
+    9px/1 "IBM Plex Mono",
     ui-monospace,
     monospace;
   font-style: normal;
@@ -141,7 +141,7 @@
   background: var(--hp-panel);
   color: inherit;
   font:
-    11px "DM Mono",
+    11px "IBM Plex Mono",
     ui-monospace,
     monospace;
   cursor: pointer;
@@ -167,7 +167,7 @@
   background: color-mix(in srgb, var(--hp-hold) 16%, transparent);
   color: var(--hp-ink);
   font:
-    11px/1.5 "DM Mono",
+    11px/1.5 "IBM Plex Mono",
     ui-monospace,
     monospace;
 }
@@ -347,7 +347,7 @@
   background: color-mix(in srgb, var(--hp-raise) 92%, transparent);
   border: 1px solid var(--hp-line);
   font:
-    10px/1 "DM Mono",
+    10px/1 "IBM Plex Mono",
     ui-monospace,
     monospace;
   text-transform: uppercase;
@@ -395,7 +395,7 @@
   background: color-mix(in srgb, var(--hp-raise) 94%, transparent);
   border: 1px solid var(--hp-line);
   font:
-    10px/1 "DM Mono",
+    10px/1 "IBM Plex Mono",
     ui-monospace,
     monospace;
   text-transform: uppercase;
@@ -404,7 +404,7 @@
 }
 
 .hp-readout b {
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 15px;
   letter-spacing: -0.02em;
 }
@@ -450,7 +450,7 @@
 .hp-feedback {
   margin: 0;
   font:
-    11px/1.5 "DM Mono",
+    11px/1.5 "IBM Plex Mono",
     ui-monospace,
     monospace;
   color: var(--hp-muted);
@@ -491,7 +491,7 @@
   color: inherit;
   padding: 6px 9px;
   font:
-    11px "DM Mono",
+    11px "IBM Plex Mono",
     ui-monospace,
     monospace;
   cursor: pointer;
@@ -511,7 +511,7 @@
 
 .hp-total {
   font:
-    10px "DM Mono",
+    10px "IBM Plex Mono",
     ui-monospace,
     monospace;
   text-transform: uppercase;
@@ -526,7 +526,7 @@
   border: 1px solid var(--hp-accent);
   padding: 10px 15px;
   font:
-    10px "DM Mono",
+    10px "IBM Plex Mono",
     ui-monospace,
     monospace;
   text-transform: uppercase;
@@ -569,7 +569,7 @@
   display: grid;
   gap: 6px;
   font:
-    10px "DM Mono",
+    10px "IBM Plex Mono",
     ui-monospace,
     monospace;
   text-transform: uppercase;
@@ -588,7 +588,7 @@
   color: var(--hp-ink);
   padding: 9px 10px;
   font:
-    12px "Space Grotesk",
+    12px "Inter",
     sans-serif;
   resize: vertical;
 }
@@ -616,7 +616,7 @@
   margin: 0;
   max-width: 52ch;
   font:
-    10px/1.6 "DM Mono",
+    10px/1.6 "IBM Plex Mono",
     ui-monospace,
     monospace;
   color: var(--hp-muted);
