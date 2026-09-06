@@ -3,7 +3,6 @@ import { headers } from "next/headers";
 import { Map } from "lucide-react";
 import SiteHeader from "@/components/site/SiteHeader";
 import SiteFooter from "@/components/site/SiteFooter";
-import EmbedSnippet from "@/components/floor-plan/EmbedSnippet";
 import PlanWidget from "@/components/floor-plan/PlanWidget";
 import SplitLines from "@/components/motion/SplitLines";
 import {
@@ -114,11 +113,7 @@ export default async function FloorPlanPage({
           />
         </div>
 
-        <section className="band band-sheet embed-band">
-          <div className="shell">
-            <EmbedSnippet origin={origin} />
-          </div>
-        </section>
+
       </main>
       <SiteFooter />
     </>
