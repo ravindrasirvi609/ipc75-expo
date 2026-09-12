@@ -29,7 +29,8 @@ export async function GET(request: Request) {
         "stall_id,status,company,contact,email,phone,note,requested_at,updated_at",
       )
       .order("updated_at", { ascending: false });
-    if (error) return Response.json({ message: error.message }, { status: 500 });
+    if (error)
+      return Response.json({ message: error.message }, { status: 500 });
     return Response.json(
       { bookings: data ?? [] },
       { headers: { "Cache-Control": "no-store" } },
@@ -51,18 +52,23 @@ export async function PATCH(request: Request) {
       );
     const body = await request.json().catch(() => ({}));
     const stallId = typeof body.stallId === "string" ? body.stallId.trim() : "";
+    const action = body.action === "release" ? "release" : "";
     const status =
       body.status === "booked" || body.status === "hold" ? body.status : "";
-    if (!isStallId(stallId) || !status)
+    if (!isStallId(stallId) || (!status && !action))
       return Response.json(
         { message: "Invalid stall or status." },
         { status: 400 },
       );
-    const { error } = await getSupabaseAdmin()
-      .from("stall_bookings")
-      .update({ status, updated_at: new Date().toISOString() })
-      .eq("stall_id", stallId);
-    if (error) return Response.json({ message: error.message }, { status: 500 });
+    const query = getSupabaseAdmin().from("stall_bookings");
+    const { error } =
+      action === "release"
+        ? await query.delete().eq("stall_id", stallId).eq("status", "hold")
+        : await query
+            .update({ status, updated_at: new Date().toISOString() })
+            .eq("stall_id", stallId);
+    if (error)
+      return Response.json({ message: error.message }, { status: 500 });
     return Response.json({ ok: true });
   } catch {
     return Response.json(
