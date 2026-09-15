@@ -18,6 +18,10 @@ type Form = {
   contact: string;
   email: string;
   phone: string;
+  address: string;
+  city: string;
+  state: string;
+  gstNumber: string;
   note: string;
 };
 const EMPTY_FORM: Form = {
@@ -25,6 +29,10 @@ const EMPTY_FORM: Form = {
   contact: "",
   email: "",
   phone: "",
+  address: "",
+  city: "",
+  state: "",
+  gstNumber: "",
   note: "",
 };
 
@@ -176,6 +184,7 @@ export default function PlanWidget({
           });
           return current;
         }
+        setFormOpen(true);
         return [...current, stall.id];
       });
     },
@@ -420,7 +429,9 @@ export default function PlanWidget({
         )}
 
         {formOpen && selected.length > 0 ? (
-          <form className="hp-form" onSubmit={submit}>
+          <div className="hp-dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setFormOpen(false); }}>
+          <form className="hp-form hp-dialog" onSubmit={submit}>
+            <div className="hp-dialog-head"><div><span className="hp-eyebrow">Stall request</span><h2>Tell us about your organisation</h2><p>Requesting {selected.join(", ")} · {selected.length * 9} sqm</p></div><button type="button" className="hp-dialog-close" onClick={() => setFormOpen(false)} aria-label="Close request form"><X size={18} /></button></div>
             <label>
               Company / organisation
               <input
@@ -456,7 +467,7 @@ export default function PlanWidget({
               />
             </label>
             <label>
-              Phone <small>optional</small>
+              WhatsApp number
               <input
                 type="tel"
                 maxLength={40}
@@ -466,6 +477,10 @@ export default function PlanWidget({
                 }
               />
             </label>
+            <label className="hp-wide">Address<input required maxLength={240} value={form.address} onChange={(event) => setForm({ ...form, address: event.target.value })} /></label>
+            <label>City<input required maxLength={80} value={form.city} onChange={(event) => setForm({ ...form, city: event.target.value })} /></label>
+            <label>State<input required maxLength={80} value={form.state} onChange={(event) => setForm({ ...form, state: event.target.value })} /></label>
+            <label>GST number<input required maxLength={30} value={form.gstNumber} onChange={(event) => setForm({ ...form, gstNumber: event.target.value })} /></label>
             <label className="hp-wide">
               Anything we should know <small>optional</small>
               <textarea
@@ -489,6 +504,7 @@ export default function PlanWidget({
               </button>
             </div>
           </form>
+          </div>
         ) : null}
       </footer>
     </div>

@@ -97,14 +97,18 @@ export async function POST(request: Request) {
   const contact = text(payload.contact, 120);
   const email = text(payload.email, 160);
   const phone = text(payload.phone, 40);
+  const address = text(payload.address, 240);
+  const city = text(payload.city, 80);
+  const state = text(payload.state, 80);
+  const gstNumber = text(payload.gstNumber, 30);
   const note = text(payload.note, 500);
 
-  if (!company || !contact || !email) {
+  if (!company || !contact || !email || !phone || !address || !city || !state || !gstNumber) {
     return json(
       {
         ok: false,
         reason: "invalid",
-        message: "Company, contact name and email are required.",
+        message: "Company, contact name, email, WhatsApp number, address, city, state and GST number are required.",
       },
       400,
     );
@@ -137,6 +141,10 @@ export async function POST(request: Request) {
       contact,
       email,
       phone,
+      address,
+      city,
+      state,
+      gstNumber,
       note,
     });
     if (result.ok) return json(result, 201);

@@ -4,9 +4,9 @@ import { MAX_STALLS_PER_REQUEST } from "./booking-limits";
 import { getSupabaseAdmin } from "./supabase-admin";
 
 export type StallStatus = "available" | "hold" | "booked";
-export type StallRecord = { status: "hold" | "booked"; company?: string; contact?: string; email?: string; phone?: string; note?: string; requestedAt?: string };
+export type StallRecord = { status: "hold" | "booked"; company?: string; contact?: string; email?: string; phone?: string; address?: string; city?: string; state?: string; gst_number?: string; note?: string; requestedAt?: string };
 export type PublicStallState = { id: string; status: "hold" | "booked"; company?: string };
-export type HoldRequest = { stalls: string[]; company: string; contact: string; email: string; phone?: string; note?: string };
+export type HoldRequest = { stalls: string[]; company: string; contact: string; email: string; phone: string; address: string; city: string; state: string; gstNumber: string; note?: string };
 export { MAX_STALLS_PER_REQUEST };
 
 type BookingRow = { stall_id: string; status: "hold" | "booked"; company: string | null; updated_at: string };
@@ -51,7 +51,8 @@ export async function requestHold(request: HoldRequest): Promise<HoldResult> {
   if (unknown.length) return { ok: false, reason: "invalid", message: `Not stalls in Hall 1C: ${unknown.join(", ")}.` };
   const { data, error } = await getSupabaseAdmin().rpc("request_stall_hold", {
     p_stalls: ids, p_company: request.company, p_contact: request.contact, p_email: request.email,
-    p_phone: request.phone ?? "", p_note: request.note ?? "",
+    p_phone: request.phone, p_address: request.address, p_city: request.city,
+    p_state: request.state, p_gst_number: request.gstNumber, p_note: request.note ?? "",
   });
   if (error) throw new Error(`Could not create stall hold: ${error.message}`);
   return data as HoldResult;
