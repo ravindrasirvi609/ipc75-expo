@@ -469,6 +469,7 @@ export default function PlanWidget({
             <label>
               WhatsApp number
               <input
+                required
                 type="tel"
                 maxLength={40}
                 value={form.phone}
