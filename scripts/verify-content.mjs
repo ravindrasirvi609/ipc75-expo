@@ -47,8 +47,8 @@ expect("venue address", VENUE.address, "Sector 25, Dwarka, New Delhi – 110077"
 expect("hall", VENUE.hall, "Hall 1C");
 expect("host", ORGANISERS.hostShort, "IPGA");
 
-expect("exhibitor categories", EXHIBITOR_PROFILE.length, 16);
-expect("visitor categories", VISITOR_PROFILE.length, 17);
+expect("exhibitor categories", EXHIBITOR_PROFILE.length, 10);
+expect("visitor categories", VISITOR_PROFILE.length, 6);
 expect("sales contacts", CONTACTS.length, 4);
 expect("desk emails", EMAILS.length, 2);
 

@@ -81,45 +81,28 @@ export const INDICATIVE_GST = 0.18;
 /** Stall module sold in Hall 1C. Matches lib/hall-1c-plan.ts. */
 export const STALL_MODULE = { size: "3m × 3m", area: 9 } as const;
 
-/** Who the exhibition sells to — 16 categories, in brochure order. */
+/** Who the exhibition sells to — in brochure order. */
 export const EXHIBITOR_PROFILE = [
-  "Powder Processing and Particle Technology",
-  "Pharmaceutical Processing and Manufacturing Machinery",
-  "API and Formulation Manufacturing Equipment",
-  "Mixing, Milling, Granulation and Drying Technologies",
-  "Material Handling, Conveying and Storage Systems",
-  "Tablet, Capsule and Powder-Filling Machinery",
-  "Cleanroom, HVAC and Containment Solutions",
-  "Dust Control, Filtration and Industrial Safety Systems",
-  "Process Automation, Instrumentation and Digital Technologies",
-  "Laboratory, Testing and Quality-Control Equipment",
-  "Pharmaceutical Packaging Machinery and Materials",
-  "Stainless-Steel Equipment and Process Components",
-  "Plant Engineering and Turnkey Project Solutions",
-  "Contract Manufacturing and Processing Services",
-  "Excipients, Pharmaceutical Ingredients and Specialty Materials",
-  "Research, Consultancy, Validation and Regulatory Services",
+  "Pharmaceutical formulations, bulk drugs, active pharmaceutical ingredients, intermediates and excipients",
+  "Biopharmaceuticals, vaccines, biotechnology products and biosimilars",
+  "Pharmaceutical plant, processing machinery and production technologies",
+  "Packaging materials, packaging machinery, labelling and track-and-trace solutions",
+  "Laboratory equipment, analytical instruments, cleanroom systems and quality-control solutions",
+  "Contract research, clinical research, contract development and manufacturing organisations",
+  "R&D, process development, technology transfer and regulatory services",
+  "Water, waste, environment, safety, cold-chain, logistics and infrastructure solutions",
+  "Digital, automation, software, data and management solutions for the pharmaceutical industry",
+  "Trade associations, institutions, technical publications and industry-support organisations",
 ] as const;
 
-/** Who walks the floor — 17 categories, in brochure order. */
+/** Who walks the floor — in brochure order. */
 export const VISITOR_PROFILE = [
-  "Pharmaceutical Formulation Manufacturers",
-  "API and Intermediate Manufacturers",
-  "Biotechnology and Biopharmaceutical Companies",
-  "Nutraceutical and Dietary Supplement Manufacturers",
-  "Herbal, AYUSH and Traditional Medicine Manufacturers",
-  "Veterinary Pharmaceutical Manufacturers",
-  "Chemical and Specialty Chemical Companies",
-  "Cosmetics and Personal-Care Manufacturers",
-  "Food, Dairy and Health-Ingredient Manufacturers",
-  "Contract Research and Manufacturing Organisations",
-  "Pharmaceutical Machinery and Equipment Buyers",
-  "Plant Engineering and Project Consultants",
-  "Importers, Exporters, Distributors and Technology Agents",
-  "Research Laboratories and Academic Institutions",
-  "Government Departments and Regulatory Authorities",
-  "Industry Associations and Trade Organisations",
-  "Investors, Innovators and Start-ups",
+  "CEOs, business heads, plant heads, technocrats and scientists from pharmaceutical and biotechnology companies",
+  "Purchase, procurement, sourcing, engineering, production, quality-control and quality-assurance professionals",
+  "R&D specialists, formulation scientists, pharmacists, doctors and healthcare professionals",
+  "Regulators, policymakers, government officials and representatives of trade and diplomatic organisations",
+  "Hospital administrators, institutional buyers, distributors, agents and supply-chain professionals",
+  "Academicians, teachers, researchers, students, consultants, investors and entrepreneurs",
 ] as const;
 
 /** Exhibition sales team, as listed on the brochure. Primary contacts first. */
