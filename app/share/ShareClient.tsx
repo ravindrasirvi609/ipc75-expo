@@ -32,7 +32,9 @@ function dataUrlToBlob(dataUrl: string): Blob {
  * Loads a user photo as an ImageBitmap, requesting EXIF-aware orientation
  * via the `imageOrientation: "from-image"` option so phone photos are not
  * rendered sideways. Falls back to a plain HTMLImageElement on older browsers
- * that do not support createImageBitmap with orientation.
+ * that do not support createImageBitmap with orientation. Throws if the file
+ * cannot be decoded at all — callers are expected to catch this and treat it
+ * the same as "no photo".
  */
 async function loadPhotoBitmap(dataUrl: string): Promise<PhotoSource> {
   const blob = dataUrlToBlob(dataUrl);
@@ -47,7 +49,8 @@ async function loadPhotoBitmap(dataUrl: string): Promise<PhotoSource> {
 
 /**
  * Loads a plain image URL (same-origin; EXIF correction is not needed here
- * because logos do not carry orientation metadata).
+ * because logos do not carry orientation metadata). Rejects if the image
+ * fails to load.
  */
 function loadImageAsSource(src: string): Promise<PhotoSource> {
   return new Promise((resolve, reject) => {
@@ -57,6 +60,34 @@ function loadImageAsSource(src: string): Promise<PhotoSource> {
     img.onerror = reject;
     img.src = src;
   });
+}
+
+/**
+ * Resolves the (possibly absent) photo and logo assets a post needs.
+ *
+ * Split out from the drawing step deliberately: decoding an image takes a
+ * variable amount of time, so if this is called twice in quick succession
+ * (e.g. the user swaps photos before the first one finishes decoding), the
+ * two calls can resolve in either order. Isolating "load" from "paint" lets
+ * the caller check it is still the most recent request *before* touching
+ * the canvas, so a slow, now-stale load can never overwrite a fresher one.
+ *
+ * Each asset is loaded independently — if the photo fails to decode, the
+ * logo can still load, and vice versa.
+ */
+async function loadPostAssets(
+  photoDataUrl: string | null,
+  logoDataUrl: string | null
+): Promise<{ photo: PhotoSource | null; logo: PhotoSource | null }> {
+  const [photo, logo] = await Promise.all([
+    photoDataUrl
+      ? loadPhotoBitmap(photoDataUrl).catch((): PhotoSource | null => null)
+      : Promise.resolve<PhotoSource | null>(null),
+    logoDataUrl
+      ? loadImageAsSource(logoDataUrl).catch((): PhotoSource | null => null)
+      : Promise.resolve<PhotoSource | null>(null),
+  ]);
+  return { photo, logo };
 }
 
 /**
@@ -85,21 +116,12 @@ function roundRectPath(
   ctx.arcTo(x, y + h, x, y + h - r, r);
   ctx.lineTo(x, y + r);
   ctx.arcTo(x, y, x + r, y, r);
-}
-
-/**
- * Sets canvas `letterSpacing`. This property is part of the Canvas 2D Level 2
- * spec and is supported in Chrome 99+, Firefox 101+, Safari 16+. The cast
- * is needed because older TypeScript lib versions do not yet include it in
- * the CanvasRenderingContext2D type definition.
- */
-function setLetterSpacing(ctx: CanvasRenderingContext2D, value: string) {
-  (ctx as unknown as { letterSpacing: string }).letterSpacing = value;
+  ctx.closePath();
 }
 
 /**
  * Reduces `fontSize` in 2px steps until `text` fits within `maxWidth`.
- * Returns the final size used and leaves `ctx.font` set to that size.
+ * Leaves `ctx.font` set to the final size used.
  */
 function fitFontSize(
   ctx: CanvasRenderingContext2D,
@@ -108,20 +130,22 @@ function fitFontSize(
   initialSize: number,
   weight: number | string,
   family: string
-): number {
+): void {
   let size = initialSize;
   ctx.font = `${weight} ${size}px ${family}`;
   while (ctx.measureText(text).width > maxWidth && size > 32) {
     size -= 2;
     ctx.font = `${weight} ${size}px ${family}`;
   }
-  return size;
 }
 
 // ─── Main drawing function ────────────────────────────────────────────────────
 
 /**
- * Renders the social-media post into `ctx`.
+ * Paints the social-media post into `ctx`. Synchronous and side-effect-free
+ * beyond the canvas itself — `photo` and `logo` must already be resolved
+ * (via loadPostAssets) before calling this, so a caller can always confirm
+ * it is still the most recent request before any pixel is drawn.
  *
  * Layout coordinates are written for a 1080 × 1080 base grid. A single
  * `ctx.scale(size/1080, size/1080)` call at the top maps them uniformly, so
@@ -131,13 +155,13 @@ function fitFontSize(
  * Content (dates, venue, etc.) is read from lib/expo-content so the post
  * always reflects the canonical facts for the exhibition.
  */
-async function drawPost(
+function paintPost(
   ctx: CanvasRenderingContext2D,
   size: number,
   name: string,
-  photoDataUrl: string | null,
-  logoDataUrl: string | null
-): Promise<void> {
+  photo: PhotoSource | null,
+  logo: PhotoSource | null
+): void {
   const B = 1080; // base grid dimension
   const s = size / B;
 
@@ -155,7 +179,7 @@ async function drawPost(
   // Mirrors the hall-plan's concentric-ring motif used on the homepage hero.
   const arcDefs: [number, number][] = [
     [520, 0.14],
-    [720, 0.10],
+    [720, 0.1],
     [920, 0.07],
   ];
   for (const [r, alpha] of arcDefs) {
@@ -182,7 +206,7 @@ async function drawPost(
 
   // ── Congress eyebrow (top-centre) ────────────────────────────────────────
   ctx.textAlign = "center";
-  setLetterSpacing(ctx, "0.14em");
+  ctx.letterSpacing = "0.14em";
   ctx.font = '500 22px "IBM Plex Mono"';
   ctx.fillStyle = "#c9a227"; // --gold
   ctx.fillText(
@@ -191,7 +215,7 @@ async function drawPost(
     72
   );
 
-  setLetterSpacing(ctx, "0.10em");
+  ctx.letterSpacing = "0.10em";
   ctx.font = '400 16px "IBM Plex Mono"';
   ctx.fillStyle = "#8a6f1a"; // --gold-dim
   ctx.fillText(
@@ -213,15 +237,7 @@ async function drawPost(
   const cy = 375;
   const r = 205;
 
-  if (photoDataUrl) {
-    let photo: PhotoSource;
-    try {
-      photo = await loadPhotoBitmap(photoDataUrl);
-    } catch {
-      // If the load fails entirely, skip the photo.
-      photo = { source: new Image(), width: 1, height: 1 };
-    }
-
+  if (photo) {
     // Soft gold glow ring outside the photo
     const glow = ctx.createRadialGradient(cx, cy, r, cx, cy, r + 24);
     glow.addColorStop(0, "rgba(201,162,39,0.28)");
@@ -258,7 +274,7 @@ async function drawPost(
     ctx.drawImage(source, sx, sy, sw, sh, cx - r, cy - r, r * 2, r * 2);
     ctx.restore();
   } else {
-    // Placeholder shown before the user uploads a photo
+    // Placeholder — shown before upload, or if the photo failed to decode.
     ctx.save();
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
@@ -273,7 +289,7 @@ async function drawPost(
     ctx.setLineDash([]);
     ctx.restore();
 
-    setLetterSpacing(ctx, "0.12em");
+    ctx.letterSpacing = "0.12em";
     ctx.font = '400 21px "IBM Plex Mono"';
     ctx.fillStyle = "#4d5f7d"; // --ink-soft
     ctx.textAlign = "center";
@@ -282,15 +298,15 @@ async function drawPost(
 
   // ── Attendee name ─────────────────────────────────────────────────────────
   const displayName = name.trim() || "Your Name";
-  setLetterSpacing(ctx, "-0.02em");
-  // Shrink font size if the name is wide, down to a 32px minimum
+  ctx.letterSpacing = "-0.02em";
+  // Shrink font size if the name is wide, down to a 32px minimum.
   fitFontSize(ctx, displayName.toUpperCase(), B - 160, 76, 700, '"Inter"');
   ctx.fillStyle = name.trim() ? "#eaf0fa" : "#4d5f7d";
   ctx.textAlign = "center";
   ctx.fillText(displayName.toUpperCase(), B / 2, 655);
 
   // ── Attending tagline ──────────────────────────────────────────────────────
-  setLetterSpacing(ctx, "0");
+  ctx.letterSpacing = "0";
   ctx.font = '400 27px "Inter"';
   ctx.fillStyle = "#a9bcd8";
   ctx.fillText("is proudly attending the", B / 2, 708);
@@ -300,12 +316,12 @@ async function drawPost(
   ctx.fillText(EVENT.parent, B / 2, 757);
 
   // ── Event detail strip ─────────────────────────────────────────────────────
-  setLetterSpacing(ctx, "0.07em");
+  ctx.letterSpacing = "0.07em";
   ctx.font = '500 21px "IBM Plex Mono"';
   ctx.fillStyle = "#c9a227";
   ctx.fillText(EVENT.dates.label.toUpperCase(), B / 2, 820);
 
-  setLetterSpacing(ctx, "0");
+  ctx.letterSpacing = "0";
   ctx.font = '400 19px "Inter"';
   ctx.fillStyle = "#8fa5c6";
   ctx.fillText(`${VENUE.name}  ·  ${VENUE.city}`, B / 2, 856);
@@ -319,33 +335,30 @@ async function drawPost(
   ctx.stroke();
 
   // ── Footer: logo (left) · hashtags + URL (right) ──────────────────────────
-  if (logoDataUrl) {
-    const logo = await loadImageAsSource(logoDataUrl).catch(() => null);
-    if (logo && logo.width > 0) {
-      const logoH = 46;
-      const logoW = Math.round((logo.width / logo.height) * logoH);
-      const padX = 10;
-      const padY = 7;
-      const plateW = logoW + padX * 2;
-      const plateH = logoH + padY * 2;
-      const lx = 80;
-      const ly = 913;
+  if (logo && logo.width > 0) {
+    const logoH = 46;
+    const logoW = Math.round((logo.width / logo.height) * logoH);
+    const padX = 10;
+    const padY = 7;
+    const plateW = logoW + padX * 2;
+    const plateH = logoH + padY * 2;
+    const lx = 80;
+    const ly = 913;
 
-      // White backing plate — matches the `.lockup-logo { background: #fff }`
-      // rule in site.css that always mounts the logo on a white ground.
-      ctx.save();
-      ctx.fillStyle = "#ffffff";
-      ctx.beginPath();
-      roundRectPath(ctx, lx, ly, plateW, plateH, 4);
-      ctx.fill();
-      ctx.restore();
+    // White backing plate — matches the `.lockup-logo { background: #fff }`
+    // rule in site.css that always mounts the logo on a white ground.
+    ctx.save();
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    roundRectPath(ctx, lx, ly, plateW, plateH, 4);
+    ctx.fill();
+    ctx.restore();
 
-      ctx.drawImage(logo.source, lx + padX, ly + padY, logoW, logoH);
-    }
+    ctx.drawImage(logo.source, lx + padX, ly + padY, logoW, logoH);
   }
 
   // Hashtags
-  setLetterSpacing(ctx, "0.04em");
+  ctx.letterSpacing = "0.04em";
   ctx.font = '400 17px "IBM Plex Mono"';
   ctx.fillStyle = "#4d5f7d"; // --ink-soft
   ctx.textAlign = "right";
@@ -357,6 +370,11 @@ async function drawPost(
   ctx.fillText(ORGANISERS.sites[0].label, B - 80, 968);
 
   ctx.restore(); // undo ctx.scale(s, s)
+}
+
+/** Releases a decoded ImageBitmap's memory. HTMLImageElement sources need no cleanup. */
+function releasePhoto(photo: PhotoSource | null): void {
+  if (photo?.source instanceof ImageBitmap) photo.source.close();
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -374,10 +392,32 @@ export default function ShareClient() {
   const [logoDataUrl, setLogoDataUrl] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
   const [dragging, setDragging] = useState(false);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
 
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
   /** Timer ref for debouncing name-driven preview redraws. */
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /**
+   * Always mirrors the latest `photoDataUrl`. The debounced redraw in
+   * handleNameChange reads this instead of the value closed over at
+   * keystroke time, so a photo dropped during the debounce window is never
+   * overwritten by the stale value once the timer fires.
+   */
+  const photoDataUrlRef = useRef<string | null>(null);
+  /**
+   * Monotonically increasing token identifying the most recently requested
+   * render. Because loading a photo/logo is async and takes a variable
+   * amount of time, two overlapping renderPreview calls (e.g. the user
+   * swaps photos quickly) can have their asset-loading resolve out of
+   * order. Each call captures the token at start and checks it again once
+   * loading finishes; if a newer render has started in the meantime, this
+   * call discards its result instead of painting a stale preview.
+   */
+  const renderGenerationRef = useRef(0);
+
+  useEffect(() => {
+    photoDataUrlRef.current = photoDataUrl;
+  }, [photoDataUrl]);
 
   // Preload the site logo as a data URL once on mount. This ensures the
   // canvas can draw it without a second network round-trip at download time,
@@ -406,18 +446,41 @@ export default function ShareClient() {
     };
   }, []);
 
-  // Renders the preview canvas. Defined with useCallback so the photo/logo
-  // change effect below can call the latest version.
+  // Renders the preview canvas. Loads assets first, confirms this is still
+  // the latest request, and only then paints — see renderGenerationRef above.
   const renderPreview = useCallback(
     async (currentName: string, currentPhoto: string | null) => {
-      const canvas = previewCanvasRef.current;
-      if (!canvas) return;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
+      const generation = ++renderGenerationRef.current;
+
       // Wait for Inter and IBM Plex Mono to be fully loaded in the document
       // before drawing so canvas text matches the design intent.
       await document.fonts.ready;
-      await drawPost(ctx, canvas.width, currentName, currentPhoto, logoDataUrl);
+      const { photo, logo } = await loadPostAssets(currentPhoto, logoDataUrl);
+
+      if (generation !== renderGenerationRef.current) {
+        // A newer render started while these assets were loading.
+        releasePhoto(photo);
+        return;
+      }
+
+      const canvas = previewCanvasRef.current;
+      if (!canvas) {
+        releasePhoto(photo);
+        return;
+      }
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        releasePhoto(photo);
+        return;
+      }
+
+      try {
+        paintPost(ctx, canvas.width, currentName, photo, logo);
+      } catch (err) {
+        console.error("Failed to render the post preview", err);
+      } finally {
+        releasePhoto(photo);
+      }
     },
     [logoDataUrl]
   );
@@ -434,7 +497,10 @@ export default function ShareClient() {
     const value = e.target.value;
     setName(value);
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => renderPreview(value, photoDataUrl), 350);
+    debounceRef.current = setTimeout(
+      () => renderPreview(value, photoDataUrlRef.current),
+      350
+    );
   };
 
   // Reads an image File via FileReader and stores it as a data URL.
@@ -465,20 +531,34 @@ export default function ShareClient() {
   const handleDownload = async () => {
     if (!name.trim() || !photoDataUrl) return;
     setGenerating(true);
+    setDownloadError(null);
+    let photo: PhotoSource | null = null;
     try {
       await document.fonts.ready;
+      const assets = await loadPostAssets(photoDataUrl, logoDataUrl);
+      photo = assets.photo;
+
       const canvas = document.createElement("canvas");
       canvas.width = 1080;
       canvas.height = 1080;
-      const ctx = canvas.getContext("2d")!;
-      await drawPost(ctx, 1080, name, photoDataUrl, logoDataUrl);
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("Canvas is not supported in this browser.");
+
+      paintPost(ctx, 1080, name, photo, assets.logo);
+
       const url = canvas.toDataURL("image/png");
       const a = document.createElement("a");
       a.href = url;
       // Slugify the name so the filename is clean on all OSes.
       a.download = `75ipc-${name.trim().replace(/\s+/g, "-").toLowerCase()}.png`;
       a.click();
+    } catch (err) {
+      console.error("Failed to generate the post", err);
+      setDownloadError(
+        "Something went wrong generating your post. Please try again, or try a different photo."
+      );
     } finally {
+      releasePhoto(photo);
       setGenerating(false);
     }
   };
@@ -590,7 +670,11 @@ export default function ShareClient() {
           )}
         </button>
 
-        {!canDownload && (
+        {downloadError ? (
+          <p className="share-error" role="alert">
+            {downloadError}
+          </p>
+        ) : !canDownload ? (
           <p className="share-hint">
             {!photoDataUrl && !name.trim()
               ? "Add your photo and name to unlock the download."
@@ -598,7 +682,7 @@ export default function ShareClient() {
                 ? "Upload your photo to unlock the download."
                 : "Enter your name to unlock the download."}
           </p>
-        )}
+        ) : null}
       </div>
 
       {/* ── Preview (right column) ──────────────────────────────────────── */}
