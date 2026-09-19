@@ -1,0 +1,258 @@
+/*
+ * Social post generator page — /share
+ *
+ * Layout: two-column grid (form | preview) on desktop, stacked on mobile.
+ * The form is a fixed-width left rail; the preview panel takes whatever
+ * space remains and centres the canvas within it.
+ *
+ * No new design tokens are introduced here — every colour, font and spacing
+ * value references the root tokens from globals.css.
+ */
+
+/* ─── Section ─────────────────────────────────────────────────────────────── */
+
+.share-section {
+  /* Ensure the band fills the screen even when content is short, so the
+     footer does not float up on a fresh page load. */
+  min-height: calc(100vh - 280px);
+}
+
+/* ─── Two-column generator grid ──────────────────────────────────────────── */
+
+.share-grid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: clamp(40px, 7vw, 96px);
+  align-items: start;
+}
+
+@media (max-width: 880px) {
+  .share-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Form column ─────────────────────────────────────────────────────────── */
+
+.share-form {
+  display: grid;
+  gap: 26px;
+}
+
+.share-field {
+  display: grid;
+  gap: 8px;
+}
+
+.share-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* Text input — mirrors the admin.css pattern for consistency */
+.share-input {
+  border: 1px solid var(--hairline);
+  background: #fff;
+  padding: 14px 15px;
+  font: inherit;
+  font-size: 15px;
+  color: var(--ink);
+  border-radius: 2px;
+  transition: border-color 0.16s ease;
+}
+
+.share-input::placeholder {
+  color: var(--ink-soft);
+  opacity: 0.6;
+}
+
+.share-input:focus {
+  outline: none;
+  border-color: var(--saffron);
+}
+
+/* ─── Photo upload zone ───────────────────────────────────────────────────── */
+
+.share-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 140px;
+  padding: 28px 20px;
+  border: 2px dashed var(--hairline);
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--ink-soft);
+  text-align: center;
+  font-size: 14px;
+  transition:
+    border-color 0.16s ease,
+    background 0.16s ease;
+  /* The label must not clip the thumbnail once a photo is loaded */
+  position: relative;
+  overflow: hidden;
+}
+
+.share-upload:hover,
+.share-upload.is-dragging {
+  border-color: var(--gold);
+  border-style: solid;
+  background: color-mix(in srgb, var(--gold) 5%, transparent);
+}
+
+/* After a photo is chosen the zone collapses to a compact thumbnail strip */
+.share-upload.has-photo {
+  min-height: 0;
+  height: 130px;
+  padding: 0;
+  border-style: solid;
+  border-color: var(--hairline);
+}
+
+.share-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/*
+ * "Click to change" overlay — appears on hover over the uploaded thumbnail.
+ * Positioned absolutely so it covers the photo without displacing it.
+ */
+.share-upload-swap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 26, 58, 0.68);
+  color: #eaf0fa;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.share-upload.has-photo:hover .share-upload-swap {
+  opacity: 1;
+}
+
+.share-upload-icon {
+  color: var(--ink-soft);
+  margin-bottom: 2px;
+}
+
+.share-upload-main {
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.share-upload-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  opacity: 0.65;
+}
+
+/* ─── Download button ─────────────────────────────────────────────────────── */
+
+.share-download-btn {
+  /* Full-width primary button with centred content */
+  width: 100%;
+  justify-content: center;
+  gap: 10px;
+  padding: 17px 24px;
+  font-size: 12px;
+}
+
+/* ─── Spinner on the Loader2 icon while the canvas renders ──────────────── */
+
+@keyframes share-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.share-spin {
+  animation: share-spin 0.75s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .share-spin {
+    animation: none;
+  }
+}
+
+/* ─── Hint text shown when the download is locked ───────────────────────── */
+
+.share-hint {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+  text-align: center;
+  /* Nudge into the visual centre of the button's implicit row */
+  margin-top: -6px;
+}
+
+/* ─── Preview column ─────────────────────────────────────────────────────── */
+
+.share-preview {
+  display: grid;
+  gap: 12px;
+  /* Centre the preview block within its grid cell on wide viewports */
+  justify-items: center;
+}
+
+.share-preview-label {
+  /* Left-align the "Live preview" data-label, matching the form's labels */
+  justify-self: start;
+}
+
+.share-preview-frame {
+  width: 480px;
+  max-width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  overflow: hidden;
+  /* Subtle lift so the dark card reads against the paper background */
+  box-shadow:
+    0 4px 16px rgba(16, 37, 79, 0.08),
+    0 12px 40px rgba(16, 37, 79, 0.10);
+}
+
+/* The canvas fills its frame and scales responsively via CSS.
+   The HTML width/height attributes (480×480) set the pixel resolution;
+   CSS scales the display. */
+.share-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.share-preview-note {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  opacity: 0.75;
+  text-align: center;
+}
+
+/* On mobile, let the preview fill available width up to 440px */
+@media (max-width: 880px) {
+  .share-preview-frame {
+    width: min(100%, 440px);
+  }
+}
