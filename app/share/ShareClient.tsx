@@ -153,31 +153,35 @@ function paintPost(
   ctx.save();
   ctx.scale(s, s);
 
-  // ── Multi-stop background gradient ───────────────────────────────────────
-  // Three-colour sweep: very dark navy at the top-left corner, the brand
-  // navy across the centre, a slightly different hue at the bottom to break
-  // the flatness without adding a jarring colour shift.
+  // ── Rich multi-stop background ───────────────────────────────────────────
   const bg = ctx.createLinearGradient(0, 0, B * 0.7, B);
   bg.addColorStop(0, "#060f1e");
-  bg.addColorStop(0.3, "#0a1a3a"); // --navy-deep
-  bg.addColorStop(0.65, "#10254f"); // --navy
-  bg.addColorStop(1, "#0c1d3d");
+  bg.addColorStop(0.28, "#0a1a3a"); // --navy-deep
+  bg.addColorStop(0.6, "#10254f"); // --navy
+  bg.addColorStop(1, "#0b1c3c");
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, B, B);
 
   // Warm gold halo behind the logo area at the top
-  const topHalo = ctx.createRadialGradient(B / 2, 0, 0, B / 2, 0, 400);
-  topHalo.addColorStop(0, "rgba(201,162,39,0.14)");
+  const topHalo = ctx.createRadialGradient(B / 2, 0, 0, B / 2, 0, 420);
+  topHalo.addColorStop(0, "rgba(201,162,39,0.16)");
   topHalo.addColorStop(1, "rgba(201,162,39,0)");
   ctx.fillStyle = topHalo;
-  ctx.fillRect(0, 0, B, 420);
+  ctx.fillRect(0, 0, B, 440);
 
-  // Subtle saffron warmth at the bottom for an Indian-palette feel
-  const btmHalo = ctx.createRadialGradient(B / 2, B, 0, B / 2, B, 520);
-  btmHalo.addColorStop(0, "rgba(228,118,27,0.07)");
+  // Saffron warmth at the bottom — anchors the Indian-palette feel
+  const btmHalo = ctx.createRadialGradient(B / 2, B, 0, B / 2, B, 540);
+  btmHalo.addColorStop(0, "rgba(228,118,27,0.09)");
   btmHalo.addColorStop(1, "rgba(228,118,27,0)");
   ctx.fillStyle = btmHalo;
-  ctx.fillRect(0, B - 440, B, 440);
+  ctx.fillRect(0, B - 460, B, 460);
+
+  // Teal accent glow at left-centre — adds a third colour note
+  const tealHalo = ctx.createRadialGradient(0, B * 0.5, 0, 0, B * 0.5, 340);
+  tealHalo.addColorStop(0, "rgba(42,118,180,0.08)");
+  tealHalo.addColorStop(1, "rgba(42,118,180,0)");
+  ctx.fillStyle = tealHalo;
+  ctx.fillRect(0, B * 0.25, 360, B * 0.5);
 
   // ── Decorative concentric arcs (bottom-right) ────────────────────────────
   const arcsDR: [number, number][] = [[510, 0.13], [710, 0.09], [910, 0.06]];
@@ -192,8 +196,8 @@ function paintPost(
     ctx.restore();
   }
 
-  // Mirrored accent arcs top-left, subtler — adds depth without symmetry
-  const arcsTL: [number, number][] = [[260, 0.07], [380, 0.05]];
+  // Mirrored arcs top-left for balance
+  const arcsTL: [number, number][] = [[260, 0.07], [390, 0.05]];
   for (const [r, alpha] of arcsTL) {
     ctx.save();
     ctx.beginPath();
@@ -205,21 +209,18 @@ function paintPost(
     ctx.restore();
   }
 
-  // ── Gold diagonal ribbon accent (right edge) ─────────────────────────────
+  // ── Subtle gold ribbon along the right edge ───────────────────────────────
   ctx.save();
   ctx.translate(B, 0);
   ctx.rotate(Math.PI / 4);
-  ctx.fillStyle = "#c9a227"; // --gold
-  ctx.globalAlpha = 0.12;
-  ctx.fillRect(-14, -260, 28, 520);
-  ctx.globalAlpha = 0.05;
-  ctx.fillRect(-40, -260, 18, 520);
+  ctx.fillStyle = "#c9a227";
+  ctx.globalAlpha = 0.11;
+  ctx.fillRect(-13, -260, 26, 520);
+  ctx.globalAlpha = 0.04;
+  ctx.fillRect(-38, -260, 17, 520);
   ctx.restore();
 
-  // ── Indian tricolor accent stripe ────────────────────────────────────────
-  // A thin three-band bar at the very top edge — saffron, white, India green.
-  // Decorative only; keeps the canvas ground clearly India-positioned without
-  // overpowering the brand navy.
+  // ── Indian tricolor accent stripe (top edge) ─────────────────────────────
   const stripeH = 7;
   ctx.fillStyle = "#FF9933"; // Saffron
   ctx.fillRect(0, 0, B / 3, stripeH);
@@ -228,29 +229,50 @@ function paintPost(
   ctx.fillStyle = "#138808"; // India green
   ctx.fillRect((2 * B) / 3, 0, B / 3, stripeH);
 
-  // ── IPC logo (large, top centre) ─────────────────────────────────────────
-  // Replaces the plain-text eyebrow of the original design: the official IPC
-  // logo image already contains "Indian Pharmaceutical Congress", the 75 motif,
-  // the Platinum Jubilee ribbon and the Viksit Bharat tagline.
+  // ── "PLATINUM JUBILEE" corner ribbon (top-right) ──────────────────────────
+  // A classic corner-ribbon badge rendered diagonally across the top-right
+  // corner. The saffron-to-gold gradient pulls the two Indian-palette accent
+  // colours together into a single striking element. The ribbon intentionally
+  // runs partly off-canvas — that clipped look is the standard corner-badge
+  // convention (think e-commerce "SALE" ribbons).
+  {
+    const ribbonGrad = ctx.createLinearGradient(-200, 0, 200, 0);
+    ribbonGrad.addColorStop(0, "#e4761b"); // --saffron
+    ribbonGrad.addColorStop(0.5, "#f0a050"); // warm amber midpoint
+    ribbonGrad.addColorStop(1, "#c9a227"); // --gold
+    ctx.save();
+    ctx.translate(B - 20, 20);
+    ctx.rotate(-Math.PI / 4);
+    ctx.fillStyle = ribbonGrad;
+    ctx.fillRect(-220, -19, 440, 38);
+    // Thin white borders on the ribbon edges for definition
+    ctx.strokeStyle = "rgba(255,255,255,0.35)";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(-220, -19, 440, 38);
+    // Ribbon text
+    ctx.textAlign = "center";
+    ctx.letterSpacing = "0.14em";
+    ctx.font = '700 13px "IBM Plex Mono"';
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText("PLATINUM JUBILEE", 0, 5);
+    ctx.restore();
+  }
+
+  // ── IPC logo plate (top centre) ───────────────────────────────────────────
   if (ipcLogo && ipcLogo.width > 0) {
-    const lh = 76; // target height at 1080 scale
-    const lw = Math.round((ipcLogo.width / ipcLogo.height) * lh); // 76*3.74≈284
-    const px = 14,
-      py = 10;
+    const lh = 74;
+    const lw = Math.round((ipcLogo.width / ipcLogo.height) * lh); // ≈277
+    const px = 14, py = 10;
     const plateX = Math.round((B - lw) / 2) - px;
     const plateY = 18;
-
-    // White plate — the logo has a white background that must not sit bare on navy
     ctx.save();
     ctx.fillStyle = "#ffffff";
     ctx.beginPath();
     roundRectPath(ctx, plateX, plateY, lw + px * 2, lh + py * 2, 7);
     ctx.fill();
     ctx.restore();
-
     ctx.drawImage(ipcLogo.source, plateX + px, plateY + py, lw, lh);
   } else {
-    // Typographic fallback while the logo is loading or unavailable
     ctx.letterSpacing = "0.14em";
     ctx.font = '500 20px "IBM Plex Mono"';
     ctx.fillStyle = "#c9a227";
@@ -258,38 +280,51 @@ function paintPost(
     ctx.fillText("75TH INDIAN PHARMACEUTICAL CONGRESS", B / 2, 72);
   }
 
-  // Thin gold rule separating logo plate from the rest of the card
+  // ── Expo name + venue subtitle ────────────────────────────────────────────
+  // Associates the user's post with the specific exhibition (not just the
+  // congress) and grounds it in the host city. Teal adds a fourth hue.
+  ctx.letterSpacing = "0.08em";
+  ctx.font = '500 13px "IBM Plex Mono"';
+  ctx.fillStyle = "#6db8d4"; // teal-blue accent — distinct from gold/saffron
+  ctx.textAlign = "center";
+  ctx.fillText(
+    `${EVENT.shortName.toUpperCase()}  ·  ${VENUE.city.toUpperCase()}, INDIA`,
+    B / 2,
+    130
+  );
+
+  // Thin gold rule
   ctx.beginPath();
-  ctx.moveTo(230, 126);
-  ctx.lineTo(850, 126);
-  ctx.strokeStyle = "rgba(201,162,39,0.30)";
+  ctx.moveTo(220, 148);
+  ctx.lineTo(860, 148);
+  ctx.strokeStyle = "rgba(201,162,39,0.28)";
   ctx.lineWidth = 1;
   ctx.stroke();
 
   // ── Photo circle ─────────────────────────────────────────────────────────
   const cx = B / 2;
-  const cy = 338;
-  const r = 175;
+  const cy = 322;
+  const r = 158;
 
   if (photo) {
-    // Layered glow: gold at the edge, saffron warmth just beyond
-    const glow = ctx.createRadialGradient(cx, cy, r * 0.85, cx, cy, r + 40);
-    glow.addColorStop(0, "rgba(201,162,39,0.22)");
-    glow.addColorStop(0.55, "rgba(228,118,27,0.08)");
+    // Layered glow: gold inner halo, saffron outer warmth
+    const glow = ctx.createRadialGradient(cx, cy, r * 0.85, cx, cy, r + 44);
+    glow.addColorStop(0, "rgba(201,162,39,0.24)");
+    glow.addColorStop(0.5, "rgba(228,118,27,0.10)");
     glow.addColorStop(1, "rgba(201,162,39,0)");
     ctx.fillStyle = glow;
     ctx.beginPath();
-    ctx.arc(cx, cy, r + 40, 0, Math.PI * 2);
+    ctx.arc(cx, cy, r + 44, 0, Math.PI * 2);
     ctx.fill();
 
-    // Gradient ring: gold → bright amber → saffron (Indian celebration palette)
+    // Gradient ring: gold → bright amber → saffron
     const ringGrad = ctx.createLinearGradient(
       cx - r - 10, cy - r - 10,
       cx + r + 10, cy + r + 10
     );
     ringGrad.addColorStop(0, "#c9a227");
-    ringGrad.addColorStop(0.35, "#f0c844");
-    ringGrad.addColorStop(0.7, "#e4761b"); // --saffron
+    ringGrad.addColorStop(0.35, "#f2cc50");
+    ringGrad.addColorStop(0.68, "#e4761b"); // --saffron
     ringGrad.addColorStop(1, "#c9a227");
     ctx.beginPath();
     ctx.arc(cx, cy, r + 6, 0, Math.PI * 2);
@@ -297,25 +332,18 @@ function paintPost(
     ctx.lineWidth = 5;
     ctx.stroke();
 
-    // Clip to circle and draw photo with object-fit-cover cropping
+    // Clip + draw photo (object-fit: cover)
     ctx.save();
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
     ctx.clip();
-
     const { source, width: imgW, height: imgH } = photo;
     let sx = 0, sy = 0, sw = imgW, sh = imgH;
-    if (imgW > imgH) {
-      sw = imgH;
-      sx = (imgW - sw) / 2;
-    } else if (imgH > imgW) {
-      sh = imgW;
-      sy = (imgH - sh) / 2;
-    }
+    if (imgW > imgH) { sw = imgH; sx = (imgW - sw) / 2; }
+    else if (imgH > imgW) { sh = imgW; sy = (imgH - sh) / 2; }
     ctx.drawImage(source, sx, sy, sw, sh, cx - r, cy - r, r * 2, r * 2);
     ctx.restore();
   } else {
-    // Placeholder — shown before upload or if the photo fails to decode
     ctx.save();
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
@@ -329,87 +357,131 @@ function paintPost(
     ctx.stroke();
     ctx.setLineDash([]);
     ctx.restore();
-
     ctx.letterSpacing = "0.12em";
-    ctx.font = '400 21px "IBM Plex Mono"';
+    ctx.font = '400 20px "IBM Plex Mono"';
     ctx.fillStyle = "#4d5f7d";
     ctx.textAlign = "center";
-    ctx.fillText("YOUR PHOTO", cx, cy + 9);
+    ctx.fillText("YOUR PHOTO", cx, cy + 8);
+  }
+
+  // ── "REGISTERED DELEGATE" badge ───────────────────────────────────────────
+  // A pill-shaped chip that hangs just below the photo ring, styled in the
+  // site's --green confirmation colour (#067a46). Adds both content and a
+  // strong fourth colour to the palette alongside navy, gold and saffron.
+  {
+    const badgeLabel = "REGISTERED DELEGATE";
+    ctx.letterSpacing = "0.10em";
+    ctx.font = '700 12px "IBM Plex Mono"';
+    const tw = ctx.measureText(badgeLabel).width;
+    const bPadX = 20, bPadY = 9;
+    const bw = tw + bPadX * 2;
+    const bh = 30;
+    const bx = cx - bw / 2;
+    // Position: top of pill sits at ring's outer edge so it "hangs" off the circle
+    const by = cy + r + 2;
+
+    ctx.save();
+    ctx.beginPath();
+    roundRectPath(ctx, bx, by, bw, bh, bh / 2);
+    ctx.fillStyle = "#067a46"; // --green
+    ctx.fill();
+    ctx.strokeStyle = "rgba(201,162,39,0.55)";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText(badgeLabel, cx, by + bPadY + 3);
   }
 
   // ── Attendee name ─────────────────────────────────────────────────────────
   const displayName = name.trim() || "Your Name";
   ctx.letterSpacing = "-0.02em";
-  // Warm cream rather than stark white — warmer against the gold palette
-  fitFontSize(ctx, displayName.toUpperCase(), B - 160, 68, 700, '"Inter"');
-  ctx.fillStyle = name.trim() ? "#f5eed8" : "#4d5f7d";
+  fitFontSize(ctx, displayName.toUpperCase(), B - 160, 66, 700, '"Inter"');
+  ctx.fillStyle = name.trim() ? "#f5eed8" : "#4d5f7d"; // warm cream
   ctx.textAlign = "center";
-  ctx.fillText(displayName.toUpperCase(), B / 2, 592);
+  // Badge bottom = cy+r+2+30 = cy+r+32. Name starts ~22px below badge.
+  const nameLine = cy + r + 32 + 58;
+  ctx.fillText(displayName.toUpperCase(), B / 2, nameLine);
 
-  // ── "is proudly attending the" ────────────────────────────────────────────
+  // ── Tagline ───────────────────────────────────────────────────────────────
   ctx.letterSpacing = "0";
-  ctx.font = '400 24px "Inter"';
+  ctx.font = '400 23px "Inter"';
   ctx.fillStyle = "#a9bcd8";
-  ctx.fillText("is proudly attending the", B / 2, 638);
+  ctx.fillText("is proudly attending the", B / 2, nameLine + 46);
 
-  // ── Congress name with shimmer gradient ───────────────────────────────────
-  // A linear gold-to-bright-gold-and-back fill gives the main congress line
-  // a metallic shine that reads as celebratory without being garish.
-  const shimmer = ctx.createLinearGradient(250, 0, B - 250, 0);
+  // ── Congress name — shimmer gradient ──────────────────────────────────────
+  const shimmer = ctx.createLinearGradient(240, 0, B - 240, 0);
   shimmer.addColorStop(0, "#c9a227");
-  shimmer.addColorStop(0.45, "#f2cd5c");
-  shimmer.addColorStop(0.55, "#f2cd5c");
+  shimmer.addColorStop(0.45, "#f4d060");
+  shimmer.addColorStop(0.55, "#f4d060");
   shimmer.addColorStop(1, "#c9a227");
-  ctx.font = '600 32px "Inter"';
+  ctx.font = '600 31px "Inter"';
   ctx.fillStyle = shimmer;
-  ctx.fillText(EVENT.parent, B / 2, 680);
+  ctx.fillText(EVENT.parent, B / 2, nameLine + 90);
 
-  // ── Event theme — new line ────────────────────────────────────────────────
-  // From EVENT.theme — surface the official Viksit Bharat tagline that also
-  // appears on the IPC logo, reinforcing the 2047 vision.
+  // ── Event theme ────────────────────────────────────────────────────────────
   ctx.letterSpacing = "0.07em";
   ctx.font = '400 13px "IBM Plex Mono"';
   ctx.fillStyle = "#8a6f1a"; // --gold-dim
-  ctx.fillText(EVENT.theme.toUpperCase(), B / 2, 710);
+  ctx.fillText(EVENT.theme.toUpperCase(), B / 2, nameLine + 118);
 
-  // Short centred rule between theme and event details
+  // ── "Hosted by IPGA · Organised by IPCA" ──────────────────────────────────
+  // Surfaces the organiser credits and introduces teal/blue into the text layer
+  // as a colour note separate from the gold-and-saffron palette.
+  ctx.letterSpacing = "0.06em";
+  ctx.font = '500 12px "IBM Plex Mono"';
+  ctx.fillStyle = "#6db8d4"; // teal-blue — matches the subtitle line above
+  ctx.fillText(
+    `HOSTED BY ${ORGANISERS.hostShort}  ·  ORGANISED BY ${ORGANISERS.congressShort}`,
+    B / 2,
+    nameLine + 143
+  );
+
+  // Short centred rule
   ctx.beginPath();
-  ctx.moveTo(340, 734);
-  ctx.lineTo(740, 734);
+  ctx.moveTo(330, nameLine + 165);
+  ctx.lineTo(750, nameLine + 165);
   ctx.strokeStyle = "rgba(201,162,39,0.22)";
   ctx.lineWidth = 1;
   ctx.stroke();
 
   // ── Dates ─────────────────────────────────────────────────────────────────
   ctx.letterSpacing = "0.07em";
-  ctx.font = '500 20px "IBM Plex Mono"';
+  ctx.font = '500 19px "IBM Plex Mono"';
   ctx.fillStyle = "#c9a227";
-  ctx.fillText(EVENT.dates.label.toUpperCase(), B / 2, 762);
+  ctx.fillText(EVENT.dates.label.toUpperCase(), B / 2, nameLine + 192);
+
+  // Days of week in a subtler warm colour
+  ctx.letterSpacing = "0.05em";
+  ctx.font = '400 13px "IBM Plex Mono"';
+  ctx.fillStyle = "#c8a846"; // slightly muted gold
+  ctx.fillText(EVENT.dates.days.toUpperCase(), B / 2, nameLine + 213);
 
   // ── Venue · City · Hall ───────────────────────────────────────────────────
   ctx.letterSpacing = "0";
-  ctx.font = '400 17px "Inter"';
+  ctx.font = '400 16px "Inter"';
   ctx.fillStyle = "#8fa5c6";
-  ctx.fillText(`${VENUE.name}  ·  ${VENUE.city}  ·  ${VENUE.hall}`, B / 2, 793);
+  ctx.fillText(`${VENUE.name}  ·  ${VENUE.city}  ·  ${VENUE.hall}`, B / 2, nameLine + 238);
 
   // ── Major gold divider ────────────────────────────────────────────────────
+  const divY = nameLine + 272;
   ctx.beginPath();
-  ctx.moveTo(80, 828);
-  ctx.lineTo(B - 80, 828);
-  ctx.strokeStyle = "rgba(201,162,39,0.38)";
+  ctx.moveTo(80, divY);
+  ctx.lineTo(B - 80, divY);
+  ctx.strokeStyle = "rgba(201,162,39,0.40)";
   ctx.lineWidth = 1;
   ctx.stroke();
 
   // ── Footer: logos (left) + hashtags / URL (right) ────────────────────────
-  const footerTop = 848;
-  const logoH = 46;
-  let nextX = 80; // running cursor for logo plates
+  const footerTop = divY + 22;
+  const logoH = 44;
+  let nextX = 80;
 
-  // IPC logo, small — repeats the header branding at footer scale for co-branding
   if (ipcLogo && ipcLogo.width > 0) {
-    const lw = Math.round((ipcLogo.width / ipcLogo.height) * logoH); // ≈172
-    const px = 10,
-      py = 7;
+    const lw = Math.round((ipcLogo.width / ipcLogo.height) * logoH); // ≈164
+    const px = 10, py = 7;
     ctx.save();
     ctx.fillStyle = "#ffffff";
     ctx.beginPath();
@@ -420,11 +492,9 @@ function paintPost(
     nextX += lw + px * 2 + 10;
   }
 
-  // OPF logo — Operant Pharmacy Federation co-branding
   if (opfLogo && opfLogo.width > 0) {
-    const lw = Math.round((opfLogo.width / opfLogo.height) * logoH); // ≈37
-    const px = 10,
-      py = 7;
+    const lw = Math.round((opfLogo.width / opfLogo.height) * logoH); // ≈35
+    const px = 10, py = 7;
     ctx.save();
     ctx.fillStyle = "#ffffff";
     ctx.beginPath();
@@ -434,17 +504,17 @@ function paintPost(
     ctx.drawImage(opfLogo.source, nextX + px, footerTop + py, lw, logoH);
   }
 
-  // Hashtags (right-aligned)
+  // Hashtags
   ctx.letterSpacing = "0.04em";
   ctx.font = '400 15px "IBM Plex Mono"';
-  ctx.fillStyle = "#4d5f7d"; // --ink-soft
+  ctx.fillStyle = "#4d5f7d";
   ctx.textAlign = "right";
-  ctx.fillText("#75thIPC  #IndianPharmaceuticalCongress", B - 80, 876);
+  ctx.fillText("#75thIPC  #IndianPharmaceuticalCongress", B - 80, footerTop + 22);
 
-  // URL in gold — the primary call-to-action
-  ctx.font = '500 18px "IBM Plex Mono"';
+  // URL in gold
+  ctx.font = '500 17px "IBM Plex Mono"';
   ctx.fillStyle = "#c9a227";
-  ctx.fillText(ORGANISERS.sites[0].label, B - 80, 904);
+  ctx.fillText(ORGANISERS.sites[0].label, B - 80, footerTop + 46);
 
   ctx.restore(); // undo ctx.scale(s, s)
 }
