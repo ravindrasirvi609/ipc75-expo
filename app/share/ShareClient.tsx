@@ -6,18 +6,18 @@ import { EVENT, VENUE, ORGANISERS } from "@/lib/expo-content";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-/** A loaded image that can be drawn onto a canvas. */
+/** A resolved image ready to be blitted onto a canvas. */
 type PhotoSource = {
   source: CanvasImageSource;
   width: number;
   height: number;
 };
 
-// ─── Canvas helpers ───────────────────────────────────────────────────────────
+// ─── Image-loading helpers ────────────────────────────────────────────────────
 
 /**
- * Converts a data URL (produced by FileReader) to a Blob without using
- * fetch(), which is unreliable for data: URLs in some environments.
+ * Converts a data URL (produced by FileReader) to a Blob without fetch(),
+ * which is unreliable for data: URLs in some environments.
  */
 function dataUrlToBlob(dataUrl: string): Blob {
   const [header, base64] = dataUrl.split(",");
@@ -29,12 +29,10 @@ function dataUrlToBlob(dataUrl: string): Blob {
 }
 
 /**
- * Loads a user photo as an ImageBitmap, requesting EXIF-aware orientation
- * via the `imageOrientation: "from-image"` option so phone photos are not
- * rendered sideways. Falls back to a plain HTMLImageElement on older browsers
- * that do not support createImageBitmap with orientation. Throws if the file
- * cannot be decoded at all — callers are expected to catch this and treat it
- * the same as "no photo".
+ * Loads a user photo as an ImageBitmap, requesting EXIF-aware orientation via
+ * `imageOrientation: "from-image"` so phone portraits render upright in canvas.
+ * Falls back to HTMLImageElement on browsers that do not support the option.
+ * Throws if the image cannot be decoded at all.
  */
 async function loadPhotoBitmap(dataUrl: string): Promise<PhotoSource> {
   const blob = dataUrlToBlob(dataUrl);
@@ -42,15 +40,12 @@ async function loadPhotoBitmap(dataUrl: string): Promise<PhotoSource> {
     const bmp = await createImageBitmap(blob, { imageOrientation: "from-image" });
     return { source: bmp, width: bmp.width, height: bmp.height };
   } catch {
-    // Fallback for browsers that do not support the imageOrientation option.
     return loadImageAsSource(dataUrl);
   }
 }
 
 /**
- * Loads a plain image URL (same-origin; EXIF correction is not needed here
- * because logos do not carry orientation metadata). Rejects if the image
- * fails to load.
+ * Loads an image from a URL (same-origin; logos do not need EXIF correction).
  */
 function loadImageAsSource(src: string): Promise<PhotoSource> {
   return new Promise((resolve, reject) => {
@@ -63,37 +58,26 @@ function loadImageAsSource(src: string): Promise<PhotoSource> {
 }
 
 /**
- * Resolves the (possibly absent) photo and logo assets a post needs.
- *
- * Split out from the drawing step deliberately: decoding an image takes a
- * variable amount of time, so if this is called twice in quick succession
- * (e.g. the user swaps photos before the first one finishes decoding), the
- * two calls can resolve in either order. Isolating "load" from "paint" lets
- * the caller check it is still the most recent request *before* touching
- * the canvas, so a slow, now-stale load can never overwrite a fresher one.
- *
- * Each asset is loaded independently — if the photo fails to decode, the
- * logo can still load, and vice versa.
+ * Loads only the user's photo (logos are preloaded once into component state
+ * and passed directly to paintPost, so they are never re-fetched per render).
  */
-async function loadPostAssets(
-  photoDataUrl: string | null,
-  logoDataUrl: string | null
-): Promise<{ photo: PhotoSource | null; logo: PhotoSource | null }> {
-  const [photo, logo] = await Promise.all([
-    photoDataUrl
-      ? loadPhotoBitmap(photoDataUrl).catch((): PhotoSource | null => null)
-      : Promise.resolve<PhotoSource | null>(null),
-    logoDataUrl
-      ? loadImageAsSource(logoDataUrl).catch((): PhotoSource | null => null)
-      : Promise.resolve<PhotoSource | null>(null),
-  ]);
-  return { photo, logo };
+async function loadPhotoAsset(
+  photoDataUrl: string | null
+): Promise<PhotoSource | null> {
+  if (!photoDataUrl) return null;
+  return loadPhotoBitmap(photoDataUrl).catch(() => null);
 }
 
+/** Closes an ImageBitmap to free GPU-decoded memory. No-op for HTMLImageElement. */
+function releasePhoto(photo: PhotoSource | null): void {
+  if (photo?.source instanceof ImageBitmap) photo.source.close();
+}
+
+// ─── Canvas drawing helpers ───────────────────────────────────────────────────
+
 /**
- * Draws a rounded-rectangle path into `ctx`. Uses the native canvas
- * `roundRect` API where available, falling back to arc-based segments
- * for browsers that do not yet support it.
+ * Draws a rounded-rectangle path. Uses the native canvas API where available,
+ * falls back to arc-based segments for older browsers.
  */
 function roundRectPath(
   ctx: CanvasRenderingContext2D,
@@ -133,7 +117,7 @@ function fitFontSize(
 ): void {
   let size = initialSize;
   ctx.font = `${weight} ${size}px ${family}`;
-  while (ctx.measureText(text).width > maxWidth && size > 32) {
+  while (ctx.measureText(text).width > maxWidth && size > 28) {
     size -= 2;
     ctx.font = `${weight} ${size}px ${family}`;
   }
@@ -142,119 +126,178 @@ function fitFontSize(
 // ─── Main drawing function ────────────────────────────────────────────────────
 
 /**
- * Paints the social-media post into `ctx`. Synchronous and side-effect-free
- * beyond the canvas itself — `photo` and `logo` must already be resolved
- * (via loadPostAssets) before calling this, so a caller can always confirm
- * it is still the most recent request before any pixel is drawn.
+ * Renders the social post into `ctx`. Fully synchronous — photo and logo
+ * sources must be pre-resolved via loadPhotoAsset / loadImageAsSource before
+ * calling this, so the caller can confirm it is still the most-recent request
+ * before any pixel is drawn (see renderGenerationRef in the component below).
  *
- * Layout coordinates are written for a 1080 × 1080 base grid. A single
- * `ctx.scale(size/1080, size/1080)` call at the top maps them uniformly, so
- * the same function drives both the 480-pixel live preview and the 1080-pixel
- * download without any duplicated logic.
+ * All coordinates are in a 1080 × 1080 base grid; a ctx.scale(size/1080)
+ * at the top maps them for any output size (preview or full-res download).
  *
- * Content (dates, venue, etc.) is read from lib/expo-content so the post
- * always reflects the canonical facts for the exhibition.
+ * Design: premium navy ground with a rich multi-stop gradient, Indian tricolor
+ * accent stripe at the top edge, the official IPC logo image as a header,
+ * the user's photo in a gold-to-saffron gradient ring, shimmer gradient on
+ * the congress name, and OPF co-branding in the footer.
  */
 function paintPost(
   ctx: CanvasRenderingContext2D,
   size: number,
   name: string,
   photo: PhotoSource | null,
-  logo: PhotoSource | null
+  ipcLogo: PhotoSource | null,
+  opfLogo: PhotoSource | null
 ): void {
-  const B = 1080; // base grid dimension
+  const B = 1080;
   const s = size / B;
 
   ctx.save();
   ctx.scale(s, s);
 
-  // ── Background gradient ──────────────────────────────────────────────────
-  const bg = ctx.createLinearGradient(0, 0, B, B);
-  bg.addColorStop(0, "#0a1a3a"); // --navy-deep
-  bg.addColorStop(1, "#10254f"); // --navy
+  // ── Multi-stop background gradient ───────────────────────────────────────
+  // Three-colour sweep: very dark navy at the top-left corner, the brand
+  // navy across the centre, a slightly different hue at the bottom to break
+  // the flatness without adding a jarring colour shift.
+  const bg = ctx.createLinearGradient(0, 0, B * 0.7, B);
+  bg.addColorStop(0, "#060f1e");
+  bg.addColorStop(0.3, "#0a1a3a"); // --navy-deep
+  bg.addColorStop(0.65, "#10254f"); // --navy
+  bg.addColorStop(1, "#0c1d3d");
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, B, B);
 
+  // Warm gold halo behind the logo area at the top
+  const topHalo = ctx.createRadialGradient(B / 2, 0, 0, B / 2, 0, 400);
+  topHalo.addColorStop(0, "rgba(201,162,39,0.14)");
+  topHalo.addColorStop(1, "rgba(201,162,39,0)");
+  ctx.fillStyle = topHalo;
+  ctx.fillRect(0, 0, B, 420);
+
+  // Subtle saffron warmth at the bottom for an Indian-palette feel
+  const btmHalo = ctx.createRadialGradient(B / 2, B, 0, B / 2, B, 520);
+  btmHalo.addColorStop(0, "rgba(228,118,27,0.07)");
+  btmHalo.addColorStop(1, "rgba(228,118,27,0)");
+  ctx.fillStyle = btmHalo;
+  ctx.fillRect(0, B - 440, B, 440);
+
   // ── Decorative concentric arcs (bottom-right) ────────────────────────────
-  // Mirrors the hall-plan's concentric-ring motif used on the homepage hero.
-  const arcDefs: [number, number][] = [
-    [520, 0.14],
-    [720, 0.1],
-    [920, 0.07],
-  ];
-  for (const [r, alpha] of arcDefs) {
+  const arcsDR: [number, number][] = [[510, 0.13], [710, 0.09], [910, 0.06]];
+  for (const [r, alpha] of arcsDR) {
     ctx.save();
     ctx.beginPath();
     ctx.arc(B, B, r, 0, Math.PI * 2);
     ctx.strokeStyle = "#1b3568"; // --navy-soft
-    ctx.lineWidth = 64;
+    ctx.lineWidth = 60;
     ctx.globalAlpha = alpha;
     ctx.stroke();
     ctx.restore();
   }
 
-  // ── Thin gold diagonal ribbon (top-right accent) ─────────────────────────
+  // Mirrored accent arcs top-left, subtler — adds depth without symmetry
+  const arcsTL: [number, number][] = [[260, 0.07], [380, 0.05]];
+  for (const [r, alpha] of arcsTL) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.strokeStyle = "#1b3568";
+    ctx.lineWidth = 48;
+    ctx.globalAlpha = alpha;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // ── Gold diagonal ribbon accent (right edge) ─────────────────────────────
   ctx.save();
   ctx.translate(B, 0);
   ctx.rotate(Math.PI / 4);
   ctx.fillStyle = "#c9a227"; // --gold
-  ctx.globalAlpha = 0.13;
-  ctx.fillRect(-15, -260, 30, 520);
-  ctx.globalAlpha = 0.06;
-  ctx.fillRect(-42, -260, 20, 520);
+  ctx.globalAlpha = 0.12;
+  ctx.fillRect(-14, -260, 28, 520);
+  ctx.globalAlpha = 0.05;
+  ctx.fillRect(-40, -260, 18, 520);
   ctx.restore();
 
-  // ── Congress eyebrow (top-centre) ────────────────────────────────────────
-  ctx.textAlign = "center";
-  ctx.letterSpacing = "0.14em";
-  ctx.font = '500 22px "IBM Plex Mono"';
-  ctx.fillStyle = "#c9a227"; // --gold
-  ctx.fillText(
-    `${EVENT.parentShort.toUpperCase()} · ${EVENT.parent.toUpperCase().replace("75TH ", "")}`,
-    B / 2,
-    72
-  );
+  // ── Indian tricolor accent stripe ────────────────────────────────────────
+  // A thin three-band bar at the very top edge — saffron, white, India green.
+  // Decorative only; keeps the canvas ground clearly India-positioned without
+  // overpowering the brand navy.
+  const stripeH = 7;
+  ctx.fillStyle = "#FF9933"; // Saffron
+  ctx.fillRect(0, 0, B / 3, stripeH);
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fillRect(B / 3, 0, B / 3, stripeH);
+  ctx.fillStyle = "#138808"; // India green
+  ctx.fillRect((2 * B) / 3, 0, B / 3, stripeH);
 
-  ctx.letterSpacing = "0.10em";
-  ctx.font = '400 16px "IBM Plex Mono"';
-  ctx.fillStyle = "#8a6f1a"; // --gold-dim
-  ctx.fillText(
-    `${EVENT.milestone.toUpperCase()} · ${ORGANISERS.hostShort} & ${ORGANISERS.congressShort}`,
-    B / 2,
-    106
-  );
+  // ── IPC logo (large, top centre) ─────────────────────────────────────────
+  // Replaces the plain-text eyebrow of the original design: the official IPC
+  // logo image already contains "Indian Pharmaceutical Congress", the 75 motif,
+  // the Platinum Jubilee ribbon and the Viksit Bharat tagline.
+  if (ipcLogo && ipcLogo.width > 0) {
+    const lh = 76; // target height at 1080 scale
+    const lw = Math.round((ipcLogo.width / ipcLogo.height) * lh); // 76*3.74≈284
+    const px = 14,
+      py = 10;
+    const plateX = Math.round((B - lw) / 2) - px;
+    const plateY = 18;
 
-  // Thin gold rule below the eyebrow
+    // White plate — the logo has a white background that must not sit bare on navy
+    ctx.save();
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    roundRectPath(ctx, plateX, plateY, lw + px * 2, lh + py * 2, 7);
+    ctx.fill();
+    ctx.restore();
+
+    ctx.drawImage(ipcLogo.source, plateX + px, plateY + py, lw, lh);
+  } else {
+    // Typographic fallback while the logo is loading or unavailable
+    ctx.letterSpacing = "0.14em";
+    ctx.font = '500 20px "IBM Plex Mono"';
+    ctx.fillStyle = "#c9a227";
+    ctx.textAlign = "center";
+    ctx.fillText("75TH INDIAN PHARMACEUTICAL CONGRESS", B / 2, 72);
+  }
+
+  // Thin gold rule separating logo plate from the rest of the card
   ctx.beginPath();
-  ctx.moveTo(280, 124);
-  ctx.lineTo(800, 124);
-  ctx.strokeStyle = "rgba(201,162,39,0.28)";
+  ctx.moveTo(230, 126);
+  ctx.lineTo(850, 126);
+  ctx.strokeStyle = "rgba(201,162,39,0.30)";
   ctx.lineWidth = 1;
   ctx.stroke();
 
-  // ── Photo circle (centre of the card) ────────────────────────────────────
+  // ── Photo circle ─────────────────────────────────────────────────────────
   const cx = B / 2;
-  const cy = 375;
-  const r = 205;
+  const cy = 338;
+  const r = 175;
 
   if (photo) {
-    // Soft gold glow ring outside the photo
-    const glow = ctx.createRadialGradient(cx, cy, r, cx, cy, r + 24);
-    glow.addColorStop(0, "rgba(201,162,39,0.28)");
+    // Layered glow: gold at the edge, saffron warmth just beyond
+    const glow = ctx.createRadialGradient(cx, cy, r * 0.85, cx, cy, r + 40);
+    glow.addColorStop(0, "rgba(201,162,39,0.22)");
+    glow.addColorStop(0.55, "rgba(228,118,27,0.08)");
     glow.addColorStop(1, "rgba(201,162,39,0)");
     ctx.fillStyle = glow;
     ctx.beginPath();
-    ctx.arc(cx, cy, r + 24, 0, Math.PI * 2);
+    ctx.arc(cx, cy, r + 40, 0, Math.PI * 2);
     ctx.fill();
 
-    // Solid gold ring
+    // Gradient ring: gold → bright amber → saffron (Indian celebration palette)
+    const ringGrad = ctx.createLinearGradient(
+      cx - r - 10, cy - r - 10,
+      cx + r + 10, cy + r + 10
+    );
+    ringGrad.addColorStop(0, "#c9a227");
+    ringGrad.addColorStop(0.35, "#f0c844");
+    ringGrad.addColorStop(0.7, "#e4761b"); // --saffron
+    ringGrad.addColorStop(1, "#c9a227");
     ctx.beginPath();
     ctx.arc(cx, cy, r + 6, 0, Math.PI * 2);
-    ctx.strokeStyle = "#c9a227";
+    ctx.strokeStyle = ringGrad;
     ctx.lineWidth = 5;
     ctx.stroke();
 
-    // Clip to circle and draw the photo with object-fit-cover cropping
+    // Clip to circle and draw photo with object-fit-cover cropping
     ctx.save();
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
@@ -263,18 +306,16 @@ function paintPost(
     const { source, width: imgW, height: imgH } = photo;
     let sx = 0, sy = 0, sw = imgW, sh = imgH;
     if (imgW > imgH) {
-      // Landscape: crop the sides
       sw = imgH;
       sx = (imgW - sw) / 2;
     } else if (imgH > imgW) {
-      // Portrait: crop top/bottom
       sh = imgW;
       sy = (imgH - sh) / 2;
     }
     ctx.drawImage(source, sx, sy, sw, sh, cx - r, cy - r, r * 2, r * 2);
     ctx.restore();
   } else {
-    // Placeholder — shown before upload, or if the photo failed to decode.
+    // Placeholder — shown before upload or if the photo fails to decode
     ctx.save();
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
@@ -291,7 +332,7 @@ function paintPost(
 
     ctx.letterSpacing = "0.12em";
     ctx.font = '400 21px "IBM Plex Mono"';
-    ctx.fillStyle = "#4d5f7d"; // --ink-soft
+    ctx.fillStyle = "#4d5f7d";
     ctx.textAlign = "center";
     ctx.fillText("YOUR PHOTO", cx, cy + 9);
   }
@@ -299,97 +340,136 @@ function paintPost(
   // ── Attendee name ─────────────────────────────────────────────────────────
   const displayName = name.trim() || "Your Name";
   ctx.letterSpacing = "-0.02em";
-  // Shrink font size if the name is wide, down to a 32px minimum.
-  fitFontSize(ctx, displayName.toUpperCase(), B - 160, 76, 700, '"Inter"');
-  ctx.fillStyle = name.trim() ? "#eaf0fa" : "#4d5f7d";
+  // Warm cream rather than stark white — warmer against the gold palette
+  fitFontSize(ctx, displayName.toUpperCase(), B - 160, 68, 700, '"Inter"');
+  ctx.fillStyle = name.trim() ? "#f5eed8" : "#4d5f7d";
   ctx.textAlign = "center";
-  ctx.fillText(displayName.toUpperCase(), B / 2, 655);
+  ctx.fillText(displayName.toUpperCase(), B / 2, 592);
 
-  // ── Attending tagline ──────────────────────────────────────────────────────
+  // ── "is proudly attending the" ────────────────────────────────────────────
   ctx.letterSpacing = "0";
-  ctx.font = '400 27px "Inter"';
+  ctx.font = '400 24px "Inter"';
   ctx.fillStyle = "#a9bcd8";
-  ctx.fillText("is proudly attending the", B / 2, 708);
+  ctx.fillText("is proudly attending the", B / 2, 638);
 
-  ctx.font = '600 35px "Inter"';
-  ctx.fillStyle = "#c9a227"; // --gold
-  ctx.fillText(EVENT.parent, B / 2, 757);
+  // ── Congress name with shimmer gradient ───────────────────────────────────
+  // A linear gold-to-bright-gold-and-back fill gives the main congress line
+  // a metallic shine that reads as celebratory without being garish.
+  const shimmer = ctx.createLinearGradient(250, 0, B - 250, 0);
+  shimmer.addColorStop(0, "#c9a227");
+  shimmer.addColorStop(0.45, "#f2cd5c");
+  shimmer.addColorStop(0.55, "#f2cd5c");
+  shimmer.addColorStop(1, "#c9a227");
+  ctx.font = '600 32px "Inter"';
+  ctx.fillStyle = shimmer;
+  ctx.fillText(EVENT.parent, B / 2, 680);
 
-  // ── Event detail strip ─────────────────────────────────────────────────────
+  // ── Event theme — new line ────────────────────────────────────────────────
+  // From EVENT.theme — surface the official Viksit Bharat tagline that also
+  // appears on the IPC logo, reinforcing the 2047 vision.
   ctx.letterSpacing = "0.07em";
-  ctx.font = '500 21px "IBM Plex Mono"';
-  ctx.fillStyle = "#c9a227";
-  ctx.fillText(EVENT.dates.label.toUpperCase(), B / 2, 820);
+  ctx.font = '400 13px "IBM Plex Mono"';
+  ctx.fillStyle = "#8a6f1a"; // --gold-dim
+  ctx.fillText(EVENT.theme.toUpperCase(), B / 2, 710);
 
-  ctx.letterSpacing = "0";
-  ctx.font = '400 19px "Inter"';
-  ctx.fillStyle = "#8fa5c6";
-  ctx.fillText(`${VENUE.name}  ·  ${VENUE.city}`, B / 2, 856);
-
-  // ── Gold divider rule ──────────────────────────────────────────────────────
+  // Short centred rule between theme and event details
   ctx.beginPath();
-  ctx.moveTo(80, 894);
-  ctx.lineTo(B - 80, 894);
-  ctx.strokeStyle = "rgba(201,162,39,0.35)";
+  ctx.moveTo(340, 734);
+  ctx.lineTo(740, 734);
+  ctx.strokeStyle = "rgba(201,162,39,0.22)";
   ctx.lineWidth = 1;
   ctx.stroke();
 
-  // ── Footer: logo (left) · hashtags + URL (right) ──────────────────────────
-  if (logo && logo.width > 0) {
-    const logoH = 46;
-    const logoW = Math.round((logo.width / logo.height) * logoH);
-    const padX = 10;
-    const padY = 7;
-    const plateW = logoW + padX * 2;
-    const plateH = logoH + padY * 2;
-    const lx = 80;
-    const ly = 913;
+  // ── Dates ─────────────────────────────────────────────────────────────────
+  ctx.letterSpacing = "0.07em";
+  ctx.font = '500 20px "IBM Plex Mono"';
+  ctx.fillStyle = "#c9a227";
+  ctx.fillText(EVENT.dates.label.toUpperCase(), B / 2, 762);
 
-    // White backing plate — matches the `.lockup-logo { background: #fff }`
-    // rule in site.css that always mounts the logo on a white ground.
+  // ── Venue · City · Hall ───────────────────────────────────────────────────
+  ctx.letterSpacing = "0";
+  ctx.font = '400 17px "Inter"';
+  ctx.fillStyle = "#8fa5c6";
+  ctx.fillText(`${VENUE.name}  ·  ${VENUE.city}  ·  ${VENUE.hall}`, B / 2, 793);
+
+  // ── Major gold divider ────────────────────────────────────────────────────
+  ctx.beginPath();
+  ctx.moveTo(80, 828);
+  ctx.lineTo(B - 80, 828);
+  ctx.strokeStyle = "rgba(201,162,39,0.38)";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // ── Footer: logos (left) + hashtags / URL (right) ────────────────────────
+  const footerTop = 848;
+  const logoH = 46;
+  let nextX = 80; // running cursor for logo plates
+
+  // IPC logo, small — repeats the header branding at footer scale for co-branding
+  if (ipcLogo && ipcLogo.width > 0) {
+    const lw = Math.round((ipcLogo.width / ipcLogo.height) * logoH); // ≈172
+    const px = 10,
+      py = 7;
     ctx.save();
     ctx.fillStyle = "#ffffff";
     ctx.beginPath();
-    roundRectPath(ctx, lx, ly, plateW, plateH, 4);
+    roundRectPath(ctx, nextX, footerTop, lw + px * 2, logoH + py * 2, 4);
     ctx.fill();
     ctx.restore();
-
-    ctx.drawImage(logo.source, lx + padX, ly + padY, logoW, logoH);
+    ctx.drawImage(ipcLogo.source, nextX + px, footerTop + py, lw, logoH);
+    nextX += lw + px * 2 + 10;
   }
 
-  // Hashtags
+  // OPF logo — Operant Pharmacy Federation co-branding
+  if (opfLogo && opfLogo.width > 0) {
+    const lw = Math.round((opfLogo.width / opfLogo.height) * logoH); // ≈37
+    const px = 10,
+      py = 7;
+    ctx.save();
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    roundRectPath(ctx, nextX, footerTop, lw + px * 2, logoH + py * 2, 4);
+    ctx.fill();
+    ctx.restore();
+    ctx.drawImage(opfLogo.source, nextX + px, footerTop + py, lw, logoH);
+  }
+
+  // Hashtags (right-aligned)
   ctx.letterSpacing = "0.04em";
-  ctx.font = '400 17px "IBM Plex Mono"';
+  ctx.font = '400 15px "IBM Plex Mono"';
   ctx.fillStyle = "#4d5f7d"; // --ink-soft
   ctx.textAlign = "right";
-  ctx.fillText("#75thIPC  #IndianPharmaceuticalCongress", B - 80, 940);
+  ctx.fillText("#75thIPC  #IndianPharmaceuticalCongress", B - 80, 876);
 
-  // Website URL in gold — the key call-to-action on the post
-  ctx.font = '500 19px "IBM Plex Mono"';
+  // URL in gold — the primary call-to-action
+  ctx.font = '500 18px "IBM Plex Mono"';
   ctx.fillStyle = "#c9a227";
-  ctx.fillText(ORGANISERS.sites[0].label, B - 80, 968);
+  ctx.fillText(ORGANISERS.sites[0].label, B - 80, 904);
 
   ctx.restore(); // undo ctx.scale(s, s)
-}
-
-/** Releases a decoded ImageBitmap's memory. HTMLImageElement sources need no cleanup. */
-function releasePhoto(photo: PhotoSource | null): void {
-  if (photo?.source instanceof ImageBitmap) photo.source.close();
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
 /**
- * Client-side generator. Manages the photo upload, name input, live preview
- * canvas, and the one-click PNG download.
+ * Client-side generator. Logos are preloaded once into component state on
+ * mount so the canvas never needs a second network request. The user's photo
+ * is loaded per-render (it changes) with EXIF-aware orientation correction.
  *
- * Intentionally self-contained: no API routes, no server calls, no new
- * dependencies. Everything runs in the browser.
+ * Race prevention: each renderPreview call captures a monotonically increasing
+ * generation token before its async photo-load, then confirms it is still the
+ * most-recent request before touching the canvas — so two overlapping calls
+ * (e.g. rapid photo swaps) never paint out of order.
  */
 export default function ShareClient() {
   const [name, setName] = useState("");
   const [photoDataUrl, setPhotoDataUrl] = useState<string | null>(null);
-  const [logoDataUrl, setLogoDataUrl] = useState<string | null>(null);
+
+  // Logos are loaded once on mount and stored as PhotoSource objects so
+  // paintPost never needs to re-decode them on every render.
+  const [ipcLogoSource, setIpcLogoSource] = useState<PhotoSource | null>(null);
+  const [opfLogoSource, setOpfLogoSource] = useState<PhotoSource | null>(null);
+
   const [generating, setGenerating] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [downloadError, setDownloadError] = useState<string | null>(null);
@@ -398,67 +478,66 @@ export default function ShareClient() {
   /** Timer ref for debouncing name-driven preview redraws. */
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   /**
-   * Always mirrors the latest `photoDataUrl`. The debounced redraw in
-   * handleNameChange reads this instead of the value closed over at
-   * keystroke time, so a photo dropped during the debounce window is never
-   * overwritten by the stale value once the timer fires.
+   * Always mirrors the latest photoDataUrl so the debounced name-redraw
+   * reads the current photo rather than the value closed over at keystroke time.
    */
   const photoDataUrlRef = useRef<string | null>(null);
   /**
-   * Monotonically increasing token identifying the most recently requested
-   * render. Because loading a photo/logo is async and takes a variable
-   * amount of time, two overlapping renderPreview calls (e.g. the user
-   * swaps photos quickly) can have their asset-loading resolve out of
-   * order. Each call captures the token at start and checks it again once
-   * loading finishes; if a newer render has started in the meantime, this
-   * call discards its result instead of painting a stale preview.
+   * Generation token: incremented on every renderPreview call. A render
+   * whose async photo-load resolves after a newer one has started discards
+   * its result instead of overwriting a fresher preview.
    */
   const renderGenerationRef = useRef(0);
 
+  // Keep the photoDataUrl ref in sync with state.
   useEffect(() => {
     photoDataUrlRef.current = photoDataUrl;
   }, [photoDataUrl]);
 
-  // Preload the site logo as a data URL once on mount. This ensures the
-  // canvas can draw it without a second network round-trip at download time,
-  // and avoids any potential same-origin header surprises.
+  // Preload both logos once on mount. Stored as PhotoSource (HTMLImageElement)
+  // so paintPost can drawImage() them directly with no per-render fetch.
   useEffect(() => {
-    fetch("/assets/logo.png")
-      .then((r) => {
-        if (!r.ok) throw new Error("logo not found");
-        return r.blob();
-      })
-      .then(
-        (blob) =>
-          new Promise<string>((resolve) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result as string);
-            reader.readAsDataURL(blob);
-          })
-      )
-      .then(setLogoDataUrl)
-      .catch(() => {
-        // Logo is decorative — the post is still useful without it.
-      });
+    const loadLogo = (path: string, setter: (v: PhotoSource | null) => void) => {
+      fetch(path)
+        .then((r) => {
+          if (!r.ok) throw new Error(`${path} not found`);
+          return r.blob();
+        })
+        .then(
+          (blob) =>
+            new Promise<string>((resolve) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(reader.result as string);
+              reader.readAsDataURL(blob);
+            })
+        )
+        .then((dataUrl) => loadImageAsSource(dataUrl))
+        .then(setter)
+        .catch(() => {
+          // Logo is optional — the post remains useful without it.
+        });
+    };
+
+    loadLogo("/assets/ipc-logo.png", setIpcLogoSource);
+    loadLogo("/assets/opf-logo.png", setOpfLogoSource);
 
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
   }, []);
 
-  // Renders the preview canvas. Loads assets first, confirms this is still
-  // the latest request, and only then paints — see renderGenerationRef above.
+  // Renders the preview canvas. Logo sources come from component state (loaded
+  // once); only the user's photo is loaded per-call (it changes).
   const renderPreview = useCallback(
     async (currentName: string, currentPhoto: string | null) => {
       const generation = ++renderGenerationRef.current;
 
-      // Wait for Inter and IBM Plex Mono to be fully loaded in the document
-      // before drawing so canvas text matches the design intent.
+      // Wait for Inter and IBM Plex Mono to load so canvas text matches the font
       await document.fonts.ready;
-      const { photo, logo } = await loadPostAssets(currentPhoto, logoDataUrl);
+      const photo = await loadPhotoAsset(currentPhoto);
 
+      // Bail if a newer render started while the photo was decoding.
       if (generation !== renderGenerationRef.current) {
-        // A newer render started while these assets were loading.
         releasePhoto(photo);
         return;
       }
@@ -475,35 +554,37 @@ export default function ShareClient() {
       }
 
       try {
-        paintPost(ctx, canvas.width, currentName, photo, logo);
+        paintPost(ctx, canvas.width, currentName, photo, ipcLogoSource, opfLogoSource);
       } catch (err) {
         console.error("Failed to render the post preview", err);
       } finally {
         releasePhoto(photo);
       }
     },
-    [logoDataUrl]
+    // Re-creates when either logo finishes loading so the preview updates.
+    [ipcLogoSource, opfLogoSource]
   );
 
-  // Redraw when the photo or logo arrives. Name changes are handled via the
-  // debounced path in handleNameChange to avoid a canvas flush on every keystroke.
+  // Redraw when the photo changes or when a logo finishes loading (logos make
+  // renderPreview a new function, which triggers this effect).
   useEffect(() => {
     renderPreview(name, photoDataUrl);
-    // `name` is intentionally excluded: debounce in handleNameChange covers it.
+    // `name` is intentionally omitted: debounce in handleNameChange covers it.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [photoDataUrl, logoDataUrl, renderPreview]);
+  }, [photoDataUrl, renderPreview]);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setName(value);
     if (debounceRef.current) clearTimeout(debounceRef.current);
+    // Read the ref (not the closed-over `photoDataUrl`) so a photo dropped
+    // during the debounce window is not silently reverted.
     debounceRef.current = setTimeout(
       () => renderPreview(value, photoDataUrlRef.current),
       350
     );
   };
 
-  // Reads an image File via FileReader and stores it as a data URL.
   const loadPhoto = useCallback((file: File) => {
     if (!file.type.startsWith("image/")) return;
     const reader = new FileReader();
@@ -514,7 +595,6 @@ export default function ShareClient() {
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) loadPhoto(file);
-    // Reset so the same file can be re-selected if the user wants to try again.
     e.target.value = "";
   };
 
@@ -525,9 +605,8 @@ export default function ShareClient() {
     if (file) loadPhoto(file);
   };
 
-  // Generates the full-resolution 1080 × 1080 canvas off-screen, then
-  // triggers a browser download. A separate off-screen canvas keeps the
-  // preview unaffected while the download renders.
+  // Generates the full-resolution 1080 × 1080 PNG off-screen and triggers
+  // a browser download. Uses the same logo sources already loaded in state.
   const handleDownload = async () => {
     if (!name.trim() || !photoDataUrl) return;
     setGenerating(true);
@@ -535,8 +614,7 @@ export default function ShareClient() {
     let photo: PhotoSource | null = null;
     try {
       await document.fonts.ready;
-      const assets = await loadPostAssets(photoDataUrl, logoDataUrl);
-      photo = assets.photo;
+      photo = await loadPhotoAsset(photoDataUrl);
 
       const canvas = document.createElement("canvas");
       canvas.width = 1080;
@@ -544,12 +622,11 @@ export default function ShareClient() {
       const ctx = canvas.getContext("2d");
       if (!ctx) throw new Error("Canvas is not supported in this browser.");
 
-      paintPost(ctx, 1080, name, photo, assets.logo);
+      paintPost(ctx, 1080, name, photo, ipcLogoSource, opfLogoSource);
 
       const url = canvas.toDataURL("image/png");
       const a = document.createElement("a");
       a.href = url;
-      // Slugify the name so the filename is clean on all OSes.
       a.download = `75ipc-${name.trim().replace(/\s+/g, "-").toLowerCase()}.png`;
       a.click();
     } catch (err) {
@@ -585,11 +662,6 @@ export default function ShareClient() {
         </div>
 
         <div className="share-field">
-          {/*
-           * The real <input type="file"> is visually hidden via .sr-only.
-           * The <label> below is the styled drop zone. Screen-readers
-           * reach the input via its id="share-photo".
-           */}
           <span className="share-label" id="share-photo-label">
             Your photo
           </span>
@@ -619,8 +691,8 @@ export default function ShareClient() {
           >
             {photoDataUrl ? (
               <>
-                {/* Plain <img>, not next/image, because the src is a blob data
-                    URL which next/image's optimisation pipeline cannot serve. */}
+                {/* Plain <img>, not next/image: the src is a blob data URL
+                    which next/image's optimisation pipeline cannot handle. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   className="share-thumb"
@@ -688,12 +760,6 @@ export default function ShareClient() {
       {/* ── Preview (right column) ──────────────────────────────────────── */}
       <div className="share-preview">
         <p className="data-label share-preview-label">Live preview</p>
-        {/*
-         * The canvas renders at 480 × 480 logical pixels. On HiDPI screens it
-         * will appear slightly soft — that is expected for a preview. The
-         * downloaded file is 1080 × 1080, generated from a separate off-screen
-         * canvas, so it is always sharp.
-         */}
         <div className="share-preview-frame">
           <canvas
             ref={previewCanvasRef}
