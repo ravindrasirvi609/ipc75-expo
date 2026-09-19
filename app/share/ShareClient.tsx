@@ -390,9 +390,16 @@ function paintPost(
     ctx.stroke();
     ctx.restore();
 
+    // textBaseline "middle" centres the text's visual midpoint at the given Y,
+    // which is exactly the vertical centre of the pill (by + bh/2). The
+    // default "alphabetic" baseline sits near the top of the glyph and would
+    // leave most of the pill's height as empty space below the text.
+    // Reset to "alphabetic" immediately after so subsequent draws are unaffected.
     ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
     ctx.fillStyle = "#ffffff";
-    ctx.fillText(badgeLabel, cx, by + bPadY + 3);
+    ctx.fillText(badgeLabel, cx, by + bh / 2);
+    ctx.textBaseline = "alphabetic"; // restore default
   }
 
   // ── Attendee name ─────────────────────────────────────────────────────────
