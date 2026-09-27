@@ -42,7 +42,8 @@ export default function ShareGenerator() {
           context.font = "700 23px Arial";
           context.fillText(name || "Your name", 382, 779, 575);
           context.font = "14px Arial";
-          context.fillText([designation, organisation].filter(Boolean).join(" · ") || "Your designation · Organisation", 382, 801, 575);
+          context.fillText(designation || "Your designation", 382, 801, 575);
+          context.fillText(organisation || "Your organisation", 382, 823, 575);
         };
         uploaded.src = photo;
       }
@@ -70,7 +71,7 @@ export default function ShareGenerator() {
         <div className="share-field"><label htmlFor="share-photo">Upload image</label><div className="share-upload"><input id="share-photo" type="file" accept="image/*" onChange={handlePhoto} /></div></div>
         <div className="share-actions"><button className="btn btn-primary" type="submit" disabled={!photoFile}>Download post</button><button className="btn btn-quiet" type="button" onClick={() => { setName(""); setDesignation(""); setOrganisation(""); setPhoto(null); setPhotoFile(null); }}>Clear</button></div>
       </form>
-      <div className="share-preview-wrap"><p className="share-preview-label">Live preview</p><div className="share-preview"><img src={TEMPLATE} alt="75th IPC social media post template" />{photo && <img className="share-photo" src={photo} alt="Uploaded profile" />}<div className="share-identity"><strong>{name || "Your name"}</strong><span>{[designation, organisation].filter(Boolean).join(" · ") || "Your designation · Organisation"}</span></div></div><canvas ref={canvasRef} hidden /></div>
+      <div className="share-preview-wrap"><p className="share-preview-label">Live preview</p><div className="share-preview"><img src={TEMPLATE} alt="75th IPC social media post template" />{photo && <img className="share-photo" src={photo} alt="Uploaded profile" />}<div className="share-identity"><strong>{name || "Your name"}</strong><span>{designation || "Your designation"}</span><span>{organisation || "Your organisation"}</span></div></div><canvas ref={canvasRef} hidden /></div>
     </section>
   );
 }
