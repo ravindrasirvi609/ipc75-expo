@@ -36,13 +36,13 @@ export default function ShareGenerator() {
         uploaded.onload = () => {
           context.drawImage(uploaded, 741, 445, 320, 409);
           context.fillStyle = "rgba(255,255,255,.93)";
-          context.fillRect(732, 838, 338, 62);
+          context.fillRect(85, 755, 595, 62);
           context.fillStyle = "#10254f";
           context.textAlign = "center";
           context.font = "700 23px Arial";
-          context.fillText(name || "Your name", 901, 862, 330);
+          context.fillText(name || "Your name", 382, 779, 575);
           context.font = "14px Arial";
-          context.fillText([designation, organisation].filter(Boolean).join(" · ") || "Your designation · Organisation", 901, 884, 330);
+          context.fillText([designation, organisation].filter(Boolean).join(" · ") || "Your designation · Organisation", 382, 801, 575);
         };
         uploaded.src = photo;
       }

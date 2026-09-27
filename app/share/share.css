@@ -19,7 +19,7 @@
 .share-preview { position: relative; width: min(100%, 520px); margin: 0 auto; overflow: hidden; box-shadow: 0 20px 50px #10254f2b; background: white; }
 .share-preview > img:first-child { display: block; width: 100%; height: auto; }
 .share-photo { position: absolute; left: 66.1%; top: 31.8%; width: 28.5%; height: 29.2%; object-fit: cover; }
-.share-identity { position: absolute; left: 65.2%; top: 59.7%; width: 30%; padding: 8px 7px; color: var(--navy); background: #ffffffed; text-align: center; line-height: 1.15; }
+.share-identity { position: absolute; left: 7.8%; top: 53.8%; width: 53%; padding: 8px 12px; color: var(--navy); background: #ffffffed; text-align: center; line-height: 1.15; }
 .share-identity strong, .share-identity span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .share-identity strong { font-size: clamp(9px, 1.5vw, 14px); }
 .share-identity span { margin-top: 3px; font-size: clamp(7px, 1.1vw, 10px); }
