@@ -11,7 +11,7 @@
 
 export const EVENT = {
   /** The exhibition itself. */
-  name: "Pharma PowderTech Expo 2026",
+  name: "Pharma Pharmaceutical Expo 2026",
   shortName: "PharmaExpo 2026",
   /** Full title as printed on the brochure. */
   subtitle:

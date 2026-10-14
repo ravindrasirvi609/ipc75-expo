@@ -37,7 +37,7 @@ const expect = (label, actual, wanted) => {
 
 /* -- 1. Brochure figures -------------------------------------------- */
 
-expect("event name", EVENT.name, "Pharma PowderTech Expo 2026");
+expect("event name", EVENT.name, "Pharma Pharmaceutical Expo 2026");
 expect("congress", EVENT.parent, "75th Indian Pharmaceutical Congress");
 expect("milestone", EVENT.milestone, "Platinum Jubilee");
 expect("dates", EVENT.dates.label, "18 – 20 December 2026");
