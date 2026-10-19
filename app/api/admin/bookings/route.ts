@@ -1,20 +1,6 @@
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { isStallId } from "@/lib/hall-1c-plan";
-
-async function organiser(request: Request) {
-  const token = request.headers
-    .get("authorization")
-    ?.replace(/^Bearer\s+/i, "");
-  if (!token) return false;
-  const { data } = await getSupabaseAdmin().auth.getUser(token);
-  const allowed = (process.env.ADMIN_EMAILS ?? "")
-    .split(",")
-    .map((e) => e.trim().toLowerCase())
-    .filter(Boolean);
-  return Boolean(
-    data.user?.email && allowed.includes(data.user.email.toLowerCase()),
-  );
-}
+import { isOrganiser as organiser } from "@/lib/admin-auth";
 
 export async function GET(request: Request) {
   try {

@@ -334,3 +334,7 @@
   color: var(--navy);
   border: 1px solid var(--hairline);
 }
+.admin-account a {
+  color: inherit;
+  text-decoration: underline;
+}

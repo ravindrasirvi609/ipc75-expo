@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // The author email reads its logo and fonts from disk at send time.
+  outputFileTracingIncludes: {
+    "/api/admin/authors/send-email": ["./server-assets/**/*"],
+  },
   images: {
     // Unsplash stand-in photography for backdrop slots that have no local
     // file yet. See lib/media.ts.
