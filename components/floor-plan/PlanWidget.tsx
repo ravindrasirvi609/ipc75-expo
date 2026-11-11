@@ -36,6 +36,41 @@ const EMPTY_FORM: Form = {
   note: "",
 };
 
+type FormErrors = Partial<Record<keyof Form, string>>;
+
+const INDIAN_STATES = [
+  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa",
+  "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala",
+  "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland",
+  "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura",
+  "Uttar Pradesh", "Uttarakhand", "West Bengal", "Andaman and Nicobar Islands",
+  "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu", "Delhi",
+  "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry",
+];
+
+const GSTIN = /^\d{2}[A-Z]{5}\d{4}[A-Z][A-Z\d]Z[A-Z\d]$/;
+
+/** Mirrors the checks in /api/stalls, plus format checks the server leaves to us. */
+function validateForm(form: Form): FormErrors {
+  const errors: FormErrors = {};
+  if (!form.company.trim()) errors.company = "Enter your company or organisation name.";
+  if (!form.gstNumber.trim()) errors.gstNumber = "Enter your GST number.";
+  else if (!GSTIN.test(form.gstNumber.trim()))
+    errors.gstNumber = "A GST number has 15 characters, like 07AAACI1234F1Z5.";
+  if (!form.contact.trim()) errors.contact = "Enter the name of the person we should contact.";
+  if (!form.email.trim()) errors.email = "Enter an email address.";
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.trim()))
+    errors.email = "That email address looks wrong.";
+  const digits = form.phone.replace(/\D/g, "");
+  if (!form.phone.trim()) errors.phone = "Enter a WhatsApp number.";
+  else if (digits.length < 10 || digits.length > 15)
+    errors.phone = "Enter a 10-digit number, with country code if outside India.";
+  if (!form.address.trim()) errors.address = "Enter your billing address.";
+  if (!form.city.trim()) errors.city = "Enter your city.";
+  if (!form.state.trim()) errors.state = "Enter your state.";
+  return errors;
+}
+
 type Feedback = { kind: "error" | "success"; message: string } | null;
 
 export type PlanWidgetProps = {
@@ -72,6 +107,8 @@ export default function PlanWidget({
   const [formOpen, setFormOpen] = useState(false);
   const [form, setForm] = useState<Form>(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({});
+  const formRef = useRef<HTMLFormElement>(null);
   const [feedback, setFeedback] = useState<Feedback>(null);
 
   const pz = usePanZoom(
@@ -200,6 +237,15 @@ export default function PlanWidget({
     async (event: React.FormEvent) => {
       event.preventDefault();
       if (submitting) return;
+      const problems = validateForm(form);
+      setErrors(problems);
+      const firstInvalid = Object.keys(problems)[0];
+      if (firstInvalid) {
+        formRef.current
+          ?.querySelector<HTMLElement>(`[name="${firstInvalid}"]`)
+          ?.focus();
+        return;
+      }
       setSubmitting(true);
       setFeedback(null);
       try {
@@ -250,6 +296,45 @@ export default function PlanWidget({
     },
     [form, refresh, selected, submitting],
   );
+
+  type FieldOptions = Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    "name" | "value" | "onChange"
+  > & { wide?: boolean; hint?: string; transform?: (value: string) => string };
+
+  /** A labelled, required input with its hint and inline error wired up for screen readers. */
+  const field = (name: keyof Form, label: string, options: FieldOptions = {}) => {
+    const { wide, hint, transform, ...input } = options;
+    const error = errors[name];
+    const describedBy = error ? `hp-${name}-error` : hint ? `hp-${name}-hint` : undefined;
+    return (
+      <label className={`hp-field${wide ? " hp-wide" : ""}${error ? " has-error" : ""}`}>
+        <span>
+          {label} <em aria-hidden="true">*</em>
+        </span>
+        <input
+          {...input}
+          name={name}
+          required
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy}
+          value={form[name]}
+          onChange={(event) => {
+            const value = transform ? transform(event.target.value) : event.target.value;
+            setForm({ ...form, [name]: value });
+            if (error) setErrors({ ...errors, [name]: undefined });
+          }}
+        />
+        {error ? (
+          <small id={`hp-${name}-error`} className="hp-error">
+            {error}
+          </small>
+        ) : hint ? (
+          <small id={`hp-${name}-hint`}>{hint}</small>
+        ) : null}
+      </label>
+    );
+  };
 
   const selectedSet = useMemo(() => new Set(selected), [selected]);
   const detail =
@@ -430,69 +515,157 @@ export default function PlanWidget({
 
         {formOpen && selected.length > 0 ? (
           <div className="hp-dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setFormOpen(false); }}>
-          <form className="hp-form hp-dialog" onSubmit={submit}>
-            <div className="hp-dialog-head"><div><span className="hp-eyebrow">Stall request</span><h2>Tell us about your organisation</h2><p>Requesting {selected.join(", ")} · {selected.length * 9} sqm</p></div><button type="button" className="hp-dialog-close" onClick={() => setFormOpen(false)} aria-label="Close request form"><X size={18} /></button></div>
-            <label>
-              Company / organisation
-              <input
-                required
-                maxLength={120}
-                value={form.company}
-                onChange={(event) =>
-                  setForm({ ...form, company: event.target.value })
-                }
-              />
-            </label>
-            <label>
-              Contact name
-              <input
-                required
-                maxLength={120}
-                value={form.contact}
-                onChange={(event) =>
-                  setForm({ ...form, contact: event.target.value })
-                }
-              />
-            </label>
-            <label>
-              Email
-              <input
-                required
-                type="email"
-                maxLength={160}
-                value={form.email}
-                onChange={(event) =>
-                  setForm({ ...form, email: event.target.value })
-                }
-              />
-            </label>
-            <label>
-              WhatsApp number
-              <input
-                required
-                type="tel"
-                maxLength={40}
-                value={form.phone}
-                onChange={(event) =>
-                  setForm({ ...form, phone: event.target.value })
-                }
-              />
-            </label>
-            <label className="hp-wide">Address<input required maxLength={240} value={form.address} onChange={(event) => setForm({ ...form, address: event.target.value })} /></label>
-            <label>City<input required maxLength={80} value={form.city} onChange={(event) => setForm({ ...form, city: event.target.value })} /></label>
-            <label>State<input required maxLength={80} value={form.state} onChange={(event) => setForm({ ...form, state: event.target.value })} /></label>
-            <label>GST number<input required maxLength={30} value={form.gstNumber} onChange={(event) => setForm({ ...form, gstNumber: event.target.value })} /></label>
-            <label className="hp-wide">
-              Anything we should know <small>optional</small>
-              <textarea
-                rows={2}
-                maxLength={500}
-                value={form.note}
-                onChange={(event) =>
-                  setForm({ ...form, note: event.target.value })
-                }
-              />
-            </label>
+          <form
+            ref={formRef}
+            className="hp-form hp-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="hp-form-title"
+            noValidate
+            onSubmit={submit}
+            onKeyDown={(event) => {
+              if (event.key === "Escape") setFormOpen(false);
+            }}
+          >
+            <div className="hp-dialog-head">
+              <div>
+                <span className="hp-eyebrow">Stall request</span>
+                <h2 id="hp-form-title">Tell us about your organisation</h2>
+                <p>
+                  We use these details to hold your stalls and prepare your
+                  invoice. It takes about two minutes.
+                </p>
+              </div>
+              <button
+                type="button"
+                className="hp-dialog-close"
+                onClick={() => setFormOpen(false)}
+                aria-label="Close request form"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="hp-summary">
+              <div>
+                <span className="hp-summary-label">Your selection</span>
+                <div className="hp-summary-stalls">
+                  {selected.map((id) => (
+                    <b key={id}>{id}</b>
+                  ))}
+                </div>
+              </div>
+              <div className="hp-summary-total">
+                <strong>{selected.length * 9} sqm</strong>
+                <span>
+                  {selected.length} stall{selected.length === 1 ? "" : "s"}
+                </span>
+              </div>
+            </div>
+
+            <fieldset className="hp-section">
+              <legend>
+                <i>1</i> Organisation
+              </legend>
+              <div className="hp-fields">
+                {field("company", "Company / organisation", {
+                  wide: true,
+                  maxLength: 120,
+                  autoComplete: "organization",
+                  placeholder: "Registered name, as it should appear on the invoice",
+                })}
+                {field("gstNumber", "GST number", {
+                  wide: true,
+                  maxLength: 15,
+                  autoCapitalize: "characters",
+                  placeholder: "07AAACI1234F1Z5",
+                  hint: "15 characters, as printed on your GST certificate.",
+                  transform: (value) => value.toUpperCase().replace(/\s/g, ""),
+                })}
+              </div>
+            </fieldset>
+
+            <fieldset className="hp-section">
+              <legend>
+                <i>2</i> Contact person
+              </legend>
+              <div className="hp-fields">
+                {field("contact", "Full name", {
+                  wide: true,
+                  maxLength: 120,
+                  autoComplete: "name",
+                })}
+                {field("email", "Email", {
+                  type: "email",
+                  maxLength: 160,
+                  autoComplete: "email",
+                  inputMode: "email",
+                  placeholder: "name@company.com",
+                  hint: "Your confirmation is sent here.",
+                })}
+                {field("phone", "WhatsApp number", {
+                  type: "tel",
+                  maxLength: 40,
+                  autoComplete: "tel",
+                  inputMode: "tel",
+                  placeholder: "+91 98765 43210",
+                })}
+              </div>
+            </fieldset>
+
+            <fieldset className="hp-section">
+              <legend>
+                <i>3</i> Billing address
+              </legend>
+              <div className="hp-fields">
+                {field("address", "Address", {
+                  wide: true,
+                  maxLength: 240,
+                  autoComplete: "street-address",
+                  placeholder: "Building, street, area",
+                })}
+                {field("city", "City", {
+                  maxLength: 80,
+                  autoComplete: "address-level2",
+                })}
+                {field("state", "State", {
+                  maxLength: 80,
+                  autoComplete: "address-level1",
+                  list: "hp-states",
+                })}
+                <datalist id="hp-states">
+                  {INDIAN_STATES.map((name) => (
+                    <option key={name} value={name} />
+                  ))}
+                </datalist>
+              </div>
+            </fieldset>
+
+            <fieldset className="hp-section">
+              <legend>
+                <i>4</i> Anything else <small>optional</small>
+              </legend>
+              <label className="hp-field">
+                <span className="hp-sr">Anything we should know</span>
+                <textarea
+                  name="note"
+                  rows={3}
+                  maxLength={500}
+                  placeholder="Preferred neighbours, power needs, questions for the team…"
+                  value={form.note}
+                  onChange={(event) =>
+                    setForm({ ...form, note: event.target.value })
+                  }
+                />
+              </label>
+            </fieldset>
+
+            {feedback?.kind === "error" ? (
+              <p className="hp-feedback is-error" role="alert">
+                {feedback.message}
+              </p>
+            ) : null}
+
             <div className="hp-submit">
               <p>
                 Submitting places a hold on {selected.join(", ")}. Our team

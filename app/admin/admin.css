@@ -338,3 +338,237 @@
   color: inherit;
   text-decoration: underline;
 }
+
+/* Organisation cards: one per exhibitor, covering all of its stalls */
+.org-card {
+  background: #fff;
+  border: 1px solid var(--hairline);
+  margin: 12px 0;
+}
+.org-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px 22px 14px;
+}
+.org-head h3 {
+  font-size: 20px;
+  line-height: 1.2;
+  margin: 0 0 4px;
+  overflow-wrap: anywhere;
+}
+.org-head p {
+  margin: 0;
+  font: 11px var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.org-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+.org-badge {
+  font: 500 10px var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: 5px 8px;
+  border: 1px solid currentColor;
+}
+.org-badge.hold,
+.org-badge.pay-partial,
+.org-badge.pay-mixed {
+  color: #a86600;
+  background: #fff8e8;
+}
+.org-badge.booked,
+.org-badge.pay-paid {
+  color: var(--green);
+  background: #edf8f2;
+}
+.org-badge.pay-pending {
+  color: var(--ink-soft);
+  background: var(--paper);
+}
+.org-badge.pay-refunded {
+  color: #b33a2b;
+  background: #fff0ed;
+}
+.org-stalls {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0 22px 18px;
+}
+.org-stall {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--hairline);
+  border-left: 3px solid #c9a227;
+  background: var(--paper);
+}
+.org-stall.booked {
+  border-left-color: var(--green);
+}
+.org-stall strong {
+  font: 500 13px var(--mono);
+  color: var(--navy);
+}
+.org-stall span {
+  font: 10px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+.org-stall button {
+  border: 0;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 1;
+  padding: 0 2px;
+  cursor: pointer;
+}
+.org-stall button:hover {
+  color: #b33a2b;
+}
+.org-details,
+.org-edit {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 24px;
+  margin: 0;
+  padding: 18px 22px;
+  border-top: 1px solid var(--hairline);
+}
+.org-wide {
+  grid-column: 1 / -1;
+}
+.org-details dt,
+.org-edit label,
+.org-payment label {
+  font: 500 10px var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.org-details dd {
+  margin: 3px 0 0;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.org-details a {
+  text-decoration: underline;
+}
+.org-edit label,
+.org-payment label {
+  display: grid;
+  gap: 6px;
+}
+.org-edit input,
+.org-edit textarea,
+.org-payment input,
+.org-payment select {
+  width: 100%;
+  border: 1px solid var(--hairline);
+  background: #fff;
+  padding: 10px 12px;
+  font: 14px var(--display);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink);
+  border-radius: 2px;
+}
+.org-edit textarea {
+  resize: vertical;
+}
+.org-edit input:focus,
+.org-edit textarea:focus,
+.org-payment input:focus,
+.org-payment select:focus {
+  border-color: var(--saffron);
+  outline: 2px solid #e4761b33;
+}
+.org-edit-hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+.org-edit-actions {
+  display: flex;
+  gap: 8px;
+}
+.org-edit-actions .admin-primary {
+  padding: 11px 16px;
+  font-size: 13px;
+}
+.org-secondary {
+  background: transparent;
+  border: 1px solid var(--hairline);
+  color: var(--navy);
+  padding: 11px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.org-secondary:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.org-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px 22px;
+  border-top: 1px solid var(--hairline);
+  background: var(--paper);
+}
+.org-payment {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.org-payment label {
+  width: 170px;
+}
+.org-foot .booking-action {
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+@media (max-width: 700px) {
+  .org-head {
+    flex-direction: column;
+    padding: 18px 18px 12px;
+  }
+  .org-badges {
+    justify-content: flex-start;
+  }
+  .org-stalls {
+    padding: 0 18px 16px;
+  }
+  .org-details,
+  .org-edit {
+    grid-template-columns: 1fr;
+    padding: 16px 18px;
+  }
+  .org-foot {
+    padding: 16px 18px;
+  }
+  .org-payment,
+  .org-payment label,
+  .org-payment .org-secondary,
+  .org-foot .booking-action {
+    width: 100%;
+  }
+}

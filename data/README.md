@@ -29,17 +29,24 @@ available as of `updatedAt`.
 
 Bookings are managed live, at `/admin` (organiser sign-in required):
 
-- **Confirm a hold** — open the request and choose "Confirm booking"; sets
-  `status` to `booked`.
-- **Return to hold** — the same screen, in reverse.
+Each organisation appears once, with all of its stalls on one card (rows are
+matched on company name, ignoring case and spacing).
+
+- **Confirm a hold** — "Confirm booking" sets the organisation's held stalls
+  to `booked`. "Return to hold" is the reverse.
+- **Release** — "Release holds" frees every held stall; the × on a stall
+  frees just that one.
+- **Payment** — choose pending / partially paid / paid / refunded, add a
+  reference (UTR, cheque number) and "Save payment". Applies to all of the
+  organisation's stalls. Needs the `20261111000000_stall_booking_payment.sql`
+  migration.
+- **Edit details** — corrects company, contact, address and GST across all of
+  the organisation's stalls. The company name is public on the floor plan.
 - **Add a booking made offline** — run the exhibitor's request through the
   normal `/floor-plan` flow yourself, then confirm it from `/admin`.
 
-There's no "release a stall" action yet — deleting a mistaken hold means
-removing its row directly in the Supabase table editor.
-
 `company` is the only field the public API (`/api/stalls`) ever serves.
-`contact`, `email`, `phone` and `note` are readable only by an authorised
+`contact`, `email`, `phone`, address, GST, payment and `note` are readable only by an authorised
 organiser, through `/api/admin/bookings`.
 
 ## Updating this seed file
