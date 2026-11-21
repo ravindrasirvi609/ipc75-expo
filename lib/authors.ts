@@ -34,8 +34,8 @@ export type SaveResult = {
   rejected: { index: number; message: string }[];
 };
 
-export const MAX_BULK_ROWS = 1000;
-export const LIST_LIMIT = 1000;
+export const MAX_BULK_ROWS = 3000;
+export const LIST_LIMIT = 3000;
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
